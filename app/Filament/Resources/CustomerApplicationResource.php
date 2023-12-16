@@ -371,75 +371,75 @@ class CustomerApplicationResource extends Resource
 												->required()
 												->columnSpan(2)
 												->options([
-													'time_deposit' => 'Time Deposit',
-													'savings' => 'Savings',
+														'time_deposit' => 'Time Deposit',
+														'savings' => 'Savings',
 												]),
 										Forms\Components\TextInput::make('account_number')->numeric()
-												->required()
-												->minLength(12)
-												->hint('Card number must be of exact twelve (12) digits.')
-												->maxLength(12)
-												->columnSpan(1),
+														->required()
+														->minLength(12)
+														->hint('Card number must be of exact twelve (12) digits.')
+														->maxLength(12)
+														->columnSpan(1),
 										Forms\Components\TextInput::make('bank_or_branch')
-												->required()
-												->columnSpan(2),
+														->required()
+														->columnSpan(2),
 										Forms\Components\DatePicker::make('date_openned')
-												->required()
-												->minDate(now()->subYears(150))
-												->maxDate(now()),
+														->required()
+														->minDate(now()->subYears(150))
+														->maxDate(now()),
 										Forms\Components\TextInput::make('average_monthly_balance')
-												->required()
-												->numeric(),
+														->required()
+														->numeric(),
 								]),
 								Forms\Components\Fieldset::make('Credit Card')
-										->columns(1)
-										->schema([
-												Forms\Components\Group::make([
-														Forms\Components\TextInput::make('credit_card_company')
-																->required(),
-														Forms\Components\TextInput::make('card_number')
-																->required()
-																->minLength(12)
-																->hint('Card number must be of exact twelve (12) digits.')
-																->maxLength(12)
-																->columnSpan(2),
-														Forms\Components\DatePicker::make('date_issued')
-																->required()
-																->columnSpan(2)
-																->minDate(now()->subYears(150))
-																->maxDate(now()),
-														Forms\Components\TextInput::make('credit_limit')
-																->required()
-																->columnSpan(2),
-														Forms\Components\TextInput::make('outstanding_balance')
-																->required()
-																->columnSpan(2),
-														])->columns(4),
-												]),
+												->columns(1)
+												->schema([
+														Forms\Components\Group::make([
+																		Forms\Components\TextInput::make('credit_card_company')
+																						->required(),
+																		Forms\Components\TextInput::make('card_number')
+																						->required()
+																						->minLength(12)
+																						->hint('Card number must be of exact twelve (12) digits.')
+																						->maxLength(12)
+																						->columnSpan(2),
+																		Forms\Components\DatePicker::make('date_issued')
+																						->required()
+																						->columnSpan(2)
+																						->minDate(now()->subYears(150))
+																						->maxDate(now()),
+																		Forms\Components\TextInput::make('credit_limit')
+																						->required()
+																						->columnSpan(2),
+																		Forms\Components\TextInput::make('outstanding_balance')
+																						->required()
+																						->columnSpan(2),
+																		])->columns(4),
+																]),
 
 								Forms\Components\Fieldset::make('Creditor Information')
-										->columns(1)
-										->schema([
-												Forms\Components\TextInput::make('creditor')
-														->required()
-														->label('Creditor Name:')
-														->required()
-														->columnSpan(4),
-												Forms\Components\TextInput::make('term')
-														->required()
-														->columnSpan(2),
-												Forms\Components\TextInput::make('present_balance')
-														->required()
-														->columnSpan(2)
-														->numeric(),
-												Forms\Components\TextInput::make('principal')
-														->required()
-														->columnSpan(2),
-												Forms\Components\TextInput::make('monthly_amorthization')
-														->required()
-														->columnSpan(2)
-														->numeric(),
-										])->columns(4),
+												->columns(1)
+												->schema([
+																Forms\Components\TextInput::make('creditor')
+																				->required()
+																				->label('Creditor Name:')
+																				->required()
+																				->columnSpan(4),
+																Forms\Components\TextInput::make('term')
+																				->required()
+																				->columnSpan(2),
+																Forms\Components\TextInput::make('present_balance')
+																				->required()
+																				->columnSpan(2)
+																				->numeric(),
+																Forms\Components\TextInput::make('principal')
+																				->required()
+																				->columnSpan(2),
+																Forms\Components\TextInput::make('monthly_amorthization')
+																				->required()
+																				->columnSpan(2)
+																				->numeric(),
+												])->columns(4),
 						]),
                 ]),
 

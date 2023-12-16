@@ -354,92 +354,92 @@ class CustomerApplicationResource extends Resource
     {
         return Forms\Components\Group::make([
                 Forms\Components\Fieldset::make('Financial References')
-                ->columns(2)
+                ->columns(1)
                 ->schema([
+						Forms\Components\Group::make([
+								Forms\Components\Fieldset::make('Credit Card Information')
+								->columns(1)
+								->schema([
+										Forms\Components\Select::make('bank_acc_type')
+												->required()
+												->columnSpan(2)
+												->options([
+														'time_deposit' => 'Time Deposit',
+														'savings' => 'Savings',
+												]),
+										Forms\Components\TextInput::make('account_number')->numeric()
+														->required()
+														->minLength(12)
+														->hint('Card number must be of exact twelve (12) digits.')
+														->maxLength(12)
+														->columnSpan(1),
+										Forms\Components\TextInput::make('bank_or_branch')
+														->required()
+														->columnSpan(2),
+										Forms\Components\DatePicker::make('date_openned')
+														->required()
+														->minDate(now()->subYears(150))
+														->maxDate(now()),
+										Forms\Components\TextInput::make('average_monthly_balance')
+														->required()
+														->numeric(),
+								]),
+								Forms\Components\Fieldset::make('Credit Card')
+												->columns(1)
+												->schema([
+														Forms\Components\Group::make([
+																		Forms\Components\TextInput::make('credit_card_company')
+																						->required(),
+																		Forms\Components\TextInput::make('card_number')
+																						->required()
+																						->minLength(12)
+																						->hint('Card number must be of exact twelve (12) digits.')
+																						->maxLength(12)
+																						->columnSpan(2),
+																		Forms\Components\DatePicker::make('date_issued')
+																						->required()
+																						->columnSpan(2)
+																						->minDate(now()->subYears(150))
+																						->maxDate(now()),
+																		Forms\Components\TextInput::make('credit_limit')
+																						->required()
+																						->columnSpan(2),
+																		Forms\Components\TextInput::make('outstanding_balance')
+																						->required()
+																						->columnSpan(2),
+																		])->columns(4),
+																]),
 
-                        //Applicant's Bank References
-                        Forms\Components\Repeater::make('bank_references')
-                        ->label('Bank References')
-                        ->columnSpan(1)
-                        ->columns(2)
-                        ->collapsible(true)
-                        ->schema([
-                                Forms\Components\Select::make('bank_acc_type')
-                                ->columnSpan(1)
-                                ->options([
-                                    'time_deposit' => 'Time Deposit',
-                                    'savings' => 'Savings',
-                                ]),
-                                Forms\Components\TextInput::make('account_number')->numeric()
-                                        ->minLength(12)
-                                        ->maxLength(12)
-                                        ->columnSpan(1),
-                                Forms\Components\TextInput::make('bank_or_branch')
-                                        ->columnSpan(2),
-                                Forms\Components\DatePicker::make('date_openned')
-                                        ->minDate(now()->subYears(150))
-                                        ->maxDate(now()),
-                                Forms\Components\TextInput::make('average_monthly_balance')
-                                        ->numeric(),
-                        ]),
-
-                        Forms\Components\Repeater::make('credit_references')
-                                    ->columnSpan(1)
-                                    ->columns(3)
-                                    ->label('Applicant\'s Credit References')
-                                    ->collapsible(true)
-                                    ->schema([
-                                            Forms\Components\Select::make('credit_type')
-                                            ->columnSpan(3)
-                                            ->options([
-                                                    'creditor' => 'Creditor',
-                                                    'credit_card' => 'Credit Card',
-                                            ])
-                                            ->live()
-                                            ->afterStateUpdated(fn (Forms\Components\Select $component)
-                                            => $component
-                                                    ->getContainer()
-                                                    ->getComponent('creditCardDynamicTypeFields')
-                                                    ->getChildComponentContainer()
-                                                    ->fill()
-                                            ),
-            
-        
-                        Forms\Components\Grid::make(4)
-                                ->columnSpan(4)
-                                ->columns(4)
-                                ->key('creditCardDynamicTypeFields')
-                                ->schema(fn (Forms\Get $get): array => match ($get('credit_type')) {
-                                        'creditor' => [
-                                                Forms\Components\TextInput::make('creditor')
-                                                ->columnSpan(4),
-                                                Forms\Components\TextInput::make('term')
-                                                ->columnSpan(2),
-                                                Forms\Components\TextInput::make('present_balance')
-                                                ->columnSpan(2)
-                                                ->numeric(),
-                                                Forms\Components\TextInput::make('principal')
-                                                ->columnSpan(2),
-                                                Forms\Components\TextInput::make('monthly_amorthization')
-                                                ->columnSpan(2)
-                                                ->numeric(),
-                                        ],
-                                        'credit_card' => [
-                                                Forms\Components\TextInput::make('credit_card_company'),
-                                                Forms\Components\TextInput::make('card_number'),
-                                                Forms\Components\DatePicker::make('date_issued')
-                                                ->minDate(now()->subYears(150))
-                                                ->maxDate(now())    ,
-                                                Forms\Components\TextInput::make('credit_limit'),
-                                                Forms\Components\TextInput::make('outstanding_balance'),
-                                        ],
-                                        default => [],
-                                })
-                            ]),
+								Forms\Components\Fieldset::make('Creditor Information')
+												->columns(1)
+												->schema([
+																Forms\Components\TextInput::make('creditor')
+																				->required()
+																				->label('Creditor Name:')
+																				->required()
+																				->columnSpan(4),
+																Forms\Components\TextInput::make('term')
+																				->required()
+																				->columnSpan(2),
+																Forms\Components\TextInput::make('present_balance')
+																				->required()
+																				->columnSpan(2)
+																				->numeric(),
+																Forms\Components\TextInput::make('principal')
+																				->required()
+																				->columnSpan(2),
+																Forms\Components\TextInput::make('monthly_amorthization')
+																				->required()
+																				->columnSpan(2)
+																				->numeric(),
+												])->columns(4),
+						]),
                 ]),
 
                 Forms\Components\Repeater::make('personal_references')
                         ->columnSpanFull()
+						->required()
+						->columnSpan(1)
                         ->columns(4)
                         ->label('Applicant\'s Personal References')
                         ->collapsible(true)
@@ -466,11 +466,14 @@ class CustomerApplicationResource extends Resource
                     ->schema([
                             Forms\Components\TextArea::make('applicant_present_business_employer')
                                     ->label('Business Employer:')
+                                    ->required()
                                     ->columnSpan(2),
                             Forms\Components\TextInput::make('applicant_position')
+									->required()
                                     ->label('Position:')
                                     ->columnSpan(1),
                             Forms\Components\TextInput::make('applicant_how_long_job_or_business')
+									->required()
                                     ->label('How long:')
                                     ->columnSpan(1),
                     ]),
@@ -479,9 +482,11 @@ class CustomerApplicationResource extends Resource
                     ->columns(1)
                     ->schema([
                             Forms\Components\TextArea::make('applicant_business_address')
+									->required()
                                     ->label('Address:')
                                     ->columnSpan(1),
                             Forms\Components\TextInput::make('applicant_nature_of_business')
+									->required()
                                     ->label('Nature of Business:'),
                     ]),                                
             Forms\Components\Fieldset::make("Previous Employer")
@@ -489,12 +494,15 @@ class CustomerApplicationResource extends Resource
                     ->columnSpan(3)
                     ->schema([
                             Forms\Components\TextArea::make('applicant_previous_employer')
+									->required()
                                     ->label('Employer:')
                                     ->columnSpan(1),
                             Forms\Components\TextArea::make('applicant_previous_employer_position')
+									->required()
                                     ->label('Position:')
                                     ->columnSpan(1),
                             Forms\Components\TextArea::make('applicant_how_long_prev_job_or_business')
+									->required()
                                     ->label('How Long:')
                                     ->columnSpan(1),
                     ]),
@@ -778,9 +786,10 @@ class CustomerApplicationResource extends Resource
                 Forms\Components\Fileupload::make('statement_of_monthly_income_image')
                 ->image()
                 ->multiple(true)
-                ->minFiles(1)
+                ->minFiles(2)
                 ->maxFiles(2)
-                ->label('Statement of Monthly Income:')
+                ->label('Proof of income:')
+                ->hint("Requires two (2) images of Proof of Income.")
                 ->required(true)
                 ->columnSpan(3),
         ]);
