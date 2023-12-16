@@ -38,6 +38,8 @@ Route::get('/', function(){
 
 Route::view('/about', 'components.filament-fabricator.page-blocks.about-page');
 
+Route::view('/terms-and-conditions', 'components.filament-fabricator.page-blocks.customer-terms-and-conditions')->name('terms-and-condition');
+
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('pay/{customerApplicationId}', [PaymongoController::class, 'pay'])->name('paymongo');
 Route::get('payment-success/{customerApplicationId}', [PaymongoController::class, 'success'])->name('payment-success');

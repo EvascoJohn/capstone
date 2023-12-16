@@ -81,7 +81,7 @@ class Register extends AuthRegister
         return Forms\Components\Actions::make([
             Forms\Components\Actions\Action::make('terms_and_conditions')
             // resources\views\components\filament-fabricator\page-blocks\customer-terms-and-conditions.blade.php
-                ->url(route('components.filament-fabricator.page-blocks.customer-terms-and-conditions'), true)
+                ->url(route('terms-and-conditions'), true)
                 ->link()
         ]);
     }
