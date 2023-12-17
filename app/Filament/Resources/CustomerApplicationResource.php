@@ -790,8 +790,8 @@ class CustomerApplicationResource extends Resource
     public static function getImageStatementMonthlyIncome(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-                Forms\Components\Fileupload::make('statement_of_monthly_income_image')
-                ->image()
+                Forms\Components\Fileupload::make('proof_of_income_image')
+                ->disk('public')
                 ->multiple(true)
                 ->minFiles(2)
                 ->maxFiles(2)
@@ -1007,6 +1007,8 @@ class CustomerApplicationResource extends Resource
 													->columnSpan(3),
 											InfoLists\Components\ImageEntry::make('co_owner_valid_id')
 													->label("Valid ID's:")
+                                                                                                        ->width(400)
+                                                                                                        ->height(400)
 													->columnSpan(3),
                                     ]),
                                 InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
@@ -1016,8 +1018,11 @@ class CustomerApplicationResource extends Resource
 													->color('success')
 													->money('PHP')
 													->columnSpan(3),
-											InfoLists\Components\ImageEntry::make('statement_of_monthly_income_image')
+											InfoLists\Components\ImageEntry::make('proof_of_income_image')
+                                                                                                        ->disk('public')
 													->label('Proof of income:')
+                                                                                                        ->width(500)
+                                                                                                        ->height(500)
 													->columnSpan(3),
                                     ]),
                     ])

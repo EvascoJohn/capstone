@@ -144,6 +144,7 @@ return new class extends Migration
             $table->double('gross_monthly_income')->nullable();
 
             $table->double('net_monthly_income')->nullable();
+            $table->json('proof_of_income_image')->nullable();
 
             $table->timestamps();
 

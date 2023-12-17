@@ -170,6 +170,7 @@ class CustomerApplication extends Model implements HasMedia
 
         //Net Income
         'net_monthly_income',
+        'proof_of_income_image'
 
 
     ];
@@ -180,6 +181,7 @@ class CustomerApplication extends Model implements HasMedia
         'applicant_valid_id'        => 'json',
         'spouse_valid_id'           => 'json',
         'co_owner_valid_id'         => 'json',
+        'proof_of_income_image'     => 'json',
         'personal_references'       => 'json',
         'bank_references'           => 'json',
         'credit_references'         => 'json',
