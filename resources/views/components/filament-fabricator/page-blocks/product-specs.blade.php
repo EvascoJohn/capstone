@@ -26,7 +26,7 @@
       <section id="Content1">
         <div class="specs-header">
           <div class="c1-buttons">
-            <a href="../html/products.html"
+            <a href="{{  route('home') }}"
               ><i class="ri-arrow-left-s-fill"></i>Go Back</a
             >
           </div>
