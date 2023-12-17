@@ -1,4 +1,5 @@
-@aware(['page', 'unit', 'product_list'])
+@aware(['page', 'unit'])
+@props(['product_list'])
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
