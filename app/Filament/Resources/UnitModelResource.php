@@ -130,8 +130,7 @@ class UnitModelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\SpatieMediaLibraryImageColumn::make('product_image')
-                    ->collection('product-images'),
+                Tables\Columns\ImageColumn::make('image_file'),
                 Tables\Columns\TextColumn::make('model_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')

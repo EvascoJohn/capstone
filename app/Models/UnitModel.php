@@ -38,7 +38,6 @@ class UnitModel extends Model implements HasMedia
         "colors" => "json",
     ];
 
-
     public function unit():HasMany
     {
         return $this->hasMany(Unit::class, 'unit_model_id', 'id');
