@@ -32,7 +32,8 @@ use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function(){
     return redirect('/home');
-});
+})
+->name('home');
 
 // resources\views\components\filament-fabricator\page-blocks\about-page.blade.php
 
