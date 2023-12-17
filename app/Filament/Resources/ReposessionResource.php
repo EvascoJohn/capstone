@@ -18,7 +18,9 @@ class ReposessionResource extends Resource
 {
     protected static ?string $model = CustomerApplication::class;
 
-    protected static ?string $navigationGroup = 'Reposession Module';
+    protected static ?string $navigationLabel = 'Reposession';
+    protected static ?string $modelLabel = "Reposession";
+    protected static ?string $navigationGroup = 'Reposession';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
