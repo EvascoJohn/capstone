@@ -225,7 +225,7 @@ class CustomerApplicationResource extends Resource
                                         ->columnSpan(3)
                                         ->label('Telephone:')
                                         ->required(),
-                                Forms\Components\TextInput::make('email')
+                                Forms\Components\TextInput::make('applicant_email')
                                         ->columnSpan(3)
                                         ->required()
                                         ->label('Email:'),
