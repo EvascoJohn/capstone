@@ -6,9 +6,9 @@ use Filament\Support\Contracts\HasLabel;
 
 enum ApplicationStatus:string implements HasLabel
 {
-    case PENDING_STATUS          = "Pending";
+    case PENDING_STATUS         = "Pending";
     case ACTIVE_STATUS          = "Active";
-    case APPROVED_STATUS          = "Approved";
+    case APPROVED_STATUS        = "Approved";
     case REJECTED_STATUS        = "Reject";
     case CLOSED_STATUS          = "Closed";
     case RESUBMISSION_STATUS    = "Resubmission";
