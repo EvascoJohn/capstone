@@ -30,8 +30,9 @@
           </div>
         </div>
         <div class="product-specs">
-
-          <img src="{{ asset('storage/'.$unit->image_file ) }}" alt="" />
+          <div class="home-product-col">
+            <img src="{{ asset('storage/'.$unit->image_file ) }}" alt="" />
+          </div>
           <div class="heading">
             <h1 class="Title">{{ $unit->model_name }}</h1>
             <h3 class="Price">{{ $unit->price }}</h3>
