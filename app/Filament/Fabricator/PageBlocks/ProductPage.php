@@ -20,7 +20,7 @@ class ProductPage extends PageBlock
                             ->helperText(config('customer-website.product-page-block.hero_helper_text')),
                     //HOME PAGE HERO IMAGE IMAGE
                     Forms\Components\FileUpload::make("heading_image")
-							->image()
+                            ->image()
                             ->required()
                             ->label("Heading Image")
                             ->disk('public')

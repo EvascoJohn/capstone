@@ -6,7 +6,6 @@
 /public/storage
 /storage/*.key
 /vendor
-.env
 .zip
 .env.backup
 .env.production
@@ -22,3 +21,4 @@ yarn-error.log
 .gitignore
 .log
 .gitignore
+.env

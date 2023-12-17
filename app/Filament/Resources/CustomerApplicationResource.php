@@ -172,6 +172,7 @@ class CustomerApplicationResource extends Resource
                                 ->columns(6),
                                 Forms\Components\Fileupload::make('co_owner_valid_id')
                                         ->image()
+                                        ->disk('public')
                                         ->multiple(true)
                                         ->minFiles(2)
                                         ->maxFiles(2)
@@ -256,6 +257,8 @@ class CustomerApplicationResource extends Resource
                         ->columns(6),
                         Forms\Components\Fileupload::make('applicant_valid_id')
                                 ->multiple(true)
+                                ->disk('public')
+                                ->directory('applicant_valid_id')
                                 ->hint("Requires two (2) valid ID's")
                                 ->minFiles(2)
                                 ->maxFiles(2)
@@ -925,6 +928,7 @@ class CustomerApplicationResource extends Resource
                                                     ->schema([
                                                             InfoLists\Components\ImageEntry::make('unitModel.image_file')
                                                                     ->label("")
+                                                                    ->disk('public')
                                                                     ->height(200)
                                                                     ->width(200),
                                                     ])->columnSpan(2),
@@ -978,6 +982,7 @@ class CustomerApplicationResource extends Resource
                                             InfoLists\Components\Section::make([
                                                 InfoLists\Components\ImageEntry::make('applicant_valid_id')
                                                             ->columnSpan(6)
+                                                            ->disk('public')
                                                             ->width(400)
                                                             ->height(400)
                                                             ->label("Provided ID(s)"),
