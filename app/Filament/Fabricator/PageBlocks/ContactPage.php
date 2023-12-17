@@ -20,6 +20,7 @@ class ContactPage extends PageBlock
                 //HOME PAGE HERO IMAGE IMAGE
                 Forms\Components\FileUpload::make("heading_image")
                         ->required()
+                        ->image()
                         ->label("Heading Image")
                         ->disk('public')
                         ->directory('site-images')
