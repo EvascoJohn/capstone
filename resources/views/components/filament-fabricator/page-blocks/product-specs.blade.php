@@ -30,7 +30,8 @@
           </div>
         </div>
         <div class="product-specs">
-          <img src="{{ "storage/app/public/".$unit->image_file }}" alt="" />
+
+          <img src="{{ asset('storage/'.$unit->image_file ) }}" alt="" />
           <div class="heading">
             <h1 class="Title">{{ $unit->model_name }}</h1>
             <h3 class="Price">{{ $unit->price }}</h3>
@@ -38,21 +39,11 @@
           <div class="description">
             <h3>Description</h3>
             <p class="description-content">
-              DIO boasts of its stylish look, design, and its other functional
-              features. This motorcycle has a stylish design with three vibrant
-              colors to choose from—the Candy Jazzy Blue, Sports Red, and
-              Vibrant Orange. It also features an LED Headlight and Position
-              Light that makes it an eye-magnet. <br />
-              <br />
-              DIO is powered by an air-cooled, 109cc, four-stroke single
-              overhead cam (SOHC) engine that enables a maximum power of 5.89kW
-              @ 7500 rpm and a maximum torque of 8.91Nm @ 5000 rpm. It also
-              features a 58.3km/l fuel consumption, well-suited for your
-              everyday riding needs.
-              <br />
+              unit->description. <br />
               <br />
               *Actual Unit May Vary.
             </p>
+            {{-- colors [JSON] --}}
             <h5>Colors Available</h5>
             <div class="colors">
               <div class="color1" title="Candy Jazz Blue"></div>
@@ -62,76 +53,44 @@
             <h3>Specification</h3>
             <div class="container">
               <div class="specs-content">
+                <div class="specs-title">Body Type</div>
+                <div class="specs-value">{{ unit->body_type }}</div>
+              </div>
+              <div class="specs-content">
                 <div class="specs-title">Engine Type</div>
-                <div class="specs-value">4-Stroke, SOHC, Air-Cooled</div>
+                <div class="specs-value">{{ unit->engine_type }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Displacement</div>
-                <div class="specs-value">109 cc</div>
+                <div class="specs-value">{{ unit->displacement }} cc</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Starting System</div>
-                <div class="specs-value">Kick/Electric</div>
+                <div class="specs-value">{{ unit->starting_system }}</div>
               </div>
               <div class="specs-content">
-                <div class="specs-title">Ignition System</div>
-                <div class="specs-value"></div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Brake Type (Front)</div>
-                <div class="specs-value">Mechanical Drum Brake</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Brake Type (Rear)</div>
-                <div class="specs-value">Mechanical Drum Brake</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Tire Size (Front)</div>
-                <div class="specs-value">90 / 100 - 10 53J (Tubeless)</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Tire Size (Rear)</div>
-                <div class="specs-value">90 / 100 - 10 53J (Tubeless)</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Wheel Type</div>
-                <div class="specs-value">Steel Rims</div>
+                <div class="specs-title">Transmission</div>
+                <div class="specs-value">{{ unit->transmission }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Overall Dimensions: L x W x H</div>
-                <div class="specs-value">1,781 x 710 x 1,133 (mm)</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Curb Weight</div>
-                <div class="specs-value">104 Kg</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Seat Height</div>
-                <div class="specs-value">765 mm</div>
-              </div>
-              <div class="specs-content">
-                <div class="specs-title">Ground Clearance</div>
-                <div class="specs-value">158 mm</div>
+                <div class="specs-value">{{ unit->dimension }} (mm)</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Fuel Tank Capacity</div>
-                <div class="specs-value">5.3 Liters</div>
+                <div class="specs-value">{{ unit->fuel_tank_capacity }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Fuel System</div>
                 <div class="specs-value">Carburetor</div>
               </div>
               <div class="specs-content">
-                <div class="specs-title">Battery Type</div>
-                <div class="specs-value">12V - 3 Ah MF Dry</div>
-              </div>
-              <div class="specs-content">
                 <div class="specs-title">Engine Oil</div>
-                <div class="specs-value">0.8 Liter</div>
+                <div class="specs-value">{{ unit->engine_oil }} Liter</div>
               </div>
               <div class="specs-content">
-                <div class="specs-title">Gear Shift Pattern</div>
-                <div class="specs-value"></div>
+                <div class="specs-title">Net Weight</div>
+                <div class="specs-value">{{ unit->net_weight }} Liter</div>
               </div>
             </div>
           </div>

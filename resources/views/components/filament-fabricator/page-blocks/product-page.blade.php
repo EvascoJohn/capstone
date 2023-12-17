@@ -37,7 +37,7 @@
     @foreach ($product_list as $product)
       <div class="home-product-col">
 
-        <img src="{{ $product->image_file }} />
+        <img src="{{ asset('storage/'.$product->image_file) }} />
         <h2 class="testi-name">{{ $product->model_name }}</h2>
         <div class="c3-buttons">
           <a href="/products/product-specs/{{$product->id}}">View Full Specs</a>
