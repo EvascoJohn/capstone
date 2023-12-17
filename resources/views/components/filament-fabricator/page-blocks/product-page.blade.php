@@ -11,7 +11,7 @@
 <section id="Content1">
     <div>
       <!-- Heading Image2 -->
-      <img src="{{ config('app.site-images-directory').$heading_image }}" alt="section1-image-bg" />
+      <img src="{{ asset('storage/'.$heading_image) }}" alt="section1-image-bg" />
       <div class="tagline-text">
         <h2>{{ $hero_title }}</h2>
         <div class="buttons">
@@ -37,8 +37,7 @@
     @foreach ($product_list as $product)
       <div class="home-product-col">
 
-        <img src="{{ 'storage/site-images/' . $product->image_file) }}" />
-        {{-- <img src="{{ dd(asset($product->image_file)) }}" alt="" /> --}}
+        <img src="{{ $product->image_file }} />
         <h2 class="testi-name">{{ $product->model_name }}</h2>
         <div class="c3-buttons">
           <a href="/products/product-specs/{{$product->id}}">View Full Specs</a>
