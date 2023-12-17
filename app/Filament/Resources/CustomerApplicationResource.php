@@ -1009,9 +1009,9 @@ class CustomerApplicationResource extends Resource
 													->columnSpan(3),
 											InfoLists\Components\ImageEntry::make('co_owner_valid_id')
 													->label("Valid ID's:")
-                                                    ->width(800)
-                                                    ->height(800)
-													->columnSpan(3),
+                                                    ->width(400)
+                                                    ->height(400)
+													->columnSpan(6),
                                     ]),
                                 InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
                                     ->schema([
