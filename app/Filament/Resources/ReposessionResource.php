@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReposessionResource\Pages;
 use App\Filament\Resources\ReposessionResource\RelationManagers;
+use App\Models\CustomerApplication;
 use App\Models\Reposession;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReposessionResource extends Resource
 {
-    protected static ?string $model = Reposession::class;
+    protected static ?string $model = CustomerApplication::class;
 
     protected static ?string $navigationGroup = 'Reposession Module';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -24,15 +25,7 @@ class ReposessionResource extends Resource
     {
         return $form
             ->schema([
-
-                Forms\Components\Fieldset::make('Address')
-                    ->columns(3)
-                    ->schema([
-
-                        Forms\Components\TextInput::make('name')
-                            ->label("Reports."),
-
-                    ]),
+                // forms for passing the unit and payments to the new application.
             ]);
     }
 
@@ -43,22 +36,15 @@ class ReposessionResource extends Resource
                 Tables\Columns\TextColumn::make("id")
                     ->wrap()
                     ->label("ID"),
-                Tables\Columns\TextColumn::make("name")
-                    ->label("Name"),
-                Tables\Columns\TextColumn::make("created_at")
-                    ->label("Date Created")
-                    ->dateTime('d-M-Y'),
             ])
             ->filters([
-                //
+                // no filters required.
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // no bulk actions required.
             ]);
     }
 
@@ -73,7 +59,7 @@ class ReposessionResource extends Resource
     {
         return [
             'index' => Pages\ListReposessions::route('/'),
-            'create' => Pages\CreateReposession::route('/create'),
+            // 'create' => Pages\CreateReposession::route('/create'), CANNOT CREATE A REPO, IT TAKES FROM THE CUSTOMER APPLICATION.
             'edit' => Pages\EditReposession::route('/{record}/edit'),
         ];
     }

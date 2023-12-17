@@ -42,7 +42,6 @@ class UnitReleaseResource extends Resource
         return false;
     }
 
-
     public static function getAvailableUnit(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
@@ -201,7 +200,8 @@ class UnitReleaseResource extends Resource
                 Tables\Actions\EditAction::make()
                         ->label('Release')
                         ->hidden(function(?Model $record): bool {
-                                if($record->release_status == ReleaseStatus::UN_RELEASED->value) {
+                                if($record->release_status == ReleaseStatus::UN_RELEASED->value 
+                                && $record->release_status == ApplicationStatus::ACTIVE_STATUS->value) {
                                         return false;
                                 }
                                 return true;

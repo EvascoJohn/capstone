@@ -42,14 +42,6 @@ class ReportResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make("id")
-                    ->wrap()
-                    ->label("ID"),
-                Tables\Columns\TextColumn::make("name")
-                    ->label("Name"),
-                Tables\Columns\TextColumn::make("created_at")
-                    ->label("Date Created")
-                    ->dateTime('d-M-Y'),
             ])
             ->filters([
                 //
@@ -58,9 +50,7 @@ class ReportResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // no bulk actions. For now
             ]);
     }
 
@@ -74,7 +64,6 @@ class ReportResource extends Resource
     {
         return [
             'index' => Pages\ListReports::route('/'),
-            'create' => Pages\CreateReport::route('/create'),
             'edit' => Pages\EditReport::route('/{record}/edit'),
         ];
     }
