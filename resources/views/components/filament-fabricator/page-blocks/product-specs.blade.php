@@ -54,31 +54,31 @@
             <div class="container">
               <div class="specs-content">
                 <div class="specs-title">Body Type</div>
-                <div class="specs-value">{{ unit->body_type }}</div>
+                <div class="specs-value">{{ $unit->body_type }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Engine Type</div>
-                <div class="specs-value">{{ unit->engine_type }}</div>
+                <div class="specs-value">{{ $unit->engine_type }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Displacement</div>
-                <div class="specs-value">{{ unit->displacement }} cc</div>
+                <div class="specs-value">{{ $unit->displacement }} cc</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Starting System</div>
-                <div class="specs-value">{{ unit->starting_system }}</div>
+                <div class="specs-value">{{ $unit->starting_system }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Transmission</div>
-                <div class="specs-value">{{ unit->transmission }}</div>
+                <div class="specs-value">{{ $unit->transmission }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Overall Dimensions: L x W x H</div>
-                <div class="specs-value">{{ unit->dimension }} (mm)</div>
+                <div class="specs-value">{{ $unit->dimension }} (mm)</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Fuel Tank Capacity</div>
-                <div class="specs-value">{{ unit->fuel_tank_capacity }}</div>
+                <div class="specs-value">{{ $unit->fuel_tank_capacity }}</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Fuel System</div>
@@ -86,11 +86,11 @@
               </div>
               <div class="specs-content">
                 <div class="specs-title">Engine Oil</div>
-                <div class="specs-value">{{ unit->engine_oil }} Liter</div>
+                <div class="specs-value">{{ $unit->engine_oil }} Liter</div>
               </div>
               <div class="specs-content">
                 <div class="specs-title">Net Weight</div>
-                <div class="specs-value">{{ unit->net_weight }} Liter</div>
+                <div class="specs-value">{{ $unit->net_weight }} Liter</div>
               </div>
             </div>
           </div>
