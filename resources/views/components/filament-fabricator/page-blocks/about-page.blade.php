@@ -1,11 +1,11 @@
 @aware(['page'])
 @props([
-    "heading_image",
-    "hero_description",
-    "brand_description_text",
-    "read_more_button_text",
-    "mission_text",
-    "vision_text",
+    'heading_image',
+    'hero_description',
+    'brand_description_text',
+    'read_more_button_text',
+    'mission_text',
+    'vision_text',
 ])
 
  <!--Hero section-->
