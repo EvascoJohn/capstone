@@ -152,6 +152,7 @@ class CustomerApplicationResource extends Resource
                                         ->label('Last Name:')
                                         ->required(true),
                                 Forms\Components\TextInput::make('co_owner_email')
+                                        ->required()
                                         ->columnSpan(6)
                                         ->label('Email:'),
                                 Forms\Components\DatePicker::make('co_owner_birthday')
@@ -161,6 +162,7 @@ class CustomerApplicationResource extends Resource
                                         ->maxDate(now())
                                         ->required(true),
                                 Forms\Components\TextInput::make('co_owner_mobile_number')
+                                        ->required()
                                         ->columnSpan(3)
                                         ->label('Telephone:'),
                                 Forms\Components\TextArea::make('co_owner_address')
@@ -1007,8 +1009,8 @@ class CustomerApplicationResource extends Resource
 													->columnSpan(3),
 											InfoLists\Components\ImageEntry::make('co_owner_valid_id')
 													->label("Valid ID's:")
-                                                                                                        ->width(400)
-                                                                                                        ->height(400)
+                                                    ->width(800)
+                                                    ->height(800)
 													->columnSpan(3),
                                     ]),
                                 InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
@@ -1019,10 +1021,10 @@ class CustomerApplicationResource extends Resource
 													->money('PHP')
 													->columnSpan(3),
 											InfoLists\Components\ImageEntry::make('proof_of_income_image')
-                                                                                                        ->disk('public')
+                                                    ->disk('public')
 													->label('Proof of income:')
-                                                                                                        ->width(500)
-                                                                                                        ->height(500)
+                                                    ->width(500)
+                                                    ->height(500)
 													->columnSpan(3),
                                     ]),
                     ])
