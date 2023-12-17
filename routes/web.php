@@ -65,7 +65,7 @@ Route::prefix('/products')->group(function () {
         $unit = UnitModel::query()->find($key);
         $unit->price = '₱' . number_format($unit->price, 2);
 
-        $unit_list = UnitModel::query()->take(3);
+        $unit_list = UnitModel::query()->take(3)->get();
 
         return Blade::render(
             <<<'BLADE'
