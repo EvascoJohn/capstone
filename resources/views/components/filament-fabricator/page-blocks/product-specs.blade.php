@@ -39,7 +39,7 @@
           <div class="description">
             <h3>Description</h3>
             <p class="description-content">
-              $unit->description. <br />
+              {{$unit->description}}. <br />
               <br />
               *Actual Unit May Vary.
             </p>
