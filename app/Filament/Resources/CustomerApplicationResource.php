@@ -1025,7 +1025,7 @@ class CustomerApplicationResource extends Resource
 													->label('Proof of income:')
                                                     ->width(500)
                                                     ->height(500)
-													->columnSpan(3),
+													->columnSpan(6),
                                     ]),
                     ])
                     ->columns(6)
