@@ -22,7 +22,7 @@ class HomePage extends PageBlock
                 Forms\Components\FileUpload::make("heading_image")
                         ->required()
                         ->label("Heading Image")
-                        ->disk('local')
+                        ->disk('public')
                         ->directory('site-images')
                         ->visibility('private')
                         ->acceptedFileTypes(['image/jpeg'])
