@@ -77,11 +77,11 @@ class CustomerApplicationResource extends Resource
                                     ->label("Term/Months")
                                     ->default(36)
                                     ->options([
-                                        36 => 'Thirty six (36)',
-                                        30 => 'Thirty (30)',
-                                        24 => 'Twenty four (24)',
-                                        18 => 'Eighteen (18)',
-                                        12 => 'Twelve (12)',
+                                        36 => '36',
+                                        30 => '30',
+                                        24 => '24',
+                                        18 => '18',
+                                        12 => '12',
                                     ])
                                     ->afterStateUpdated(
                                         function(Forms\Get $get, Forms\Set $set){

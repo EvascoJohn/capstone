@@ -21,9 +21,9 @@ class ReposessionResource extends Resource
 {
     protected static ?string $model = CustomerApplication::class;
 
-    protected static ?string $navigationLabel = 'Reposession';
-    protected static ?string $modelLabel = "Reposession";
-    protected static ?string $navigationGroup = 'Reposession';
+    protected static ?string $navigationLabel = 'Repossession';
+    protected static ?string $modelLabel = "Repossession";
+    protected static ?string $navigationGroup = 'Repossession';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -94,7 +94,7 @@ class ReposessionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                ->label('reposession'),
+                ->label('reposess'),
             ])
             ->bulkActions([
                 // no bulk actions required.
