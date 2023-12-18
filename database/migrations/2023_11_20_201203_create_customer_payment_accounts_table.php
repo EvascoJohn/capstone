@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('plan_type')->nullable();
 
             $table->float('monthly_interest')->default(0.00);
-            $table->integer('monthly_payment')->default(0);
+            $table->float('monthly_payment')->default(0.00);
+            $table->float('down_payment')->default(0.00);
             $table->integer('term')->default(0);
 
             $table->integer('term_left')->default(0);
