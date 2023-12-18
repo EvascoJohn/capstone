@@ -24,6 +24,7 @@ use Filament\Infolists\Components\TextEntry;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Wizard;
 use Illuminate\Support\Facades\Blade;
+use Filament\Support\Enums\MaxWidth;
 
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 
@@ -278,6 +279,7 @@ class CustomerApplicationResource extends Resource
                         ->schema([
                             Forms\Components\Fileupload::make('spouse_valid_id')
                                     ->multiple(true)
+                                    ->disk('public')
                                     ->label('Valid ID:')
                                     ->required(true)
                                     ->columnSpan(3)
