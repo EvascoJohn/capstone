@@ -381,7 +381,7 @@ class CustomerApplication extends Model implements HasMedia
 
     public function customerPaymentAccount(): HasOne
     {
-        return $this->hasOne(CustomerApplication::class, 'account_id');
+        return $this->hasOne(CustomerPaymentAccount::class, 'account_id');
     }
 
 }

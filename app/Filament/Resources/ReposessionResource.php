@@ -45,7 +45,7 @@ class ReposessionResource extends Resource
                     ->wrap()
                     ->label("Model"),
                 Tables\Columns\TextColumn::make("customerPaymentAccount.remaining_balance")
-                    ->wrap()
+                    ->money("PHP")
                     ->label("Remaining Balance"),
                 
             ])
