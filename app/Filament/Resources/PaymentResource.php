@@ -35,7 +35,6 @@ class PaymentResource extends Resource
     {
         return Forms\Components\Group::make([
             Forms\Components\Section::make("Customer Application's Information")
-
                     ->schema([
                         Forms\Components\TextInput::make('application_full_name')
                                 ->columnSpan(3)
@@ -124,7 +123,7 @@ class PaymentResource extends Resource
                         //
                         ->getSearchResultsUsing(fn (string $search): array => CustomerApplication::getSearchApplicationsWithAccounts($search)
                                 ->get()->pluck("applicant_full_name", "account_id")->toArray())
-                        ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->account_id)
+                        ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->id)
                         ->required()
                         ->live()
                         ->afterStateUpdated(
@@ -175,7 +174,7 @@ class PaymentResource extends Resource
                             ->label('ID')
                             ->searchable(),
                     Tables\Columns\TextColumn::make('customerApplication.applicant_full_name')
-                            ->label('Full name sdas')
+                            ->label('Full name:')
                             ->searchable(),
                     Tables\Columns\TextColumn::make('payment_amount')
                             ->label('Payment Amount')
