@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UnitResource\Pages;
+use App\Filament\Widgets\UnitStocksOverview;
 use App\Models\Branch;
 use App\Enums;
 use App\Models\Unit;
@@ -24,6 +25,13 @@ class UnitResource extends Resource
     protected static ?string $navigationGroup = 'Inventory Module';
     
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+                UnitStocksOverview::class,
+        ];
+    }
 
     public static function getUnitStockDetailsComponent(): Forms\Components\Component
     {
