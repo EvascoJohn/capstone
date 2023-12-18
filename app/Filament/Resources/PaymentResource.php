@@ -121,7 +121,7 @@ class PaymentResource extends Resource
                         ->columnSpan(1)
                         // queries the payment account.
                         ->getSearchResultsUsing(fn (string $search): array => CustomerPaymentAccount::query()->where('id', $search)->get()->toArray())
-                        ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value))
+                        ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value)->id)
                         ->required()
                         ->live()
                         ->afterStateUpdated(
@@ -130,14 +130,14 @@ class PaymentResource extends Resource
                                 $payment_amount = 0;
                                 if($application->hasMonthlyPayment() == false)//initial payment (Down payment)
                                 {
-                                    $payment_amount = $application->unit_ttl_dp;
+                                    // $payment_amount = $application->unit_ttl_dp;
                                 }
                                 else if($application->hasMonthlyPayment() == true)//on going payment (Monthly payment)
                                 {
-                                    $payment_amount = Payment::calculatePayment(
-                                        $application->unit_amort_fin,
-                                        0.0
-                                    );
+                                    // $payment_amount = Payment::calculatePayment(
+                                    //     $application->unit_amort_fin,
+                                    //     0.0
+                                    // );
                                 }
                                 $set('payment_amount', $payment_amount);
                             }
