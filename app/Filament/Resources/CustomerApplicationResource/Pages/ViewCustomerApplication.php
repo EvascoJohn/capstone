@@ -25,7 +25,7 @@ class ViewCustomerApplication extends ViewRecord
                     ->requiresConfirmation()
                     ->action(function(array $data){
                             $this->record->setStatusTo(ApplicationStatus::APPROVED_STATUS);
-                            $this->record->assignAccount();
+                            // $this->record->assignAccount();
                             $this->record->reject_note = null;
                             $this->getRecord()->save(); // saves the record
                     })->hidden(
