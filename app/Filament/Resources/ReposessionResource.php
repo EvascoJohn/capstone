@@ -38,6 +38,16 @@ class ReposessionResource extends Resource
                 Tables\Columns\TextColumn::make("id")
                     ->wrap()
                     ->label("ID"),
+                Tables\Columns\TextColumn::make("applicant_fullname")
+                    ->wrap()
+                    ->label("Owner"),
+                Tables\Columns\TextColumn::make("unitModel.model_name")
+                    ->wrap()
+                    ->label("Model"),
+                Tables\Columns\TextColumn::make("customerPaymentAccount.remaining_balance")
+                    ->wrap()
+                    ->label("Remaining Balance"),
+                
             ])
             ->filters([
                 // no filters required.
