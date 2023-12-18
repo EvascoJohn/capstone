@@ -142,7 +142,7 @@
           <td>Cash</td>
 
           <td>Address:</td>
-        <td>{{$report->customerApplication->applicant_present_address}}</td>
+        <td>{{$customerApplication->applicant_present_address}}</td>
         </tr>
         <tr>
           <td>Payment Status:</td>
