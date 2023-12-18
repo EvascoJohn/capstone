@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\UnitStocksOverview;
 use Filament;
 use Filament\Widgets;
 use Filament\Pages\Page;
@@ -27,7 +28,7 @@ class DealershipDashboard extends BasePage
     {
         return [
             AmortizationRevenueSummary::class,
-            // Widgets\AccountWidget::class,
+            UnitStocksOverview::class,
             CustomerDues::class,
         ];
     }
