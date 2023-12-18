@@ -843,7 +843,7 @@ class CustomerApplicationResource extends Resource
             CustomerApplicationResource::getIncome()->columnSpan(2),
             CustomerApplicationResource::getExpenses()->columnSpan(1),
             CustomerApplicationResource::getNetIncome()->columnSpan(3),
-            CustomerApplicationResource::getImageStatementMonthlyIncome()->columnSpan(3),
+            CustomerApplicationResource::getImageStatementMonthlyIncome(),
         ])
         ->columns(3);
 
@@ -896,7 +896,6 @@ class CustomerApplicationResource extends Resource
                                         ->schema([
                                                 CustomerApplicationResource::getProperties(),
                                                 CustomerApplicationResource::getStatementOfMonthlyIncome(),
-                                                CustomerApplicationResource::getImageStatementMonthlyIncome()
                                         ]),
                         ])
                         ->columnSpan(6)
