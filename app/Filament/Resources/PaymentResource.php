@@ -121,14 +121,15 @@ class PaymentResource extends Resource
                         ->searchable()
                         ->columnSpan(1)
                         // queries the payment account.
-                        // 
-                        ->getSearchResultsUsing(fn (string $search): array => CustomerPaymentAccount::query()->where("id", $search)->get()->toArray())
-                        ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value)->id)
+                        //
+                        ->getSearchResultsUsing(fn (string $search): array => CustomerApplication::getSearchApplicationsWithAccounts($search)
+                                ->get()->pluck("applicant_full_name", "account_id")->toArray())
+                        ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->account_id)
                         ->required()
                         ->live()
                         ->afterStateUpdated(
                             function($state, Forms\Set $set){
-                                $application = CustomerPaymentAccount::query()->where("id", $state)->first();
+                                $application = CustomerApplication::query()->where("id", $state)->first();
                                 $payment_amount = 0;
                                 if($application->hasMonthlyPayment() == false)//initial payment (Down payment)
                                 {
