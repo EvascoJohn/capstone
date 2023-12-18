@@ -11,6 +11,7 @@ use App\Models\CustomerApplication;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use App\Filament\Widgets\UnitStocksOverview;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -31,6 +32,14 @@ class UnitReleaseResource extends Resource
     protected ?string $heading = 'Custom Page Heading';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+                UnitStocksOverview::class,
+        ];
+    }
 
     public static function canCreate(): bool
     {
