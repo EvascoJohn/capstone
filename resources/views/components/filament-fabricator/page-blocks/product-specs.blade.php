@@ -115,7 +115,7 @@
         @endforeach
         </div>
         <div class="c3-buttons">
-          <a href="../html/application.html">Send Application</a>
+          <a onclick="window.location.href = '/customer';">Send Application</a>
         </div>
       </section>
     </main>

@@ -31,7 +31,7 @@ class CustomerPaymentAccountResource extends Resource
                     ->searchable()
                     ->columnSpan(1)
                     ->getSearchResultsUsing(fn(string $search): array => Models\CustomerApplication::searchApprovedApplicationsWithNoAccounts($search)
-                        ->get()->pluck("applicant_full_name", "id")->toArray())
+                            ->get()->pluck("applicant_full_name", "id")->toArray())
                     ->getOptionLabelUsing(fn($value): ?string => Models\CustomerApplication::find($value)->id)
                     ->required()
                     ->live()
