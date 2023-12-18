@@ -30,8 +30,9 @@ class UnitResource extends Resource
     {
         return [
             UnitStocksOverview::class,
-    ];
+        ];
     }
+
 
     public static function getUnitStockDetailsComponent(): Forms\Components\Component
     {
