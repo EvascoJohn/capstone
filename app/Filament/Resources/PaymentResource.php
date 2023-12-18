@@ -122,7 +122,7 @@ class PaymentResource extends Resource
                         // queries the payment account.
                         //
                         ->getSearchResultsUsing(fn (string $search): array => CustomerApplication::getSearchApplicationsWithAccounts($search)
-                                ->get()->pluck("applicant_full_name", "account_id")->toArray())
+                                ->get()->pluck("applicant_full_name", "id")->toArray())
                         ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->id)
                         ->required()
                         ->live()
