@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Invoice #6</title>
+    <title>Invoice {{ $record->id }}</title>
 
     <style>
       html,
@@ -142,7 +142,7 @@
           <td>Cash</td>
 
           <td>Address:</td>
-        <td>{{$record->$customerApplication->applicant_present_address}}</td>
+        <td>{{$record->$applicant_present_address}}</td>
         </tr>
         <tr>
           <td>Payment Status:</td>
