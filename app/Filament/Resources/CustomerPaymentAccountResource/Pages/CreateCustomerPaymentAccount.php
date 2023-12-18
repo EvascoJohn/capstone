@@ -9,4 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateCustomerPaymentAccount extends CreateRecord
 {
     protected static string $resource = CustomerPaymentAccountResource::class;
+    protected function beforeCreate(): void
+    {
+        dd($record);
+    }
 }

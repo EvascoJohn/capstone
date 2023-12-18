@@ -40,8 +40,8 @@ class CreatePayment extends CreateRecord
         return $data;
     }
 
-    protected function beforeCreate(): void
+    protected function beforeCreate(array $data): void
     {
-
+        dd($data);
     }
 }
