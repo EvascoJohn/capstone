@@ -90,7 +90,8 @@ class UnitResource extends Resource
                 TextColumn::make('unitModel.model_name')->label('Model'),
                 TextColumn::make('status')->label('status'),
                 TextColumn::make('unitModel.price')->label('Price')->money('php'),
-                TextColumn::make('chasis_number'),
+                TextColumn::make('engine_number'),
+                TextColumn::make('frame_number'),
                 TextColumn::make('created_at'),
             ])
             ->filters([
