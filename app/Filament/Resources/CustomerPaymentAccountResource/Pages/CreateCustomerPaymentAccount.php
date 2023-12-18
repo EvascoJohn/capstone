@@ -12,6 +12,6 @@ class CreateCustomerPaymentAccount extends CreateRecord
 
     protected function beforeCreate(): void
     {
-        dd($this->record);
+        dd($this);
     }
 }
