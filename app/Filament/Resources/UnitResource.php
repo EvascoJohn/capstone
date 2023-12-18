@@ -114,12 +114,6 @@ class UnitResource extends Resource
         ];
     }
 
-    public static function getWidgets(): array
-    {
-        return [
-            UnitStockOverview::class,
-        ];
-    }
     
     public static function getPages(): array
     {
