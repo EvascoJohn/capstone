@@ -107,8 +107,8 @@ class PaymentResource extends Resource
                 ->required(),
             Forms\Components\TextInput::make('remaining')
                 ->live()
-                ->columnSpan(2)
-                ->readonly(),
+                ->disabled()
+                ->columnSpan(2),
             Forms\Components\Select::make('payment_type')->label('Payment Type:')
                 ->options([
                     "field" => "Field",
