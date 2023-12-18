@@ -120,9 +120,8 @@ class PaymentResource extends Resource
                         ->searchable()
                         ->columnSpan(1)
                         // queries the payment account.
-                        ->getSearchResultsUsing(fn (string $search): array => CustomerApplication::getSearchApplicationsWithAccounts($search)
-                                ->get()->pluck("applicant_full_name", "account_id")->toArray())
-                        ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->account_id)
+                        ->getSearchResultsUsing(fn (string $search): array => CustomerPaymentAccount::query()->get()->toArray())
+                        ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value)->customerApplication->applicant_full_name)
                         ->required()
                         ->live()
                         ->afterStateUpdated(
