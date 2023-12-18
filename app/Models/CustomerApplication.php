@@ -257,6 +257,7 @@ class CustomerApplication extends Model implements HasMedia
                     });
     }
 
+    
     public static function getSearchApplicationsWithAccounts(string $search): Builder
     {
         //returns a query builder for getting all the un-released applications.

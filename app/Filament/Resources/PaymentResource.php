@@ -120,7 +120,7 @@ class PaymentResource extends Resource
                         ->searchable()
                         ->columnSpan(1)
                         // queries the payment account.
-                        //
+                        // 
                         ->getSearchResultsUsing(fn (string $search): array => CustomerApplication::getSearchApplicationsWithAccounts($search)
                                 ->get()->pluck("applicant_full_name", "id")->toArray())
                         ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->id)
@@ -142,6 +142,11 @@ class PaymentResource extends Resource
                                     );
                                 }
                                 $set('payment_amount', $payment_amount);
+                                $set('application_full_name', $application->applicant_full_name);
+                                $set('application_unit', $application->unitModel->model_name);
+                                $set('application_balance', 0);
+                                $set('est_monthly_payment', 0);
+                                $set('application_unit_price', $application->applicant_full_name);
                             }
                         ),
                 ])
