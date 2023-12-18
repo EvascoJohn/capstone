@@ -38,7 +38,7 @@ class ReposessionResource extends Resource
                 Tables\Columns\TextColumn::make("id")
                     ->wrap()
                     ->label("ID"),
-                Tables\Columns\TextColumn::make("applicant_fullname")
+                Tables\Columns\TextColumn::make("applicant_full_name")
                     ->wrap()
                     ->label("Owner"),
                 Tables\Columns\TextColumn::make("unitModel.model_name")
