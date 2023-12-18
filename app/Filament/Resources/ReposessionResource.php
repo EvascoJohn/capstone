@@ -64,8 +64,7 @@ class ReposessionResource extends Resource
                                         $set('assumed_by_lastname', "");
                                     }
                                 }
-                            )
-                            ->requiresConfirmation(),
+                            ),
             ]);
     }
 
