@@ -14,6 +14,7 @@ class CustomerPaymentAccount extends Model
     protected $fillable = [
         'customer_application_id',  // [big-int] reference to the customer application.
         'remaining_balance',        // [float] original amount - payments.
+
         'plan_type',                // [cash, installament].
         'monthly_interest',         // 5% (0.05).
         'monthly_payment',          // float.
