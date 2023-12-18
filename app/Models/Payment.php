@@ -17,12 +17,42 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'customer_application_id',
+        'customer_payment_account_id',
         'payment_status',
         'payment_type',
         'payment_amount',
         'remaining',
+        'author_id',
+        'branch_id',
     ];
+
+    public function calculateDueDate($releaseDate)
+    {
+        // Convert the input release date to a Carbon instance
+        $releaseDate = Carbon::parse($releaseDate);
+    
+        // Add one month to the release date
+        $nextMonth = $releaseDate->copy()->addMonth();
+    
+        // Set the initial due date to the last day of the next month
+        $dueDate = Carbon::createFromDate($nextMonth->year, $nextMonth->month, 1)->lastOfMonth();
+    
+        // Check the release date range and update the due date accordingly
+        if ($releaseDate->day >= 1 && $releaseDate->day <= 9) {
+            $dueDate->day(9);
+        } elseif ($releaseDate->day > 9 && $releaseDate->day <= 16) {
+            $dueDate->day(16);
+        }
+    
+        // Add one more month to the due date
+        $dueDate->addMonth();
+    
+        // Format the due date as 'd-m-Y'
+        $dueDateFormatted = $dueDate->format(config('app.date_format'));
+        return $dueDateFormatted;
+    }
+    
+    
 
     protected static function booted(): void
     {
@@ -120,7 +150,7 @@ class Payment extends Model
 
 
     public function customerApplication():BelongsTo{
-        return $this->belongsTo(CustomerApplication::class);
+        return $this->belongsTo(CustomerApplication::class, 'id');
     }
 
 }

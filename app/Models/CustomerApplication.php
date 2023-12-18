@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ApplicationStatus;
 use App\Enums\ReleaseStatus;
+use App\Enums\UnitStatus;
 use App\Models\Scopes\CustomerApplicationScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -250,6 +251,24 @@ class CustomerApplication extends Model implements HasMedia
         return static::query()
                     ->where('application_status', ApplicationStatus::APPROVED_STATUS->value)
                     ->where('account_id', null)
+                    ->where(function ($query) use ($search) {
+                        $query->where('applicant_firstname', 'like', '%' . $search . '%')
+                            ->orWhere('applicant_lastname', 'like', '%' . $search . '%')
+                            ->orWhere('id', 'like', '%' . $search . '%');
+                    });
+    }
+
+    
+    public static function searchApprovedApplicationsWithNoAccountsPrefersRepo(string $search): Builder
+    {
+        //returns a query builder for getting all the un-released applications.
+        //Criteria:
+        // If the application is Released.
+        // If the applicaton is approved.
+        return static::query()
+                    ->where('application_status', ApplicationStatus::APPROVED_STATUS->value)
+                    ->where('account_id', null)
+                    ->where('preffered_unit_status', UnitStatus::REPOSESSION->value)
                     ->where(function ($query) use ($search) {
                         $query->where('applicant_firstname', 'like', '%' . $search . '%')
                             ->orWhere('applicant_lastname', 'like', '%' . $search . '%')

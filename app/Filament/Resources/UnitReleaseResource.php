@@ -67,7 +67,6 @@ class UnitReleaseResource extends Resource
                                 $preffered_unit_model = $record->unit_model_id;
                                 $preffered_unit_status = $record->preffered_unit_status;
                                 $search_by = $get('search_by');
-
                                 //check if there is no selected value in search by.
                                 if($search_by == null){return [];}
 
@@ -195,6 +194,9 @@ class UnitReleaseResource extends Resource
                     Tables\Columns\TextColumn::make('application_status')
                             ->label("Status:")
                             ->badge(),
+		        	Tables\Columns\TextColumn::make('release_status')
+                            ->label("Release Status:")
+                            ->badge(),
                     Tables\Columns\TextColumn::make('applicant_lastname')
                             ->label("Last Name:")
                             ->searchable(),
@@ -213,13 +215,11 @@ class UnitReleaseResource extends Resource
                                 && $record->release_status == ApplicationStatus::ACTIVE_STATUS->value) {
                                         return false;
                                 }
-                                return true;
+                                return false;
                         }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                //
             ]);
     }
     

@@ -6,9 +6,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- External CSS files -->
-    <link rel="stylesheet" href="../css/global.css" />
-    <link rel="stylesheet" href="../css/terms-condition.css" />
-    <link rel="stylesheet" href="../css/media-queries.css" />
+    <link rel="stylesheet" href="{{ asset('css/miranda/global.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/miranda/terms-condition.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/miranda/media-queries.css') }}" />
     <!-- Google Fonts -->
     <link
       rel="stylesheet"
@@ -27,24 +27,37 @@
     
     <header>
       <!-- Brand logo Text -->
-      <a href="../html/index.html" class="logo">BrandName</a>
+      <a href="#" class="logo">{{ env('APP_NAME') }}</a>
       <!-- Navigation bar -->
       <ul class="navbar">
-        <li><a href="../html/index.html">Home</a></li>
-        <li><a href="../html/products.html">Products</a></li>
-        <li><a href="../html/application.html">Application</a></li>
-        <li><a href="../html/about.html">About</a></li>
-        <li><a href="../html/contact.html">Contact Us</a></li>
+          {{-- redirects to the home --}}
+          <li>
+              <a href="/home" class="{{ request()->is('home') ? 'active': 'hidden' }}">Home</a>
+          </li>
+          {{-- redirects to the products --}}
+          <li>
+              <a href="/products" class="{{ request()->is('products') ? 'active': 'hidden' }}">Products</a>
+          </li>
+          <li>
+              @auth<a href="/application" class="{{ request()->is('application') ? 'active': 'hidden' }}">Application</a>@endauth
+          </li>
+          {{-- redirects to the about --}}
+          <li>
+              <a href="/about-us" class="{{ request()->is('about-us') ? 'active': 'hidden' }}">About Us</a>
+          </li>
+          {{-- redirects to the contact --}}
+          <li>
+              <a href="/contact-us" class="{{ request()->is('contact-us') ? 'active': 'hidden' }}">Contact Us</a>
+          </li>
       </ul>
       <!-- User registration and menu icon -->
       <div class="main">
-        <a href="#" class="user"
-          >Log In<i class="ri-account-circle-fill"></i
-        ></a>
-        <div class="ri-menu-line" id="menu-icon"></div>
+          <a href="/customer" class="user" id="loginLink">Log In 
+              <i class="ri-account-circle-fill"></i>
+          </a>
+          <div class="ri-menu-line" id="menu-icon"></div>
       </div>
     </header>
-
     <main>
       <section id="Content1">
           <img src="../images/agreement.jpg" alt="section1-image-bg" />

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\CustomerApplication;
+use App\Models\CustomerPaymentAccount;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(CustomerApplication::class);
+            $table->foreignIdFor(CustomerPaymentAccount::class);
             $table->string('payment_status')->nullable();
-            $table->string('payment_type')->nullable;
-            $table->decimal('payment_amount')->nullable;
+            $table->string('payment_type')->nullable();
+            $table->decimal('payment_amount')->nullable();
+            $table->bigInteger('author_id')->nullable();
+            $table->bigInteger('branch_id')->nullable();
             $table->timestamps();
         });
     }

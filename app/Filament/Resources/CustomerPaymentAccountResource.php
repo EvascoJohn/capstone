@@ -21,7 +21,11 @@ class CustomerPaymentAccountResource extends Resource
 {
     protected static ?string $model = CustomerPaymentAccount::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Payment Accounts';
+    protected static ?string $modelLabel = "Payment Accounts";
+    // protected static ?string $navigationGroup = 'Payment Accounts';
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
     public static function form(Form $form): Form
     {
@@ -43,7 +47,7 @@ class CustomerPaymentAccountResource extends Resource
                         } else if ($cust_app->plan_type == "Installment") {
                             $payment_status = "down payment";
                         }
-                        $remaining = $cust_app->unitModel->price - $cust_app->unit_ttl_dp;
+                        $remaining = $cust_app->unitModel->price;
                         if ($state != "" || $state != null) {
                             $set('remaining_balance', $remaining);
                             $set('plan_type', $cust_app->plan);
@@ -70,7 +74,6 @@ class CustomerPaymentAccountResource extends Resource
                 Forms\Components\TextInput::make("down_payment")
                     ->minValue(0)
                     ->numeric()
-                    ->maxValue(500000)
                     ->required(),
                 Forms\Components\TextInput::make("term")
                     ->readOnly(),
@@ -89,6 +92,9 @@ class CustomerPaymentAccountResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make("id"),
                 Tables\Columns\TextColumn::make("customerApplication.applicant_full_name"),
+                Tables\Columns\TextColumn::make("remaining_balance")
+                        ->money("PHP"),
+                Tables\Columns\TextColumn::make("payment_status"),
             ])
             ->filters([
                 //
@@ -97,9 +103,7 @@ class CustomerPaymentAccountResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // no bulk actions.
             ]);
     }
 

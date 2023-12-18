@@ -31,7 +31,7 @@ class CustomerApplicationResource extends Resource
 {
     protected static ?string $model = CustomerApplication::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-identification';
 
     public static function canDelete(Model $record): bool
     {
@@ -1048,9 +1048,6 @@ class CustomerApplicationResource extends Resource
                 Tables\Columns\TextColumn::make('application_status')
                         ->label("Status:")
                         ->badge(),
-                Tables\Columns\TextColumn::make('units.engine_number')
-                        ->label("Engine No.")
-                        ->badge(),
                 Tables\Columns\TextColumn::make('applicant_firstname')
                         ->label("First Name:")
                         ->searchable(),
@@ -1078,9 +1075,7 @@ class CustomerApplicationResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // 
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
@@ -1090,7 +1085,7 @@ class CustomerApplicationResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\PaymentsRelationManager::class,
+        //     RelationManagers\PaymentsRelationManager::class,
         ];
     }
     

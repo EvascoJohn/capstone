@@ -25,11 +25,9 @@ class EditUnitRelease extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        //calculates due date.
         $customer_application = new CustomerApplication;
         $due_date = $customer_application->calculateDueDate(Carbon::now());
         $data["due_date"] = $due_date;
-        $data["application_status"] = ApplicationStatus::APPROVED_STATUS->value;
         $data["release_status"] = ReleaseStatus::RELEASED->value;
         Models\Unit::query()->where("id", $data['units_id'])
                 ->update(['customer_application_id' => $this->record->id]);

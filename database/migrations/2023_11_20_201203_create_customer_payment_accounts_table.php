@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('monthly_payment')->default(0.00);
             $table->float('down_payment')->default(0.00);
             $table->integer('term')->default(0);
+            $table->string('due_date')->nullable();
 
             $table->integer('term_left')->default(0);
             $table->string('status')->nullable();

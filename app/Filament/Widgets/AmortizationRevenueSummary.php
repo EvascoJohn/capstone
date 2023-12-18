@@ -33,9 +33,7 @@ class AmortizationRevenueSummary extends ChartWidget
     protected function getFilters(): ?array
     {
         return [
-            'week' => 'Week',
             'month' => 'Month',
-            'year' => 'Year',
         ];
     }
     

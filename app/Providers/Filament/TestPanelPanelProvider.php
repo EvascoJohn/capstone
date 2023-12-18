@@ -21,6 +21,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use App\Filament\Auth\Login;
 use App\Filament\TestPanel\Pages\Auth\Register;
+use App\Filament\TestPanel\Widgets\CustomerDues;
+use App\Models\Customer;
 use Filament\Pages\Auth\EditProfile;
 use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
 use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
@@ -45,12 +47,13 @@ class TestPanelPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/TestPanel/Resources'), for: 'App\\Filament\\TestPanel\\Resources')
             ->discoverPages(in: app_path('Filament/TestPanel/Pages'), for: 'App\\Filament\\TestPanel\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                // Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/TestPanel/Widgets'), for: 'App\\Filament\\TestPanel\\Widgets')
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
+                // CustomerDues::class
             ])
             ->middleware([
                 EncryptCookies::class,

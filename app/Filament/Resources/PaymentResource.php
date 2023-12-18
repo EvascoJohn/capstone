@@ -64,19 +64,8 @@ class PaymentResource extends Resource
     public static function getPaymentDetails(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-                Forms\Components\Placeholder::make("Payment is")
-                    ->content(function (Forms\Get $get):string{
-                        $dp = CustomerApplication::query()
-                            ->where('id', $get('customer_application_id'))
-                            ->first();
-                        if($dp != null){
-                            if($dp->hasMonthlyPayment() == false){
-                                return "Down Payment";
-                            }
-                            return "Monthly Payment";
-                        }
-                        return "";
-                    })
+                Forms\Components\TextInput::make("status")
+                    ->readOnly()
                     ->columnSpan(2),
                 Forms\Components\TextInput::make('due_date')
                         ->columnSpan(6)
@@ -116,37 +105,42 @@ class PaymentResource extends Resource
     public static function getApplicationDetails(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-                Forms\Components\Select::make('account_id')
+                Forms\Components\Select::make('customer_payment_account_id')
                         ->searchable()
                         ->columnSpan(1)
                         // queries the payment account.
                         // 
-                        ->getSearchResultsUsing(fn (string $search): array => CustomerApplication::getSearchApplicationsWithAccounts($search)
-                                ->get()->pluck("applicant_full_name", "id")->toArray())
-                        ->getOptionLabelUsing(fn ($value): ?string => CustomerApplication::find($value)->account_id)
+                        ->getSearchResultsUsing(fn (string $search): array => CustomerPaymentAccount::query()->where('id', $search)->get()->pluck('id', 'id')->toArray())
+                        // ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value)->id)
                         ->required()
                         ->live()
                         ->afterStateUpdated(
-                            function($state, Forms\Set $set){
-                                $application = CustomerApplication::query()->where("id", $state)->first();
+                            function($state, Forms\Set $set, ){
+                                $account = CustomerPaymentAccount::query()->where("id", $state)->get()->first();
                                 $payment_amount = 0;
-                                if($application->hasMonthlyPayment() == false)//initial payment (Down payment)
+                                if($account->payment_status == 'downpayment')//initial payment (Down payment)
                                 {
-                                    $payment_amount = $application->unit_ttl_dp;
+                                    $payment_amount = $account->down_payment;
+                                    $set('application_full_name', $account->customerApplication->applicant_full_name);
+                                    $set('application_unit', $account->customerApplication->unitModel->model_name);
+                                    $set('application_balance', $account->remaining_balance);
+                                    $set('est_monthly_payment', $account->monthly_payment);
+                                    $set('application_unit_price', $account->original_amount);
+                                    $set('due_date', $account->calculateDueDate(Carbon::createFromFormat(config('app.date_format'), Carbon::now()->format(config('app.date_format')))));
                                 }
-                                else if($application->hasMonthlyPayment() == true)//on going payment (Monthly payment)
+                                else if($account->payment_status == 'monthly')//on going payment (Monthly payment)
                                 {
-                                    $payment_amount = Payment::calculatePayment(
-                                        $application->unit_amort_fin,
-                                        0.0
-                                    );
+                                    $set('application_full_name', $account->customerApplication->applicant_full_name);
+                                    $set('application_unit', $account->customerApplication->unitModel->model_name);
+                                    $set('application_balance', $account->remaining_balance);
+                                    $set('est_monthly_payment', $account->monthly_payment);
+                                    $set('application_unit_price', $account->original_amount);
+                                    // $data['due_date']
+                                    $set('due_date', $account->calculateDueDate(Carbon::createFromFormat(config('app.date_format'), $account->due_date)));
+                                    $payment_amount = $account->monthly_payment;
                                 }
                                 $set('payment_amount', $payment_amount);
-                                $set('application_full_name', $application->applicant_full_name);
-                                $set('application_unit', $application->unitModel->model_name);
-                                $set('application_balance', 0);
-                                $set('est_monthly_payment', 0);
-                                $set('application_unit_price', $application->applicant_full_name);
+                                $set('status', $account->payment_status);
                             }
                         ),
                 ])
