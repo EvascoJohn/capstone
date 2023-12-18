@@ -41,6 +41,9 @@ class ReposessionResource extends Resource
                 Tables\Columns\TextColumn::make("applicant_full_name")
                     ->wrap()
                     ->label("Owner"),
+                Tables\Columns\TextColumn::make("application_status")
+                    ->wrap()
+                    ->label("Application Status"),
                 Tables\Columns\TextColumn::make("unitModel.model_name")
                     ->wrap()
                     ->label("Model"),
