@@ -25,12 +25,12 @@ class UnitResource extends Resource
     protected static ?string $navigationGroup = 'Inventory Module';
     
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
-
-    protected function getHeaderWidgets(): array
+    
+    public static function getWidgets(): array
     {
         return [
-                UnitStocksOverview::class,
-        ];
+            UnitStocksOverview::class,
+    ];
     }
 
     public static function getUnitStockDetailsComponent(): Forms\Components\Component
