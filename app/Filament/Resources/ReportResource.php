@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReportResource\Pages;
 use App\Filament\Resources\ReportResource\RelationManagers;
+use App\Filament\Widgets\UnitStocksOverview;
 use App\Models\Report;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -20,6 +21,13 @@ class ReportResource extends Resource
     protected static ?string $navigationGroup = 'Report Module';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            UnitStocksOverview::class,
+        ];
+    }
 
     public static function form(Form $form): Form
     {
