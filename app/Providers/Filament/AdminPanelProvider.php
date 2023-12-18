@@ -31,6 +31,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Contracts\Support\Htmlable;
 
 use App\Filament\Widgets as MyWidgets;
+use App\Filament\Widgets\UnitStocksOverview;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AdminPanelProvider extends PanelProvider
@@ -65,6 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 MyWidgets\AmortizationRevenueSummary::class,
                 // Widgets\AccountWidget::class,
+                UnitStocksOverview::class,
                 MyWidgets\CustomerDues::class,
             ])
             ->middleware([
