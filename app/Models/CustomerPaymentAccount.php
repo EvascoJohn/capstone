@@ -70,7 +70,7 @@ class CustomerPaymentAccount extends Model
 
     public function customerApplication(): BelongsTo
     {
-        return $this->belongsTo(CustomerApplication::class, 'customer_application_id');
+        return $this->belongsTo(CustomerApplication::class, 'id');
     }
 
 }
