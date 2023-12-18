@@ -6,6 +6,7 @@ use App\Filament\Resources\UnitResource\Pages;
 use App\Filament\Widgets\UnitStocksOverview;
 use App\Models\Branch;
 use App\Enums;
+use App\Filament\Resources\UnitResource\Widgets\UnitStockOverview;
 use App\Models\Unit;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -26,12 +27,6 @@ class UnitResource extends Resource
     
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
     
-    public static function getWidgets(): array
-    {
-        return [
-            UnitStocksOverview::class,
-        ];
-    }
 
 
     public static function getUnitStockDetailsComponent(): Forms\Components\Component
@@ -116,6 +111,13 @@ class UnitResource extends Resource
     public static function getRelations(): array
     {
         return [
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            UnitStockOverview::class,
         ];
     }
     
