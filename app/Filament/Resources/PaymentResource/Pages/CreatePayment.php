@@ -39,9 +39,4 @@ class CreatePayment extends CreateRecord
         $application->save();
         return $data;
     }
-
-    protected function beforeCreate(array $data): void
-    {
-        dd($data);
-    }
 }
