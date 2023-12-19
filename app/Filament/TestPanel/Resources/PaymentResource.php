@@ -41,18 +41,22 @@ class PaymentResource extends Resource
         return Forms\Components\Group::make([
             Forms\Components\Section::make("Customer Application's Information")
                     ->schema([
-                        Forms\Components\TextInput::make('application_firstname')
+                        Forms\Components\TextInput::make('application_full_name')
                                 ->columnSpan(3)
                                 ->disabled()
-                                ->label('First name'),
-                        Forms\Components\TextInput::make('application_lastname')
-                                ->columnSpan(3)
-                                ->disabled()
-                                ->label('Last name'),
+                                ->label('Full name'),
                         Forms\Components\TextInput::make('application_unit')
                                 ->columnSpan(6)
                                 ->disabled()
                                 ->label('Unit'),
+                        Forms\Components\TextInput::make('application_balance')
+                                ->columnSpan(6)
+                                ->disabled()
+                                ->label('Balance'),
+                        Forms\Components\TextInput::make('est_monthly_payment')
+                                ->columnSpan(6)
+                                ->disabled()
+                                ->label('Estimated monthly payment'),
                         Forms\Components\TextInput::make('application_unit_price')
                                 ->columnSpan(6)
                                 ->disabled()
@@ -61,7 +65,6 @@ class PaymentResource extends Resource
                     ->columns(6)
         ]);
     }
-
     public static function getPaymentDetails(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
@@ -122,7 +125,7 @@ class PaymentResource extends Resource
                         name: 'customerApplication',
                         titleAttribute: 'applicant_lastname',
                         modifyQueryUsing: fn (Builder $query) => $query->where("application_status", "Active")
-                                                                    ->orwhere("application_status", "Approved"),
+                                ->orwhere("application_status", "Approved"),
                 )
                 ->label('For Applicant:')
                 ->preload()
