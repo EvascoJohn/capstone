@@ -9,6 +9,7 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Support\Enums\MaxWidth;
 
 class CreateCustomerApplication extends CreateRecord
 {
