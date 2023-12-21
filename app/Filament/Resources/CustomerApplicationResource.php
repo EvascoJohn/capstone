@@ -781,14 +781,13 @@ class CustomerApplicationResource extends Resource
                         Forms\Components\Fieldset::make("Spouse's Monthly Salary")
                                 ->columns(12)
                                 ->columnSpan(2)
-                                // ->disabled(fn (Forms\Get $get): bool => $get('applicant_civil_status') != "married")
+                                ->disabled(fn (Forms\Get $get): bool => $get('applicant_civil_status') != "married")
                                 ->schema([
                                         Forms\Components\TextInput::make("spouses_basic_monthly_salary")->label("Basic Monthly Salary:")
                                                 ->columnSpan(4)
                                                 ->label("Basic Monthly Salary")
                                                 ->live(onBlur: true)
                                                 ->inputMode('decimal')
-                                                ->required()
                                                 ->minValue(0)
                                                 ->default(0)
                                                 ->numeric()
@@ -818,7 +817,6 @@ class CustomerApplicationResource extends Resource
                                                 ->label("Allowance Commision")
                                                 ->live(onBlur: true)
                                                 ->inputMode('decimal')
-                                                ->required()
                                                 ->minValue(0)
                                                 ->default(0)
                                                 ->numeric()
@@ -848,7 +846,6 @@ class CustomerApplicationResource extends Resource
                                                 ->label("Deductions")
                                                 ->live(onBlur: true)
                                                 ->inputMode('decimal')
-                                                ->required()
                                                 ->minValue(0)
                                                 ->default(0)
                                                 ->numeric()
@@ -879,7 +876,6 @@ class CustomerApplicationResource extends Resource
                                                 ->label("Net Monthly Income")
                                                 ->live(onBlur: true)
                                                 ->inputMode('decimal')
-                                                ->required()
                                                 ->minValue(0)
                                                 ->default(0)
                                                 ->numeric()
@@ -1240,33 +1236,33 @@ class CustomerApplicationResource extends Resource
                 Forms\Components\Placeholder::make('Branch')
                 	->content(Models\Branch::query()->where("id", auth()->user()->branch_id)->first()->full_address),
                 Forms\Components\Wizard::make([
-                        Forms\Components\Wizard\Step::make('Unit')
-                                ->schema([
-                                        CustomerApplicationResource::getUnitToBeFinanced()
-                                                ->disabled(
-                                                        function(string $operation){
-                                                            if($operation == "edit"){
-                                                                return true;
-                                                }}),
-                                ]),
-                        Forms\Components\Wizard\Step::make('Applicant Information')
-                                ->schema([
-                                        CustomerApplicationResource::getApplicantInformation(),
-                                        CustomerApplicationResource::getSpouseComponents(),
-                                        CustomerApplicationResource::getCoOwnerInformation()
-                                ]),
-                        Forms\Components\Wizard\Step::make('Educational Attainment')
-                                ->schema([
-                                        CustomerApplicationResource::getEducationalAttainment()
-                                ]),
-                        Forms\Components\Wizard\Step::make('References')
-                                ->schema([
-                                        CustomerApplicationResource::getReferences()
-                                ]),
-                        Forms\Components\Wizard\Step::make('Employment')
-                                ->schema([
-                                        CustomerApplicationResource::getEmployment()
-                                ]),
+                        // Forms\Components\Wizard\Step::make('Unit')
+                        //         ->schema([
+                        //                 CustomerApplicationResource::getUnitToBeFinanced()
+                        //                         ->disabled(
+                        //                                 function(string $operation){
+                        //                                     if($operation == "edit"){
+                        //                                         return true;
+                        //                         }}),
+                        //         ]),
+                        // Forms\Components\Wizard\Step::make('Applicant Information')
+                        //         ->schema([
+                        //                 CustomerApplicationResource::getApplicantInformation(),
+                        //                 CustomerApplicationResource::getSpouseComponents(),
+                        //                 CustomerApplicationResource::getCoOwnerInformation()
+                        //         ]),
+                        // Forms\Components\Wizard\Step::make('Educational Attainment')
+                        //         ->schema([
+                        //                 CustomerApplicationResource::getEducationalAttainment()
+                        //         ]),
+                        // Forms\Components\Wizard\Step::make('References')
+                        //         ->schema([
+                        //                 CustomerApplicationResource::getReferences()
+                        //         ]),
+                        // Forms\Components\Wizard\Step::make('Employment')
+                        //         ->schema([
+                        //                 CustomerApplicationResource::getEmployment()
+                        //         ]),
                         Forms\Components\Wizard\Step::make('Statement of Month. income')
                                 ->schema([
                                         CustomerApplicationResource::getProperties(),
