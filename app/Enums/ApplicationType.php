@@ -17,8 +17,8 @@ enum ApplicationType:string implements HasLabel
     {
         return match ($this) 
         {
-            self::WALK_IN => 'Pending',
-            self::ONLINE => 'Active',
+            self::WALK_IN => 'Walk-in',
+            self::ONLINE => 'Online',
         };
     }
 

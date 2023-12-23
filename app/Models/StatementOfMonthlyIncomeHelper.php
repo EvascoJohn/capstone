@@ -13,4 +13,5 @@ class StatementOfMonthlyIncomeHelper
         }
         return $net;
     }
+
 }

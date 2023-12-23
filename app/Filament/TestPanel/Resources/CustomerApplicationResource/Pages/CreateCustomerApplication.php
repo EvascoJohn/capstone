@@ -22,7 +22,7 @@ class CreateCustomerApplication extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['applicaton_status'] = ApplicationStatus::PENDING_STATUS->value;
-        $data['application_type'] = Enums\ApplicationType::ONLINE;
+        $data['application_type'] = Enums\ApplicationType::ONLINE->value;
         $data['author_id'] = auth()->user()->id;
         return $data;
     }

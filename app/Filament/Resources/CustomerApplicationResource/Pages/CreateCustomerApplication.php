@@ -37,7 +37,7 @@ class CreateCustomerApplication extends CreateRecord
     {
         $data['branch_id'] = auth()->user()->branch_id;
         $data['author_id'] = auth()->user()->id;
-        $data['application_type'] = Enums\ApplicationType::WALK_IN;
+        $data['application_type'] = Enums\ApplicationType::WALK_IN->value;
         return $data;
     }
 

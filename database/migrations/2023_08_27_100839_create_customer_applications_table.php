@@ -111,10 +111,6 @@ return new class extends Migration
             $table->string('applicant_school')->nullable();
             $table->integer('applicant_school_year_graduated')->nullable();
 
-            //Bank
-            $table->json('bank_references')->nullable();
-            $table->json('credit_references')->nullable();
-
             //Financials
             $table->double('applicants_basic_monthly_salary')->nullable();
             $table->double('applicants_allowance_commission')->nullable();
@@ -135,37 +131,14 @@ return new class extends Migration
             $table->double('spouse_deductions')->nullable();
             $table->double('spouse_net_monthly_income')->nullable();
 
-            // credit card information
-            $table->string('bank_acc_type')->nullable();
-            $table->string('account_number')->nullable();
-            $table->text('bank_or_branch')->nullable();
-            $table->string('date_openned')->nullable();
-            $table->double('average_monthly_balance')->nullable();
-
-
             // creditors credit card
-            $table->string('credit_card_company')->nullable();
-            $table->string('card_number')->nullable();
-            $table->text('card_date_issued')->nullable();
-            $table->double('credit_limit')->nullable();
-            $table->double('outstanding_balance')->nullable();
-
+            $table->json('creditors_card_information')->nullable();
 
             // creditor's informaition
-            $table->string('creditor')->nullable();
-            $table->integer('term')->nullable();
-            $table->text('date_issued')->nullable();
-            $table->double('principal')->nullable();
-            $table->double('monthly_amorthization')->nullable();
+            $table->json('creditors_information')->nullable();
 
-
-            // Dependent
-            $table->string('dependent_name')->nullable();
-            $table->string('dependent_birthdate')->nullable();
-            $table->text('dependent_school')->nullable();
-            $table->double('dependent_monthly_tuition')->nullable();
-
-
+            // Applicant's Card Information
+            $table->json('applicants_card_information')->nullable();
 
             $table->integer('number_of_vehicles')->nullable();
             $table->json('real_estate_property')->nullable();

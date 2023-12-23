@@ -108,36 +108,11 @@ class CustomerApplication extends Model implements HasMedia
         //Dependents
         'dependents',
 
-        //Bank
-        'bank_references',
-        'credit_references',
+        // Applicants Credit Card Information, JSON.
+        "applicants_card_information",
 
-        //credit card information
-        'bank_acc_type',
-        'account_number',
-        'bank_or_branch',
-        'date_openned',
-        'average_monthly_balance',
-
-        //creditors credit card
-        'credit_card_company',
-        'card_number',
-        'date_issued',
-        'credit_limit',
-        'outstanding_balance',
-
-        //creditors information
-        'creditor',
-        'term',
-        'date_issued',
-        'principal',
-        'monthly_amorthization',
-
-        // Dependent
-        'dependent_name',
-        'dependent_birthdate',
-        'dependent_school',
-        'dependent_monthly_tuition',
+        // Creditors Credit Card, JSON
+        "creditors_card_information",
 
         //Personal & Real Estate Properties
         'number_of_vehicles',
@@ -184,20 +159,23 @@ class CustomerApplication extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'application_status'        =>  Enums\ApplicationStatus::class,
-        'plan'                      =>  Enums\PlanStatus::class,
-        'application_type'          =>  Enums\ApplicationType::class,
-        'real_estate_property'      => 'json',
-        'appliance_property'        => 'json',
-        'applicant_valid_id'        => 'json',
-        'spouse_valid_id'           => 'json',
-        'co_owner_valid_id'         => 'json',
-        'proof_of_income_image'     => 'json',
-        'personal_references'       => 'json',
-        'bank_references'           => 'json',
-        'credit_references'         => 'json',
-        'educational_attainment'    => 'json',
-        'dependents'                => 'json',
+        'application_status'            =>  Enums\ApplicationStatus::class,
+        'plan'                          =>  Enums\PlanStatus::class,
+        'application_type'              =>  Enums\ApplicationType::class,
+        'real_estate_property'          => 'json',
+        'applicants_card_information'   => 'json',
+        'creditors_card_information'    => 'json',
+        'creditors_information'         => 'json',
+        'appliance_property'            => 'json',
+        'applicant_valid_id'            => 'json',
+        'spouse_valid_id'               => 'json',
+        'co_owner_valid_id'             => 'json',
+        'proof_of_income_image'         => 'json',
+        'personal_references'           => 'json',
+        'bank_references'               => 'json',
+        'credit_references'             => 'json',
+        'educational_attainment'        => 'json',
+        'dependents'                    => 'json',
     ];
 
     protected static function booted(): void

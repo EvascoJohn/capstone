@@ -54,23 +54,23 @@ class CustomerApplicationResource extends Resource
                                                 ->columnSpan(1)
                                                 ->schema([
                                                         Forms\Components\Select::make('unit_model_id')
-                                                                        ->columnSpan(4)
-                                                                        ->required()
-                                                                        ->label('Unit Model')
-                                                                        ->searchable(['unit_model_id'])
-                                                                        ->options(
-                                                                                Models\Unit::getUnitsWithAvailableStock()
-                                                                        )
-                                                                        ->live()
-                                                                        ->afterStateUpdated(
-                                                                                        function(Forms\Get $get, Forms\Set $set)
-                                                                                        {
-                                                                                                $unit_model = Models\UnitModel::find($get("unit_model_id"));
-                                                                                                if($unit_model != null){
-                                                                                                        $set('unit_srp', $unit_model->price);
-                                                                                                }
+                                                                ->columnSpan(4)
+                                                                ->required()
+                                                                ->label('Unit Model')
+                                                                ->searchable(['unit_model_id'])
+                                                                ->options(
+                                                                        Models\Unit::getUnitsWithAvailableStock()
+                                                                )
+                                                                ->live()
+                                                                ->afterStateUpdated(
+                                                                                function(Forms\Get $get, Forms\Set $set)
+                                                                                {
+                                                                                        $unit_model = Models\UnitModel::find($get("unit_model_id"));
+                                                                                        if($unit_model != null){
+                                                                                                $set('unit_srp', $unit_model->price);
                                                                                         }
-                                                                        ),
+                                                                                }
+                                                                ),
                                                         Forms\Components\TextInput::make('unit_srp')
                                                                         ->live()
                                                                         ->columnSpan(2)
@@ -162,10 +162,10 @@ class CustomerApplicationResource extends Resource
                                                 ->live(onBlur:true)
                                                 ->content(
                                                         function(Forms\Get $get, Forms\Set $set):string{
-                                                                        $unit_model_id = $get('unit_model_id');
-                                                                        $preferred_unit = $get('preffered_unit_status');
-                                                                        return Models\Unit::getStockBasedOnUnitAndStatus($unit_model_id, $preferred_unit);
-                                                                }
+                                                                $unit_model_id = $get('unit_model_id');
+                                                                $preferred_unit = $get('preffered_unit_status');
+                                                                return Models\Unit::getStockBasedOnUnitAndStatus($unit_model_id, $preferred_unit);
+                                                        }
                                                 ),
                                         ]),
                                         Forms\Components\Fieldset::make("")
@@ -444,16 +444,16 @@ class CustomerApplicationResource extends Resource
         ->columns(6);
     }
 
-        public static function getReferences(): Forms\Components\Component
+    public static function getReferences(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-                        Forms\Components\Group::make([
+                Forms\Components\Group::make([
                 Forms\Components\Repeater::make('personal_references')
                         ->label("Personal Reference")
                         ->columnSpanFull()
                         ->columnSpan(1)
                         ->columns(4)
-                        ->label('Applicant\'s Personal References')
+                        ->label("Applicant's Personal References")
                         ->collapsible(true)
                         ->schema([
                                 Forms\Components\TextInput::make('name')
@@ -473,77 +473,91 @@ class CustomerApplicationResource extends Resource
                                 Forms\Components\Fieldset::make("Applicant's Credit Card Information")
                                         ->columns(12)
                                         ->schema([
-                                                Forms\Components\Select::make('bank_acc_type')
-                                                        ->label("Account Type")
-                                                        ->columnSpan(4)
-                                                        ->options(
-                                                                Enums\BankAccountType::class
-                                                        ),
-                                            Forms\Components\TextInput::make('account_number')
-                                                    ->numeric()
-                                                    ->label("Account Number")
-                                                    ->minLength(12)
-                                                    ->hint('Card number must be of exact twelve (12) digits.')
-                                                    ->maxLength(12)
-                                                    ->columnSpan(8),
-                                                            Forms\Components\TextInput::make('bank_or_branch')
-                                                    ->label("Bank/Branch")
-                                                    ->columnSpan(12),
-                                                            Forms\Components\DatePicker::make('date_openned')
-                                                    ->columnSpan(4)
-                                                    ->label("Date Openned")
-                                                    ->minDate(now()->subYears(150))
-                                                    ->maxDate(now()),
-                                                            Forms\Components\TextInput::make('average_monthly_balance')
-                                                    ->columnSpan(4)
-                                                    ->label("Average Mo. Balance")
-                                                    ->numeric(),
+                                                Forms\Components\Repeater::make('applicants_card_information')
+                                                        ->columnSpan(12)
+                                                        ->schema([
+                                                                Forms\Components\Select::make('bank_acc_type')
+                                                                        ->label("Account Type")
+                                                                        ->columnSpan(4)
+                                                                        ->options(
+                                                                                Enums\BankAccountType::class
+                                                                        ),
+                                                                Forms\Components\TextInput::make('account_number')
+                                                                        ->numeric()
+                                                                        ->label("Account Number")
+                                                                        ->minLength(12)
+                                                                        ->hint('Card number must be of exact twelve (12) digits.')
+                                                                        ->maxLength(12)
+                                                                        ->columnSpan(8),
+                                                                Forms\Components\TextInput::make('bank_or_branch')
+                                                                        ->label("Bank/Branch")
+                                                                        ->columnSpan(12),
+                                                                Forms\Components\DatePicker::make('date_openned')
+                                                                        ->columnSpan(4)
+                                                                        ->label("Date Openned")
+                                                                        ->minDate(now()->subYears(150))
+                                                                        ->maxDate(now()),
+                                                                Forms\Components\TextInput::make('average_monthly_balance')
+                                                                        ->columnSpan(4)
+                                                                        ->label("Average Mo. Balance")
+                                                                        ->numeric(),
+                                                        ]),
                                 ]),
                 Forms\Components\Fieldset::make("Credit Card (Creditor's)")
                         ->columns(12)
                         ->schema([
-                                Forms\Components\TextInput::make('credit_card_company')
-                                        ->columnSpan(4)
-                                        ->label("Credit Card Company"),
-                                Forms\Components\TextInput::make('card_number')
-                                        ->columnSpan(8)
-                                        ->label("Card Number")
-                                        ->minLength(12)
-                                        ->numeric()
-                                        ->hint('Card number must be of exact twelve (12) digits.')
-                                        ->maxLength(12),
-                                Forms\Components\DatePicker::make('card_date_issued')
-                                        ->columnSpan(4)
-                                        ->label("Date Issued")
-                                        ->minDate(now()->subYears(150))
-                                        ->maxDate(now()),
-                                Forms\Components\TextInput::make('credit_limit')
-                                        ->columnSpan(4)
-                                        ->numeric()
-                                        ->label("Credit Limit"),
-                                Forms\Components\TextInput::make('outstanding_balance')
-                                        ->numeric()
-                                        ->columnSpan(4)
-                                        ->label("Outstanding Balance"),
+                                Forms\Components\Repeater::make('creditors_card_information')
+                                        ->columnSpan(12)
+                                        ->schema([
+                                            Forms\Components\TextInput::make('credit_card_company')
+                                                    ->columnSpan(4)
+                                                    ->label("Credit Card Company"),
+                                            Forms\Components\TextInput::make('card_number')
+                                                    ->columnSpan(8)
+                                                    ->label("Card Number")
+                                                    ->minLength(12)
+                                                    ->numeric()
+                                                    ->hint('Card number must be of exact twelve (12) digits.')
+                                                    ->maxLength(12),
+                                            Forms\Components\DatePicker::make('card_date_issued')
+                                                    ->columnSpan(4)
+                                                    ->label("Date Issued")
+                                                    ->minDate(now()->subYears(150))
+                                                    ->maxDate(now()),
+                                            Forms\Components\TextInput::make('credit_limit')
+                                                    ->columnSpan(4)
+                                                    ->numeric()
+                                                    ->label("Credit Limit"),
+                                            Forms\Components\TextInput::make('outstanding_balance')
+                                                    ->numeric()
+                                                    ->columnSpan(4)
+                                                    ->label("Outstanding Balance"),
+                                        ]),
                         ]),
-                        Forms\Components\Fieldset::make('Creditor Information')
-                        ->schema([
-                                Forms\Components\TextInput::make('creditor')
-                                        ->label('Creditor Name:')
-                                        ->columnSpan(4),
-                                Forms\Components\TextInput::make('term')
-                                        ->numeric()
-                                        ->columnSpan(2),
-                                Forms\Components\TextInput::make('present_balance')
-                                        ->columnSpan(2)
-                                        ->numeric(),
-                                Forms\Components\TextInput::make('principal')
-                                        ->numeric()
-                                        ->columnSpan(2),
-                                Forms\Components\TextInput::make('monthly_amorthization')
-                                        ->columnSpan(2)
-                                        ->numeric(),
-                        ])->columns(12),
+                    Forms\Components\Fieldset::make('Creditor Information')
+                            ->columns(12)
+                            ->schema([
+                                    Forms\Components\Repeater::make('creditors_information')
+                                            ->columns(12)
+                                            ->columnSpan(12)
+                                            ->schema([
+                                                    Forms\Components\TextInput::make('name')
+                                                            ->label('Creditor Name:')
+                                                            ->columnSpan(4),
+                                                    Forms\Components\TextInput::make('term')
+                                                            ->numeric()
+                                                            ->columnSpan(2),
+                                                    Forms\Components\TextInput::make('present_balance')
+                                                            ->columnSpan(2)
+                                                            ->numeric(),
+                                                    Forms\Components\TextInput::make('principal')
+                                                            ->numeric()
+                                                            ->columnSpan(2),
+                                                    Forms\Components\TextInput::make('monthly_amorthization')
+                                                            ->columnSpan(2)
+                                                            ->numeric(),
+                                            ]),
+                            ]),
                 
             ]),
         ]);
@@ -554,76 +568,76 @@ class CustomerApplicationResource extends Resource
         return Forms\Components\Group::make()
             ->columns(2)
             ->schema([
-                Forms\Components\Fieldset::make("Applicant's Present Employer")
-                        ->columns(2)
-                        ->columnSpan(1)
-                        ->schema([
-                                Forms\Components\TextArea::make('applicant_present_business_employer')
-                                        ->label('Employer')
-                                        ->required()
-                                        ->columnSpan(2),
-                                Forms\Components\TextInput::make('applicant_position')
-                                        ->required()
-                                        ->label('Position')
-                                        ->columnSpan(1),
-                                Forms\Components\TextInput::make('applicant_how_long_job_or_business')
-                                        ->required()
-                                        ->label('How long')
-                                        ->columnSpan(1),
-                        ]),
-                Forms\Components\Fieldset::make("Applicant's Business")
-                        ->columnSpan(1)
-                        ->columns(12)
-                        ->schema([
-                                Forms\Components\TextArea::make('applicant_business_address')
-                                        ->label('Address')
-                                        ->columnSpan(6),
-                                Forms\Components\TextArea::make('applicant_nature_of_business')
-                                        ->columnSpan(6)
-                                        ->label('Nature of Business'),
-                        ]),                                
-                Forms\Components\Fieldset::make("Previous Employer")
-                        ->columnSpan(2)
-                        ->columns(1)
-                        ->schema([
-                                Forms\Components\TextArea::make('applicant_previous_employer')
-                                        ->label('Employer')
-                                        ->columnSpan(1),
-                                Forms\Components\TextArea::make('applicant_previous_employer_position')
-                                        ->label('Position')
-                                        ->columnSpan(1),
-                                Forms\Components\TextArea::make('applicant_how_long_prev_job_or_business')
-                                        ->label('How Long')
-                                        ->columnSpan(1),
-                        ]),
-                Forms\Components\Fieldset::make("Spouse's Employement Information")
-                        ->schema([
-                                Forms\Components\Fieldset::make("Present Employer")
-                                ->columns(2)
-                                ->columnSpan(2)
-                                ->schema([
-                                        Forms\Components\TextArea::make('spouse_employer')
-                                                ->label('Business Employer')
-                                                ->columnSpan(2),
-                                        Forms\Components\TextInput::make('spouse_position')
-                                                ->label('Position')
-                                                ->columnSpan(1),
-                                        Forms\Components\TextInput::make('spouse_how_long_job_business')
-                                                ->label('How long')
-                                                ->columnSpan(1),
-                                ]),
-                                Forms\Components\Fieldset::make("Business")
-                                        ->columnSpan(1)
-                                        ->columns(1)
-                                        ->schema([
-                                                Forms\Components\TextArea::make('spouse_business_address')
-                                                        ->label('Address:')
-                                                        ->columnSpan(1),
-                                                Forms\Components\TextInput::make('spouse_nature_of_business')
-                                                        ->label('Nature of Business:'),
-                                        ]),  
-                        ])->hidden(fn (Forms\Get $get): bool => $get('applicant_civil_status') != "married")
-        ]);
+                    Forms\Components\Fieldset::make("Applicant's Present Employer")
+                            ->columns(2)
+                            ->columnSpan(1)
+                            ->schema([
+                                    Forms\Components\TextArea::make('applicant_present_business_employer')
+                                            ->label('Employer')
+                                            ->required()
+                                            ->columnSpan(2),
+                                    Forms\Components\TextInput::make('applicant_position')
+                                            ->required()
+                                            ->label('Position')
+                                            ->columnSpan(1),
+                                    Forms\Components\TextInput::make('applicant_how_long_job_or_business')
+                                            ->required()
+                                            ->label('How long')
+                                            ->columnSpan(1),
+                            ]),
+                    Forms\Components\Fieldset::make("Applicant's Business")
+                            ->columnSpan(1)
+                            ->columns(12)
+                            ->schema([
+                                    Forms\Components\TextArea::make('applicant_business_address')
+                                            ->label('Address')
+                                            ->columnSpan(6),
+                                    Forms\Components\TextArea::make('applicant_nature_of_business')
+                                            ->columnSpan(6)
+                                            ->label('Nature of Business'),
+                            ]),                                
+                    Forms\Components\Fieldset::make("Previous Employer")
+                            ->columnSpan(2)
+                            ->columns(1)
+                            ->schema([
+                                    Forms\Components\TextArea::make('applicant_previous_employer')
+                                            ->label('Employer')
+                                            ->columnSpan(1),
+                                    Forms\Components\TextArea::make('applicant_previous_employer_position')
+                                            ->label('Position')
+                                            ->columnSpan(1),
+                                    Forms\Components\TextArea::make('applicant_how_long_prev_job_or_business')
+                                            ->label('How Long')
+                                            ->columnSpan(1),
+                            ]),
+                    Forms\Components\Fieldset::make("Spouse's Employement Information")
+                            ->schema([
+                                    Forms\Components\Fieldset::make("Present Employer")
+                                    ->columns(2)
+                                    ->columnSpan(2)
+                                    ->schema([
+                                            Forms\Components\TextArea::make('spouse_employer')
+                                                    ->label('Business Employer')
+                                                    ->columnSpan(2),
+                                            Forms\Components\TextInput::make('spouse_position')
+                                                    ->label('Position')
+                                                    ->columnSpan(1),
+                                            Forms\Components\TextInput::make('spouse_how_long_job_business')
+                                                    ->label('How long')
+                                                    ->columnSpan(1),
+                                    ]),
+                                    Forms\Components\Fieldset::make("Business")
+                                            ->columnSpan(1)
+                                            ->columns(1)
+                                            ->schema([
+                                                    Forms\Components\TextArea::make('spouse_business_address')
+                                                            ->label('Address:')
+                                                            ->columnSpan(1),
+                                                    Forms\Components\TextInput::make('spouse_nature_of_business')
+                                                            ->label('Nature of Business:'),
+                                            ]),  
+                            ])->hidden(fn (Forms\Get $get): bool => $get('applicant_civil_status') != "married")
+            ]);
     }
 
     public static function getProperties(): Forms\Components\Component
@@ -666,90 +680,24 @@ class CustomerApplicationResource extends Resource
     public static function getIncome(): Forms\Components\Component
     {
         return new Forms\Components\Group([
-                
-                Forms\Components\Group::make([
-                        Forms\Components\Fieldset::make("Applicant's Income")
+                Forms\Components\Group::make()
                         ->columns(12)
-                        ->columnSpan(2)
+                        ->columnSpan(12)
                         ->schema([
-                                Forms\Components\TextInput::make("applicants_basic_monthly_salary")
-                                        ->columnSpan(4)
-                                        ->label("Basic Monthly Salary:")
-                                        ->live(onBlur: true)
-                                        ->inputMode('decimal')
-                                        ->required()
-                                        ->minValue(0)
-                                        ->default(0)
-                                        ->numeric()
-                                        ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                            if($state == null){
-                                                $component->state(0);
-                                            }
-                                            $deductions = $get('applicants_deductions');
-                                            $additionals = DealerhipCalculations::calculateSum(
-                                                    $get('applicants_basic_monthly_salary'),
-                                                    $get('applicants_allowance_commission')
-                                            );
-                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                    $additionals,
-                                                    $deductions,
-                                            );
-                                            $gross = DealerhipCalculations::calculateSum(
-                                                    $get('spouse_net_monthly_income'),
-                                                    $net,
-                                                    $get('other_income')
-                                            );
-                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                    $gross,
-                                                    $get('total_expenses'),
-                                            );
-                                            $set('applicants_net_monthly_income', $net);
-                                            $set('gross_monthly_income', $gross);
-                                            $set('net_monthly_income', $overall);
-                                        }),
-                                Forms\Components\TextInput::make("applicants_allowance_commission")
-                                        ->columnSpan(4)
-                                        ->live(onBlur: true)
-                                        ->inputMode('decimal')
-                                        ->label("Allowance Commision:")
-                                        ->minValue(0)
-                                        ->default(0)
-                                        ->numeric()
-                                        ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                            if($state == null){
-                                                $component->state(0);
-                                            }
-                                            $deductions = $get('applicants_deductions');
-                                            $additionals = DealerhipCalculations::calculateSum(
-                                                    $get('applicants_basic_monthly_salary'),
-                                                    $get('applicants_allowance_commission')
-                                            );
-                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                    $additionals,
-                                                    $deductions,
-                                            );
-                                            $gross = DealerhipCalculations::calculateSum(
-                                                    $get('spouse_net_monthly_income'),
-                                                    $net,
-                                                    $get('other_income')
-                                            );
-                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                    $gross,
-                                                    $get('total_expenses'),
-                                            );
-                                            $set('applicants_net_monthly_income', $net);
-                                            $set('gross_monthly_income', $gross);
-                                            $set('net_monthly_income', $overall);
-                                        }),
-                                Forms\Components\TextInput::make("applicants_deductions")
-                                        ->columnSpan(4)
-                                        ->live(onBlur: true)
-                                        ->inputMode('decimal')
-                                        ->label("Deductions:")
-                                        ->minValue(0)
-                                        ->default(0)
-                                        ->numeric()
-                                        ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                            Forms\Components\Section::make("Applicant's Income")
+                            ->columns(12)
+                            ->columnSpan(6)
+                            ->schema([
+                                    Forms\Components\TextInput::make("applicants_basic_monthly_salary")
+                                            ->columnSpan(4)
+                                            ->label("Basic Monthly Salary:")
+                                            ->live(onBlur: true)
+                                            ->inputMode('decimal')
+                                            ->required()
+                                            ->minValue(0)
+                                            ->default(0)
+                                            ->numeric()
+                                            ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
                                                 if($state == null){
                                                     $component->state(0);
                                                 }
@@ -774,189 +722,257 @@ class CustomerApplicationResource extends Resource
                                                 $set('applicants_net_monthly_income', $net);
                                                 $set('gross_monthly_income', $gross);
                                                 $set('net_monthly_income', $overall);
-                                        }),
-                                Forms\Components\TextInput::make("applicants_net_monthly_income")
-                                        ->live(onBlur: true)
-                                        ->inputMode('decimal')
-                                        ->label("Net Monthly Income:")
-                                        ->default(0)
-                                        ->readOnly()
-                                        ->minValue(0)
-                                        ->numeric()
-                                        ->columnSpan(12)
-                                        ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
-                                            $deductions = $get('applicants_deductions');
-                                            $additionals = DealerhipCalculations::calculateSum(
-                                                    $get('applicants_basic_monthly_salary'),
-                                                    $get('applicants_allowance_commission')
-                                            );
-                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                    $additionals,
-                                                    $deductions,
-                                            );
-                                            $gross = DealerhipCalculations::calculateSum(
-                                                    $get('spouse_net_monthly_income'),
-                                                    $net,
-                                                    $get('other_income')
-                                            );
-                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                    $gross,
-                                                    $get('total_expenses'),
-                                            );
-                                            $set('applicants_net_monthly_income', $net);
-                                            $set('gross_monthly_income', $gross);
-                                            $set('net_monthly_income', $overall);
-                                        }),
+                                            }),
+                                    Forms\Components\TextInput::make("applicants_allowance_commission")
+                                            ->columnSpan(4)
+                                            ->live(onBlur: true)
+                                            ->inputMode('decimal')
+                                            ->label("Allowance Commision:")
+                                            ->minValue(0)
+                                            ->default(0)
+                                            ->numeric()
+                                            ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                                if($state == null){
+                                                    $component->state(0);
+                                                }
+                                                $deductions = $get('applicants_deductions');
+                                                $additionals = DealerhipCalculations::calculateSum(
+                                                        $get('applicants_basic_monthly_salary'),
+                                                        $get('applicants_allowance_commission')
+                                                );
+                                                $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                        $additionals,
+                                                        $deductions,
+                                                );
+                                                $gross = DealerhipCalculations::calculateSum(
+                                                        $get('spouse_net_monthly_income'),
+                                                        $net,
+                                                        $get('other_income')
+                                                );
+                                                $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                        $gross,
+                                                        $get('total_expenses'),
+                                                );
+                                                $set('applicants_net_monthly_income', $net);
+                                                $set('gross_monthly_income', $gross);
+                                                $set('net_monthly_income', $overall);
+                                            }),
+                                    Forms\Components\TextInput::make("applicants_deductions")
+                                            ->columnSpan(4)
+                                            ->live(onBlur: true)
+                                            ->inputMode('decimal')
+                                            ->label("Deductions:")
+                                            ->minValue(0)
+                                            ->default(0)
+                                            ->numeric()
+                                            ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                                    if($state == null){
+                                                        $component->state(0);
+                                                    }
+                                                    $deductions = $get('applicants_deductions');
+                                                    $additionals = DealerhipCalculations::calculateSum(
+                                                            $get('applicants_basic_monthly_salary'),
+                                                            $get('applicants_allowance_commission')
+                                                    );
+                                                    $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                            $additionals,
+                                                            $deductions,
+                                                    );
+                                                    $gross = DealerhipCalculations::calculateSum(
+                                                            $get('spouse_net_monthly_income'),
+                                                            $net,
+                                                            $get('other_income')
+                                                    );
+                                                    $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                            $gross,
+                                                            $get('total_expenses'),
+                                                    );
+                                                    $set('applicants_net_monthly_income', $net);
+                                                    $set('gross_monthly_income', $gross);
+                                                    $set('net_monthly_income', $overall);
+                                            }),
+                                    Forms\Components\TextInput::make("applicants_net_monthly_income")
+                                            ->live(onBlur: true)
+                                            ->inputMode('decimal')
+                                            ->label("Net Monthly Income:")
+                                            ->default(0)
+                                            ->readOnly()
+                                            ->minValue(0)
+                                            ->numeric()
+                                            ->columnSpan(12)
+                                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set) {
+                                                $deductions = $get('applicants_deductions');
+                                                $additionals = DealerhipCalculations::calculateSum(
+                                                        $get('applicants_basic_monthly_salary'),
+                                                        $get('applicants_allowance_commission')
+                                                );
+                                                $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                        $additionals,
+                                                        $deductions,
+                                                );
+                                                $gross = DealerhipCalculations::calculateSum(
+                                                        $get('spouse_net_monthly_income'),
+                                                        $net,
+                                                        $get('other_income')
+                                                );
+                                                $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                        $gross,
+                                                        $get('total_expenses'),
+                                                );
+                                                $set('applicants_net_monthly_income', $net);
+                                                $set('gross_monthly_income', $gross);
+                                                $set('net_monthly_income', $overall);
+                                            }),
+                            ]),
+                            Forms\Components\Section::make("Spouse's Income")
+                                    ->columns(12)
+                                    ->columnSpan(6)
+                                    ->disabled(fn (Forms\Get $get): bool => $get('applicant_civil_status') != "married")
+                                    ->schema([
+                                            Forms\Components\TextInput::make("spouses_basic_monthly_salary")->label("Basic Monthly Salary:")
+                                                    ->columnSpan(4)
+                                                    ->label("Basic Monthly Salary")
+                                                    ->live(onBlur: true)
+                                                    ->inputMode('decimal')
+                                                    ->minValue(0)
+                                                    ->default(0)
+                                                    ->numeric()
+                                                    ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                                            if($state == null){
+                                                                    $component->state(0);
+                                                            }
+
+                                                            $deductions = $get('spouse_deductions');
+                                                            $additionals = DealerhipCalculations::calculateSum(
+                                                                    $get('spouses_basic_monthly_salary'),
+                                                                    $get('spouse_allowance_commision')
+                                                            );
+                                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $additionals,
+                                                                    $deductions,
+                                                            );
+                                                            $gross = DealerhipCalculations::calculateSum(
+                                                                    $get('applicants_net_monthly_income'),
+                                                                    $net,
+                                                                    $get('other_income')
+                                                            );
+                                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $gross,
+                                                                    $get('total_expenses'),
+                                                            );
+                                                            $set('spouse_net_monthly_income', $net);
+                                                            $set('gross_monthly_income', $gross);
+                                                            $set('net_monthly_income', $overall);
+                                                    }),
+                                            Forms\Components\TextInput::make("spouse_allowance_commision")->label("Allowance Commision:")->numeric()
+                                                    ->columnSpan(4)
+                                                    ->label("Allowance Commision")
+                                                    ->live(onBlur: true)
+                                                    ->inputMode('decimal')
+                                                    ->minValue(0)
+                                                    ->default(0)
+                                                    ->numeric()
+                                                    ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                                            if($state == null){
+                                                                    $component->state(0);
+                                                            }
+                                                            $deductions = $get('spouse_deductions');
+                                                            $additionals = DealerhipCalculations::calculateSum(
+                                                                    $get('spouses_basic_monthly_salary'),
+                                                                    $get('spouse_allowance_commision')
+                                                            );
+                                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $additionals,
+                                                                    $deductions,
+                                                            );
+                                                            $gross = DealerhipCalculations::calculateSum(
+                                                                    $get('applicants_net_monthly_income'),
+                                                                    $net,
+                                                                    $get('other_income')
+                                                            );
+                                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $gross,
+                                                                    $get('total_expenses'),
+                                                            );
+                                                            $set('spouse_net_monthly_income', $net);
+                                                            $set('gross_monthly_income', $gross);
+                                                            $set('net_monthly_income', $overall);
+                                                    }),
+                                            Forms\Components\TextInput::make("spouse_deductions")->label("Deductions:")->numeric()
+                                                    ->columnSpan(4)
+                                                    ->label("Deductions")
+                                                    ->live(onBlur: true)
+                                                    ->inputMode('decimal')
+                                                    ->minValue(0)
+                                                    ->default(0)
+                                                    ->numeric()
+                                                    ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                                            if($state == null){
+                                                                    $component->state(0);
+                                                            }
+
+
+                                                            $deductions = $get('spouse_deductions');
+                                                            $additionals = DealerhipCalculations::calculateSum(
+                                                                    $get('spouses_basic_monthly_salary'),
+                                                                    $get('spouse_allowance_commision')
+                                                            );
+                                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $additionals,
+                                                                    $deductions,
+                                                            );
+                                                            $gross = DealerhipCalculations::calculateSum(
+                                                                    $get('applicants_net_monthly_income'),
+                                                                    $net,
+                                                                    $get('other_income')
+                                                            );
+                                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $gross,
+                                                                    $get('total_expenses'),
+                                                            );
+                                                            $set('spouse_net_monthly_income', $net);
+                                                            $set('gross_monthly_income', $gross);
+                                                            $set('net_monthly_income', $overall);
+                                                    }),
+                                            Forms\Components\TextInput::make("spouse_net_monthly_income")->label("Net Monthly Income:")->numeric()
+                                                    ->columnSpan(12)
+                                                    ->readOnly()
+                                                    ->label("Net Monthly Income")
+                                                    ->live(onBlur: true)
+                                                    ->inputMode('decimal')
+                                                    ->minValue(0)
+                                                    ->default(0)
+                                                    ->numeric()
+                                                    ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                                            if($state == null){
+                                                                    $component->state(0);
+                                                            }
+                                                            $deductions = $get('spouse_deductions');
+                                                            $additionals = DealerhipCalculations::calculateSum(
+                                                                    $get('spouses_basic_monthly_salary'),
+                                                                    $get('spouse_allowance_commision')
+                                                            );
+                                                            $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $additionals,
+                                                                    $deductions,
+                                                            );
+                                                            $gross = DealerhipCalculations::calculateSum(
+                                                                    $get('applicants_net_monthly_income'),
+                                                                    $net,
+                                                                    $get('other_income')
+                                                            );
+                                                            $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                                    $gross,
+                                                                    $get('total_expenses'),
+                                                            );
+                                                            $set('spouse_net_monthly_income', $net);
+                                                            $set('gross_monthly_income', $gross);
+                                                            $set('net_monthly_income', $overall);
+                                                    }),
+                                    ]),
                         ]),
-                        Forms\Components\Fieldset::make("Spouse's Monthly Salary")
-                                ->columns(12)
-                                ->columnSpan(2)
-                                ->disabled(fn (Forms\Get $get): bool => $get('applicant_civil_status') != "married")
-                                ->schema([
-                                        Forms\Components\TextInput::make("spouses_basic_monthly_salary")->label("Basic Monthly Salary:")
-                                                ->columnSpan(4)
-                                                ->label("Basic Monthly Salary")
-                                                ->live(onBlur: true)
-                                                ->inputMode('decimal')
-                                                ->minValue(0)
-                                                ->default(0)
-                                                ->numeric()
-                                                ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                                        if($state == null){
-                                                                $component->state(0);
-                                                        }
-
-                                                        $deductions = $get('spouse_deductions');
-                                                        $additionals = DealerhipCalculations::calculateSum(
-                                                                $get('spouses_basic_monthly_salary'),
-                                                                $get('spouse_allowance_commision')
-                                                        );
-                                                        $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $additionals,
-                                                                $deductions,
-                                                        );
-                                                        $gross = DealerhipCalculations::calculateSum(
-                                                                $get('applicants_net_monthly_income'),
-                                                                $net,
-                                                                $get('other_income')
-                                                        );
-                                                        $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $gross,
-                                                                $get('total_expenses'),
-                                                        );
-                                                        $set('spouse_net_monthly_income', $net);
-                                                        $set('gross_monthly_income', $gross);
-                                                        $set('net_monthly_income', $overall);
-                                                }),
-                                        Forms\Components\TextInput::make("spouse_allowance_commision")->label("Allowance Commision:")->numeric()
-                                                ->columnSpan(4)
-                                                ->label("Allowance Commision")
-                                                ->live(onBlur: true)
-                                                ->inputMode('decimal')
-                                                ->minValue(0)
-                                                ->default(0)
-                                                ->numeric()
-                                                ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                                        if($state == null){
-                                                                $component->state(0);
-                                                        }
-                                                        $deductions = $get('spouse_deductions');
-                                                        $additionals = DealerhipCalculations::calculateSum(
-                                                                $get('spouses_basic_monthly_salary'),
-                                                                $get('spouse_allowance_commision')
-                                                        );
-                                                        $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $additionals,
-                                                                $deductions,
-                                                        );
-                                                        $gross = DealerhipCalculations::calculateSum(
-                                                                $get('applicants_net_monthly_income'),
-                                                                $net,
-                                                                $get('other_income')
-                                                        );
-                                                        $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $gross,
-                                                                $get('total_expenses'),
-                                                        );
-                                                        $set('spouse_net_monthly_income', $net);
-                                                        $set('gross_monthly_income', $gross);
-                                                        $set('net_monthly_income', $overall);
-                                                }),
-                                        Forms\Components\TextInput::make("spouse_deductions")->label("Deductions:")->numeric()
-                                                ->columnSpan(4)
-                                                ->label("Deductions")
-                                                ->live(onBlur: true)
-                                                ->inputMode('decimal')
-                                                ->minValue(0)
-                                                ->default(0)
-                                                ->numeric()
-                                                ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                                        if($state == null){
-                                                                $component->state(0);
-                                                        }
-
-
-                                                        $deductions = $get('spouse_deductions');
-                                                        $additionals = DealerhipCalculations::calculateSum(
-                                                                $get('spouses_basic_monthly_salary'),
-                                                                $get('spouse_allowance_commision')
-                                                        );
-                                                        $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $additionals,
-                                                                $deductions,
-                                                        );
-                                                        $gross = DealerhipCalculations::calculateSum(
-                                                                $get('applicants_net_monthly_income'),
-                                                                $net,
-                                                                $get('other_income')
-                                                        );
-                                                        $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $gross,
-                                                                $get('total_expenses'),
-                                                        );
-                                                        $set('spouse_net_monthly_income', $net);
-                                                        $set('gross_monthly_income', $gross);
-                                                        $set('net_monthly_income', $overall);
-                                                }),
-                                        Forms\Components\TextInput::make("spouse_net_monthly_income")->label("Net Monthly Income:")->numeric()
-                                                ->columnSpan(12)
-                                                ->readOnly()
-                                                ->label("Net Monthly Income")
-                                                ->live(onBlur: true)
-                                                ->inputMode('decimal')
-                                                ->minValue(0)
-                                                ->default(0)
-                                                ->numeric()
-                                                ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                                        if($state == null){
-                                                                $component->state(0);
-                                                        }
-                                                        $deductions = $get('spouse_deductions');
-                                                        $additionals = DealerhipCalculations::calculateSum(
-                                                                $get('spouses_basic_monthly_salary'),
-                                                                $get('spouse_allowance_commision')
-                                                        );
-                                                        $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $additionals,
-                                                                $deductions,
-                                                        );
-                                                        $gross = DealerhipCalculations::calculateSum(
-                                                                $get('applicants_net_monthly_income'),
-                                                                $net,
-                                                                $get('other_income')
-                                                        );
-                                                        $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                                $gross,
-                                                                $get('total_expenses'),
-                                                        );
-                                                        $set('spouse_net_monthly_income', $net);
-                                                        $set('gross_monthly_income', $gross);
-                                                        $set('net_monthly_income', $overall);
-                                                }),
-                                ]),
-                ]),
                 Forms\Components\TextInput::make("other_income")->label("Other Income:")->numeric()
-                        ->columnSpan(1)
+                        ->columnSpan(12)
                         ->label("Other Income")
                         ->live(onBlur: true)
                         ->inputMode('decimal')
@@ -979,9 +995,8 @@ class CustomerApplicationResource extends Resource
                                 $set('gross_monthly_income', $gross);
                                 $set('net_monthly_income', $overall);
                         }),
-
                 Forms\Components\TextInput::make("gross_monthly_income")->label("Gross Monthly Income:")->numeric()->columnSpan(1)
-                        ->columnSpan(1)
+                        ->columnSpan(12)
                         ->label("Gross Monthly Income")
                         ->live(onBlur: true)
                         ->inputMode('decimal')
@@ -1027,7 +1042,6 @@ class CustomerApplicationResource extends Resource
                                                 $get('rental'),
                                                 $get('utilities'),
                                                 $get('other_expenses'),
-                                                $get('monthly_amortization'),
                                             );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1055,7 +1069,7 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
-                                            $get('monthly_amortization'),
+                                            
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1083,7 +1097,7 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
-                                            $get('monthly_amortization'),
+                                            
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1111,7 +1125,6 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
-                                            $get('monthly_amortization'),
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1139,7 +1152,6 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
-                                            $get('monthly_amortization'),
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1148,8 +1160,11 @@ class CustomerApplicationResource extends Resource
                                         $set('total_expenses', $additionals);
                                         $set('net_monthly_income', $overall);
                                 }),
-                        Forms\Components\TextInput::make("monthly_amortization")->label("Monthly Amortization:")->numeric()
-                                ->columnSpan(4)
+                        Forms\Components\TextInput::make("unit_monthly_amort_fin")
+                                        ->label("Monthly Amortization:")
+                                        ->numeric()
+                                        ->readOnly()
+                                        ->columnSpan(4)
                                         ->label("Monthly Amortization")
                                         ->live(onBlur: true)
                                         ->inputMode('decimal')
@@ -1161,13 +1176,12 @@ class CustomerApplicationResource extends Resource
                                                         $component->state(0);
                                                 }
                                                 $additionals = DealerhipCalculations::calculateSum(
-                                                    $get('education'),
-                                                    $get('living_expenses'),
-                                                    $get('transportation'),
-                                                    $get('rental'),
-                                                    $get('utilities'),
-                                                    $get('other_expenses'),
-                                                    $get('monthly_amortization'),
+                                                        $get('education'),
+                                                        $get('living_expenses'),
+                                                        $get('transportation'),
+                                                        $get('rental'),
+                                                        $get('utilities'),
+                                                        $get('other_expenses'),
                                                 );
                                                 $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                         $get('gross_monthly_income'),
@@ -1189,13 +1203,12 @@ class CustomerApplicationResource extends Resource
                                                         $component->state(0);
                                                 }
                                                 $additionals = DealerhipCalculations::calculateSum(
-                                                    $get('education'),
-                                                    $get('living_expenses'),
-                                                    $get('transportation'),
-                                                    $get('rental'),
-                                                    $get('utilities'),
-                                                    $get('other_expenses'),
-                                                    $get('monthly_amortization'),
+                                                        $get('education'),
+                                                        $get('living_expenses'),
+                                                        $get('transportation'),
+                                                        $get('rental'),
+                                                        $get('utilities'),
+                                                        $get('other_expenses'),
                                                 );
                                                 $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                         $get('gross_monthly_income'),
@@ -1217,6 +1230,7 @@ class CustomerApplicationResource extends Resource
                                         if($state == null){
                                                 $component->state(0);
                                         }
+
                                 }),
                 ]),
         ]);
@@ -1226,21 +1240,45 @@ class CustomerApplicationResource extends Resource
     {
         return Forms\Components\Group::make([
             Forms\Components\Section::make("Net Monthly Income:")
-            ->schema([
-                    Forms\Components\TextInput::make("net_monthly_income")->label("Net Monthly Income:")
-                            ->label("Net Monthly Income")
-                            ->live(onBlur: true)
-                            ->inputMode('decimal')
-                            ->minValue(0)
-                            ->readOnly()
-                            ->default(0)
-                            ->numeric()
-                            ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
-                                    if($state == null){
-                                            $component->state(0);
-                                    }
-                            }),
-            ]),
+                    ->columns(12)
+                    ->schema([
+                            Forms\Components\TextInput::make("net_monthly_income")->label("Net Monthly Income:")
+                                    ->label("Net Monthly Income")
+                                    ->live(onBlur: true)
+                                    ->inputMode('decimal')
+                                    ->columnSpan(12)
+                                    ->minValue(0)
+                                    ->readOnly()
+                                    ->default(0)
+                                    ->numeric()
+                                    ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                            if($state == null){
+                                                    $component->state(0);
+                                            }
+                                    }),
+                            Forms\Components\Toggle::make('include_monthly_payment')
+                                    ->label("See Monhtly Payment Included")
+                                    ->inline()
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(function(?string $state, Forms\Get $get, Forms\Set $set){
+                                        if($state == true)
+                                        {
+                                            $deducted = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
+                                                $get('net_monthly_income'),
+                                                $get("unit_monthly_amort_fin"),
+                                            );
+                                            $set("net_monthly_income", $deducted);
+                                        }
+                                        else{
+                                            $deducted = Models\DealerhipCalculations::calculateSum(
+                                                $get('net_monthly_income'),
+                                                $get("unit_monthly_amort_fin"),
+                                            );
+                                            $set("net_monthly_income", $deducted);
+                                        }
+                                    })
+                                    ->columnSpan(12)
+                    ]),
         ]);
     }
 
@@ -1262,10 +1300,10 @@ class CustomerApplicationResource extends Resource
     public static function getStatementOfMonthlyIncome(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-            CustomerApplicationResource::getIncome()->columnSpan(3),
-            CustomerApplicationResource::getExpenses()->columnSpan(3),
-            CustomerApplicationResource::getNetIncome()->columnSpan(6),
-            CustomerApplicationResource::getImageStatementMonthlyIncome()->columnSpan(6)
+            CustomerApplicationResource::getIncome()->columnSpan(12),
+            CustomerApplicationResource::getExpenses()->columnSpan(12),
+            CustomerApplicationResource::getNetIncome()->columnSpan(12),
+            CustomerApplicationResource::getImageStatementMonthlyIncome()->columnSpan(12)
         ])
         ->columns(6);
     }
@@ -1342,31 +1380,45 @@ class CustomerApplicationResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
+            ->columns(4)
             ->schema([
-                    InfoLists\Components\Tabs::make('Label')
+                    InfoLists\Components\Tabs::make("")
+                            ->columns(6)
+                            ->columnSpan(6)
                             ->tabs([
                                     InfoLists\Components\Tabs\Tab::make("Application's Information")
+                                            ->columns(6)
                                             ->schema([
                                                     InfoLists\Components\Section::make("Application's Information")
+                                                            ->columns(12)
                                                             ->schema([
                                                                     InfoLists\Components\TextEntry::make('application_status')
-                                                                                    ->label("Application's status")
-                                                                                    ->badge(),
+                                                                            ->columnSpan(2)
+                                                                            ->label("Application's status")
+                                                                            ->badge(),
+                                                                    InfoLists\Components\TextEntry::make('plan')
+                                                                            ->columnSpan(2)
+                                                                            ->label("Plan Type")
+                                                                            ->badge(),
                                                                     InfoLists\Components\TextEntry::make('release_status')
-                                                                                    ->label("Relase status")
-                                                                                    ->badge(),
+                                                                            ->columnSpan(2)
+                                                                            ->label("Relase status")
+                                                                            ->badge(),
                                                                     InfoLists\Components\TextEntry::make('created_at')
-                                                                                    ->dateTime('M d Y')
-                                                                                    ->label('Date Created')
-                                                                                    ->badge(),
+                                                                            ->columnSpan(2)
+                                                                            ->dateTime('M d Y')
+                                                                            ->label('Date Created')
+                                                                            ->badge(),
                                                                     InfoLists\Components\TextEntry::make('preffered_unit_status')
-                                                                                    ->label("Preffered unit status"),
+                                                                            ->badge()
+                                                                            ->columnSpan(2)
+                                                                            ->label("Preffered unit status"),
                                                                     InfoLists\Components\TextEntry::make('due_date')
-                                                                                    ->label('Upcoming Due')
-                                                                                    ->badge()
-                                                                                    ->color('danger'),
-                                                    ])
-                                                    ->columns(6),
+                                                                            ->columnSpan(2)
+                                                                            ->label('Upcoming Due')
+                                                                            ->badge()
+                                                                            ->color('danger'),
+                                                            ]),
                                                     InfoLists\Components\Section::make("Branch Information")
                                                             ->schema([
                                                                     InfoLists\Components\TextEntry::make('branches.full_address')
@@ -1377,49 +1429,51 @@ class CustomerApplicationResource extends Resource
                                                                                     ->size(TextEntry\TextEntrySize::Small)
                                                                                     ->columnSpan(6)
                                                                                     ->label("Contact No."),
-                                                    ]),
-                                            ])->columns(6),
+                                                            ]),
+                                            ]),
                                     InfoLists\Components\Tabs\Tab::make('Unit Information')
-                                                    ->schema([
-                                                            InfoLists\Components\Section::make("Motorcycle's Image")
-                                                                    ->schema([
-                                                                                    InfoLists\Components\ImageEntry::make('unitModel.image_file')
-                                                                                                    ->label("")
-                                                                                                    ->disk('public')
-                                                                                                    ->height(200)
-                                                                                                    ->width(200),
-                                                                    ])->columnSpan(2),
-                                                            InfoLists\Components\Section::make("Motorcycle's Information")
-                                                                    ->columns(6)
-                                                                    ->schema([
-                                                                                    InfoLists\Components\TextEntry::make('unitModel.model_name')
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Unit Model'),
-                                                                                    InfoLists\Components\TextEntry::make('units.chasis_number')
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Chasis number')
-                                                                                                    ->badge(),   
-                                                                                    InfoLists\Components\TextEntry::make('unit_term')
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Unit Term'),
-                                                                                    InfoLists\Components\TextEntry::make('unit_ttl_dp')	
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Down Payment')
-                                                                                                    ->money('php'),   
-                                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Monthly Amortization')
-                                                                                                    ->money('php'),                     
-                                                                                    InfoLists\Components\TextEntry::make('unit_srp')
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Unit Price')
-                                                                                                    ->money('php'),
-                                                                                    InfoLists\Components\TextEntry::make('status')
-                                                                                                    ->columnSpan(2)
-                                                                                                    ->label('Status'),
-                                                                    ])->columnSpan(4),
-                                                    ])
-                                                    ->columns(6),
+                                            ->columns(6)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Motorcycle's Image")
+                                                            ->columnSpan(2)
+                                                            ->schema([
+                                                                    InfoLists\Components\ImageEntry::make('unitModel.image_file')
+                                                                            ->label("")
+                                                                            ->disk('public')
+                                                                            ->height(200)
+                                                                            ->width(200),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Motorcycle's Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(4)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('unitModel.model_name')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Unit Model'),
+                                                                    InfoLists\Components\TextEntry::make('units.chasis_number')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Chasis number')
+                                                                            ->badge(),   
+                                                                    InfoLists\Components\TextEntry::make('unit_term')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Unit Term'),
+                                                                    InfoLists\Components\TextEntry::make('unit_ttl_dp')	
+                                                                            ->columnSpan(2)
+                                                                            ->label('Down Payment')
+                                                                            ->money('php'),   
+                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Monthly Payment')
+                                                                            ->money('php'),                     
+                                                                    InfoLists\Components\TextEntry::make('unit_srp')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Unit Price')
+                                                                            ->money('php'),
+                                                                    InfoLists\Components\TextEntry::make('preffered_unit_status')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Status'),
+                                                            ]),
+                                            ]),
                                     InfoLists\Components\Tabs\Tab::make("Customer's Information")
                                             ->schema([
                                                     InfoLists\Components\Section::make("Personal Information")
@@ -1435,7 +1489,7 @@ class CustomerApplicationResource extends Resource
                                                                 InfoLists\Components\TextEntry::make('applicant_birthday')
                                                                         ->label('Birthday')
                                                                         ->columnSpan(2),
-                                                    ]),
+                                                            ]),
                                                     InfoLists\Components\Section::make("Contact Information")
                                                             ->columns(6)
                                                             ->columnSpan(3)
@@ -1445,7 +1499,7 @@ class CustomerApplicationResource extends Resource
                                                                             ->columnSpan(3),
                                                                     InfoLists\Components\TextEntry::make('applicant_email')->label('Email:')
                                                                             ->columnSpan(3),
-                                                    ]),
+                                                            ]),
                                                     InfoLists\Components\Section::make("Location Information")
                                                             ->columns(6)
                                                             ->columnSpan(6)
@@ -1456,7 +1510,7 @@ class CustomerApplicationResource extends Resource
                                                                     InfoLists\Components\TextEntry::make('applicant_present_address')
                                                                             ->label('Present Address:')
                                                                             ->columnSpan(3),
-                                                    ]),
+                                                            ]),
                                                     InfoLists\Components\Section::make([
                                                             InfoLists\Components\ImageEntry::make('applicant_valid_id')
                                                                     ->columnSpan(6)
@@ -1469,420 +1523,435 @@ class CustomerApplicationResource extends Resource
                                     InfoLists\Components\Tabs\Tab::make("Co-maker's Information")
                                             ->schema([
                                                     InfoLists\Components\Section::make("Personal Information")
-                                                        ->columns(6)
-                                                        ->columnSpan(3)
-                                                        ->schema([
-                                                            InfoLists\Components\TextEntry::make('co_owner_firstname')
-                                                                            ->label('First Name')
-                                                                            ->columnSpan(3),
-                                                            InfoLists\Components\TextEntry::make('co_owner_middlename')
-                                                                            ->label('Middle Name')
-                                                                            ->columnSpan(3),
-                                                            InfoLists\Components\TextEntry::make('co_owner_lastname')
-                                                                            ->label('Last Name')
-                                                                            ->columnSpan(3),
-                                                ]),
-                                                InfoLists\Components\Section::make("Contact Information")
-                                                        ->columns(6)
-                                                        ->columnSpan(3)
-                                                        ->schema([
-                                                                InfoLists\Components\TextEntry::make('co_owner_mobile_number')
-                                                                        ->label('Contact Information')
-                                                                        ->columnSpan(3),
-                                                                InfoLists\Components\TextEntry::make('co_owner_email')
-                                                                        ->label('Email')
-                                                                        ->columnSpan(3),
-                                                ]),
-                                                InfoLists\Components\Section::make("Location Information")
-                                                        ->columns(6)
-                                                        ->columnSpan(6)
-                                                        ->schema([
-                                                                InfoLists\Components\TextEntry::make('co_owner_address')
-                                                                        ->label('Address:')
-                                                                        ->columnSpan(3),
-                                                ]),
-                                                InfoLists\Components\ImageEntry::make('co_owner_valid_id')
-                                                                ->label("Valid ID's:")
-                                                                ->width(400)
-                                                                ->height(400)
-                                                                ->columnSpan(6),
-                                    ]),
-                                    InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
-                                                    ->columns(8)
-                                                    ->schema([
-                                                            InfoLists\Components\Section::make("Applicant's Net Income")
-                                                                    ->columnSpan(4)
-                                                                    ->description("The applicant's net monthly income.")
-                                                                    ->columns(12)
-                                                                    ->schema([
-                                                                        InfoLists\Components\TextEntry::make('applicants_basic_monthly_salary')
-                                                                                ->label("Basic Monthly Salary")
-                                                                                ->color('success')
-                                                                                ->money('PHP')
-                                                                                ->columnSpan(4),
-                                                                        InfoLists\Components\TextEntry::make('applicants_allowance_commission')
-                                                                                ->label("Allowance Commision")
-                                                                                ->color('success')
-                                                                                ->money('PHP')
-                                                                                ->columnSpan(4),
-                                                                        InfoLists\Components\TextEntry::make('applicants_deductions')
-                                                                                ->label("Deductions")
-                                                                                ->color('danger')
-                                                                                ->money('PHP')
-                                                                                ->columnSpan(4),
-                                                                        InfoLists\Components\TextEntry::make('applicants_net_monthly_income')
-                                                                                ->label(" Net Monthly Income")
-                                                                                ->color('success')
-                                                                                ->money('PHP')
-                                                                                ->columnSpan(12),
-                                                                    ]),
-                                                            InfoLists\Components\Section::make("Spouse's Net Income")
-                                                                    ->columnSpan(4)
-                                                                    ->description("The spouse's net monthly income.")
-                                                                    ->columns(12)
-                                                                    ->schema([
-                                                                            InfoLists\Components\TextEntry::make('spouses_basic_monthly_salary')
-                                                                                    ->label('Basic Monthly Salary')
-                                                                                    ->color('success')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(4),
-                                                                            InfoLists\Components\TextEntry::make('spouse_allowance_commision')
-                                                                                    ->label("Allowance Commision")
-                                                                                    ->color('success')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(4),
-                                                                            InfoLists\Components\TextEntry::make('spouse_deductions')
-                                                                                    ->label("Deduction")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(4),
-                                                                            InfoLists\Components\TextEntry::make('spouse_net_monthly_income')
-                                                                                    ->label("Net Monthly Income")
-                                                                                    ->color('success')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(12),
-                                                                    ]),
-                                                            InfoLists\Components\Section::make("Expenses")
-                                                                    ->columnSpan(8)
-                                                                    ->description("These are expenses.")
-                                                                    ->columns(8)
-                                                                    ->schema([
-                                                                            InfoLists\Components\TextEntry::make('living_expenses')
-                                                                                    ->label("Living Expenses")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                            InfoLists\Components\TextEntry::make('education')
-                                                                                    ->label("Education")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                            InfoLists\Components\TextEntry::make('transportation')
-                                                                                    ->label("Transportation")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                            InfoLists\Components\TextEntry::make('rental')
-                                                                                    ->label("Rentals")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                            InfoLists\Components\TextEntry::make('utilities')
-                                                                                    ->label("Utilities")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                            InfoLists\Components\TextEntry::make('monthly_amortization')
-                                                                                    ->label("Monthly Payment")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                            InfoLists\Components\TextEntry::make('total_expenses')
-                                                                                    ->label("Total Expenses")
-                                                                                    ->color('danger')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(2),
-                                                                    ]),
-                                                            Infolists\Components\Section::make("")
-                                                                    ->columns(12)
-                                                                    ->columnSpan(8)
-                                                                    ->schema([
-                                                                            InfoLists\Components\TextEntry::make('other_income')
-                                                                                    ->label("Other Income")
-                                                                                    ->color('success')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(4),
-                                                                            InfoLists\Components\TextEntry::make('gross_monthly_income')
-                                                                                    ->label("Gross Monthly Income")
-                                                                                    ->color('success')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(4),
-                                                                            InfoLists\Components\TextEntry::make('net_monthly_income')
-                                                                                    ->label("Net Monthly Income")
-                                                                                    ->color('success')
-                                                                                    ->money('PHP')
-                                                                                    ->columnSpan(4),
+                                                            ->columns(6)
+                                                            ->columnSpan(3)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('co_owner_firstname')
+                                                                                ->label('First Name')
+                                                                                ->columnSpan(2),
+                                                                InfoLists\Components\TextEntry::make('co_owner_middlename')
+                                                                                ->label('Middle Name')
+                                                                                ->columnSpan(2),
+                                                                InfoLists\Components\TextEntry::make('co_owner_lastname')
+                                                                                ->label('Last Name')
+                                                                                ->columnSpan(2),
                                                             ]),
-															InfoLists\Components\Section::make("Applicant's Net Income")
-																	->columnSpan(8)
-																	->description("The applicant's net monthly income.")
-																	->columns(12)
-																	->schema([
-																		InfoLists\Components\TextEntry::make('number_of_vehicles')
-																				->label("Number of vehicles")
-																				->columnSpan(12),
-																		InfoLists\Components\RepeatableEntry::make('real_estate_property')
-																				->label("Real Estate(s)")
-																				->columnSpan(12)
-																				->columns(12)
-																				->schema([
-																						InfoLists\Components\TextEntry::make('type')
-																								->columnSpan(12)
-																								->badge(),
-																						InfoLists\Components\TextEntry::make('clean')
-																								->columnSpan(3),
-																						InfoLists\Components\TextEntry::make('mortgage')
-																								->columnSpan(3)
-																								->money('PHP'),
-																						InfoLists\Components\TextEntry::make('to_whom')
-                                                                                                ->columnSpan(3),
-																						InfoLists\Components\TextEntry::make('market_value')
-																								->columnSpan(3)
-																								->money('PHP'),
-																				]),
-																		InfoLists\Components\RepeatableEntry::make('appliance_property')
-																				->label("Appliance(s)")
-																				->columnSpan(6)
-																				->schema([
-																						InfoLists\Components\TextEntry::make('name'),
-																				]),
-																	]),
-                                                            InfoLists\Components\ImageEntry::make('proof_of_income_image')
-                                                                    ->disk('public')
-                                                                    ->label('Proof of income:')
-                                                                    ->width(500)
-                                                                    ->height(500)
+                                                    InfoLists\Components\Section::make("Contact Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(3)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('co_owner_mobile_number')
+                                                                            ->label('Contact Information')
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('co_owner_email')
+                                                                            ->label('Email')
+                                                                            ->columnSpan(3),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Location Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(6)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('co_owner_address')
+                                                                            ->label('Address:')
+                                                                            ->columnSpan(3),
+                                                            ]),
+                                                    InfoLists\Components\ImageEntry::make('co_owner_valid_id')
+                                                                    ->label("Valid ID's:")
+                                                                    ->width(400)
+                                                                    ->height(400)
                                                                     ->columnSpan(6),
-                                                    ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
+                                            ->columns(8)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's Net Income")
+                                                            ->columnSpan(4)
+                                                            ->description("The applicant's net monthly income.")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicants_basic_monthly_salary')
+                                                                        ->label("Basic Monthly Salary")
+                                                                        ->color('success')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(4),
+                                                                InfoLists\Components\TextEntry::make('applicants_allowance_commission')
+                                                                        ->label("Allowance Commision")
+                                                                        ->color('success')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(4),
+                                                                InfoLists\Components\TextEntry::make('applicants_deductions')
+                                                                        ->label("Deductions")
+                                                                        ->color('danger')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(4),
+                                                                InfoLists\Components\TextEntry::make('applicants_net_monthly_income')
+                                                                        ->label(" Net Monthly Income")
+                                                                        ->color('success')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(12),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Spouse's Net Income")
+                                                            ->columnSpan(4)
+                                                            ->description("The spouse's net monthly income.")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('spouses_basic_monthly_salary')
+                                                                            ->label('Basic Monthly Salary')
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('spouse_allowance_commision')
+                                                                            ->label("Allowance Commision")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('spouse_deductions')
+                                                                            ->label("Deduction")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('spouse_net_monthly_income')
+                                                                            ->label("Net Monthly Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(12),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Expenses")
+                                                            ->columnSpan(8)
+                                                            ->description("These are expenses.")
+                                                            ->columns(8)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('living_expenses')
+                                                                            ->label("Living Expenses")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('education')
+                                                                            ->label("Education")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('transportation')
+                                                                            ->label("Transportation")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('rental')
+                                                                            ->label("Rentals")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('utilities')
+                                                                            ->label("Utilities")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
+                                                                            ->label("Monthly Payment")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('total_expenses')
+                                                                            ->label("Total Expenses")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                            ]),
+                                                    Infolists\Components\Section::make("")
+                                                            ->columns(12)
+                                                            ->columnSpan(8)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('other_income')
+                                                                            ->label("Other Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('gross_monthly_income')
+                                                                            ->label("Gross Monthly Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('net_monthly_income')
+                                                                            ->label("Net Monthly Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                            ]),
+                                                InfoLists\Components\Section::make("Applicant's Net Income")
+                                                                ->columnSpan(8)
+                                                                ->description("The applicant's net monthly income.")
+                                                                ->columns(12)
+                                                                ->schema([
+                                                                        InfoLists\Components\TextEntry::make('number_of_vehicles')
+                                                                                        ->label("Number of vehicles")
+                                                                                        ->columnSpan(12),
+                                                                        InfoLists\Components\RepeatableEntry::make('real_estate_property')
+                                                                                        ->label("Real Estate(s)")
+                                                                                        ->columnSpan(12)
+                                                                                        ->columns(12)
+                                                                                        ->schema([
+                                                                                                        InfoLists\Components\TextEntry::make('type')
+                                                                                                                        ->columnSpan(12)
+                                                                                                                        ->badge(),
+                                                                                                        InfoLists\Components\TextEntry::make('clean')
+                                                                                                                        ->columnSpan(3),
+                                                                                                        InfoLists\Components\TextEntry::make('mortgage')
+                                                                                                                        ->columnSpan(3)
+                                                                                                                        ->money('PHP'),
+                                                                                                        InfoLists\Components\TextEntry::make('to_whom')
+                                ->columnSpan(3),
+                                                                                                        InfoLists\Components\TextEntry::make('market_value')
+                                                                                                                        ->columnSpan(3)
+                                                                                                                        ->money('PHP'),
+                                                                                        ]),
+                                                                        InfoLists\Components\RepeatableEntry::make('appliance_property')
+                                                                                        ->label("Appliance(s)")
+                                                                                        ->columnSpan(6)
+                                                                                        ->schema([
+                                                                                                        InfoLists\Components\TextEntry::make('name'),
+                                                                                        ]),
+                                                                ]),
+                                                    InfoLists\Components\ImageEntry::make('proof_of_income_image')
+                                                            ->disk('public')
+                                                            ->label('Proof of income:')
+                                                            ->width(500)
+                                                            ->height(500)
+                                                            ->columnSpan(6),
+                                            ]),
                                     InfoLists\Components\Tabs\Tab::make('Financial References')
-                                                    ->columns(8)
-                                                    ->schema([
-                                                            InfoLists\Components\Section::make("Applicant's Personal Reference(s)")
-                                                                    ->columnSpan(8)
-                                                                    ->description("The applicant's personal reference(s) (This field is required)")
-                                                                    ->columns(12)
-                                                                    ->schema([
-                                                                            InfoLists\Components\RepeatableEntry::make("personal_references")
-                                                                                    ->label("Applicant's Personal Reference(s)")
-                                                                                    ->columnSpan(12)
-                                                                                    ->columns(12)
-                                                                                    ->schema([
-                                                                                            InfoLists\Components\TextEntry::make('name')
-                                                                                                    ->label("Name")
-                                                                                                    ->columnSpan(3),
-                                                                                            InfoLists\Components\TextEntry::make('address')
-                                                                                                    ->label("Address")
-                                                                                                    ->columnSpan(3),
-                                                                                            InfoLists\Components\TextEntry::make('relationship')
-                                                                                                    ->label("Relationship")
-                                                                                                    ->columnSpan(3),
-                                                                                            InfoLists\Components\TextEntry::make('telephone')
-                                                                                                    ->label("Contact Information")
-                                                                                                    ->columnSpan(3),
-                                                                                    ]),
-                                                    ]),
-                        InfoLists\Components\Section::make("Applicant's Credit Card Information")
-                                ->columnSpan(8)
-                                ->description("The applicant's Credit Card Information (This field is not required and may be empty)")
-                                ->columns(12)
-                                ->schema([
-                                        InfoLists\Components\TextEntry::make('bank_acc_type')
-                                                ->label("Account Type")
-                                                ->badge()
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('account_number')
-                                                ->label("Account No.")
-                                                ->badge()
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('bank_or_branch')
-                                                ->label("Bank\\Branch")
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('date_openned')
-                                                ->label("Date Openned")
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('average_monthly_balance')
-                                                ->label("Avg. Monthly Balance")
-                                                ->money('PHP')
-                                                ->columnSpan(3),
-                        ]),
-                        InfoLists\Components\Section::make("Creditor's Credit Card Information")
-                                ->columnSpan(8)
-                                ->description("This is the creditor's card reference (This field is not required and may be empty)")
-                                ->columns(12)
-                                ->schema([
-                                        InfoLists\Components\TextEntry::make('credit_card_company')
-                                                ->label("Card Company")
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('card_number')
-                                                ->label("Card No.")
-                                                ->badge()
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('date_issued')
-                                                ->label("Date Issued")
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('credit_limit')
-                                                ->label("Date Openned")
-                                                ->columnSpan(3),
-                                        InfoLists\Components\TextEntry::make('outstanding_balance')
-                                                ->label("Outstanding Balance")
-                                                ->money('PHP')
-                                                ->columnSpan(3),
-                        ]),
-                        InfoLists\Components\Section::make("Creditor's Information")
-                                ->columnSpan(8)
-                                ->description("This is the creditor's information (This field is not required and may be empty)")
-                                ->columns(12)
-                                ->schema([
-                                    InfoLists\Components\TextEntry::make('creditor')
-                                            ->label("Creditor Name")
-                                            ->columnSpan(3),
-                                    InfoLists\Components\TextEntry::make('term')
-                                            ->label("term")
-                                            ->columnSpan(3),
-                                    InfoLists\Components\TextEntry::make('date_issued')
-                                            ->label("Date Issued")
-                                            ->columnSpan(3),
-                                    InfoLists\Components\TextEntry::make('principal')
-                                            ->label("Principal")
-                                            ->columnSpan(3),
-                                    InfoLists\Components\TextEntry::make('monthly_amorthization')
-                                            ->label("Monthly Amortization")
-                                            ->money('PHP')
-                                            ->columnSpan(3),
-                        ]),
-                                                    ]),
-                        InfoLists\Components\Tabs\Tab::make('Educational Attainment')
-                                ->schema([
-                                        InfoLists\Components\Section::make("Applicant's educational Attainment")
-                                                ->columnSpan(8)
-                                                ->columns(12)
-                                                ->schema([
-                                                    InfoLists\Components\RepeatableEntry::make('educational_attainment')
+                                            ->columns(8)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's Personal Reference(s)")
+                                                            ->columnSpan(8)
+                                                            ->description("The applicant's personal reference(s) (This field is required)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\RepeatableEntry::make("personal_references")
+                                                                            ->label("Applicant's Personal Reference(s)")
+                                                                            ->columnSpan(12)
+                                                                            ->columns(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('name')
+                                                                                            ->label("Name")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('address')
+                                                                                            ->label("Address")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('relationship')
+                                                                                            ->label("Relationship")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('telephone')
+                                                                                            ->label("Contact Information")
+                                                                                            ->columnSpan(3),
+                                                                            ]),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Applicant's Credit Card Information")
+                                                            ->columnSpan(8)
+                                                            ->description("The applicant's Credit Card Information (This field is not required and may be empty)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\RepeatableEntry::make('applicants_card_information')
+                                                                            ->columns(12)
+                                                                            ->columnSpan(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('bank_acc_type')
+                                                                                            ->label("Account Type")
+                                                                                            ->badge()
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('account_number')
+                                                                                            ->label("Account No.")
+                                                                                            ->badge()
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('bank_or_branch')
+                                                                                            ->label("Bank\\Branch")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('date_openned')
+                                                                                            ->label("Date Openned")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('average_monthly_balance')
+                                                                                            ->label("Avg. Monthly Balance")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                            ])
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Creditor's Credit Card Information")
+                                                            ->columnSpan(8)
+                                                            ->description("This is the creditor's card reference (This field is not required and may be empty)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\RepeatableEntry::make('creditors_card_information')
+                                                                            ->columns(12)
+                                                                            ->columnSpan(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('credit_card_company')
+                                                                                            ->label("Card Company")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('card_number')
+                                                                                            ->label("Card No.")
+                                                                                            ->badge()
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('card_date_issued')
+                                                                                            ->label("Date Issued")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('credit_limit')
+                                                                                            ->label("Date Openned")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('outstanding_balance')
+                                                                                            ->label("Outstanding Balance")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                            ]),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Creditor's Information")
+                                                            ->columnSpan(8)
+                                                            ->description("This is the creditor's information (This field is not required and may be empty)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    Infolists\Components\RepeatableEntry::make('creditors_information')
+                                                                            ->columnSpan(12)
+                                                                            ->columns(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('name')
+                                                                                            ->label("Creditor Name")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('term')
+                                                                                            ->label("term")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('present_balance')
+                                                                                            ->label("Present Balance")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('principal')
+                                                                                            ->label("Principal")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('monthly_amorthization')
+                                                                                            ->label("Monthly Amortization")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(12),
+                                                                            ]),
+                                                            ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Educational Attainment')
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's educational Attainment")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\RepeatableEntry::make('educational_attainment')
+                                                                        ->columnSpan(12)
+                                                                        ->columns(12)
+                                                                        ->schema([
+                                                                                InfoLists\Components\TextEntry::make('course')
+                                                                                        ->label("Education")
+                                                                                        ->columnSpan(3),
+                                                                                InfoLists\Components\TextEntry::make('no_years')
+                                                                                        ->label("Number of Years")
+                                                                                        ->columnSpan(3),
+                                                                                InfoLists\Components\TextEntry::make('school')
+                                                                                        ->label("School")
+                                                                                        ->columnSpan(3),
+                                                                                InfoLists\Components\TextEntry::make('year_grad')
+                                                                                        ->label("Year of graduate")
+                                                                                        ->columnSpan(3),
+                                                                        ])
+                                                            ]),
+                                    InfoLists\Components\Section::make("Dependent")
+                                            ->columnSpan(8)
+                                            ->columns(12)
+                                            ->schema([
+                                                    InfoLists\Components\RepeatableEntry::make('dependents')
                                                             ->columnSpan(12)
                                                             ->columns(12)
                                                             ->schema([
-                                                                InfoLists\Components\TextEntry::make('course')
-                                                                        ->label("Education")
-                                                                        ->columnSpan(3),
-                                                                InfoLists\Components\TextEntry::make('no_years')
-                                                                        ->label("Number of Years")
-                                                                        ->columnSpan(3),
-                                                                InfoLists\Components\TextEntry::make('school')
-                                                                        ->label("School")
-                                                                        ->columnSpan(3),
-                                                                InfoLists\Components\TextEntry::make('year_grad')
-                                                                        ->label("Year of graduate")
-                                                                        ->columnSpan(3),
-                                                    ])
-                        ]),
-                        InfoLists\Components\Section::make("Dependent")
-                            ->columnSpan(8)
-                            ->columns(12)
-                            ->schema([
-									InfoLists\Components\RepeatableEntry::make('dependents')
-											->columnSpan(12)
-											->columns(12)
-											->schema([
-													InfoLists\Components\TextEntry::make('dependent_name')
-															->label("Name")
-															->columnSpan(3),
-													InfoLists\Components\TextEntry::make('dependent_birthdate')
-															->label("Birthday")
-															->columnSpan(3),
-													InfoLists\Components\TextEntry::make('dependent_school')
-															->label("School")
-															->columnSpan(3),
-													InfoLists\Components\TextEntry::make('dependent_monthly_tuition')
-															->label("Monthly Tuition")
-															->columnSpan(3),
-										])
-                        ]),
-                                                    ]),
+                                                                    InfoLists\Components\TextEntry::make('dependent_name')
+                                                                            ->label("Name")
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('dependent_birthdate')
+                                                                            ->label("Birthday")
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('dependent_school')
+                                                                            ->label("School")
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('dependent_monthly_tuition')
+                                                                            ->label("Monthly Tuition")
+                                                                            ->columnSpan(3),
+                                                        ])
+                                            ]),
+                                            ]),
                                     InfoLists\Components\Tabs\Tab::make('Employment')
-                                                    ->schema([
-                        InfoLists\Components\Section::make("Applicant's Present Employer")
-                                        ->columnSpan(8)
-                                        ->columns(12)
-                                        ->schema([
-                                            InfoLists\Components\TextEntry::make('applicant_present_business_employer')
-                                                    ->label("Employer")
-                                                    ->columnSpan(4),
-                                            InfoLists\Components\TextEntry::make('applicant_position')
-                                                    ->label("Position")
-                                                    ->columnSpan(4),
-                                            InfoLists\Components\TextEntry::make('applicant_how_long_job_or_business')
-                                                    ->label("School")
-                                                    ->columnSpan(4),
-                            ]),
-                            InfoLists\Components\Section::make("Applicant's Business")
-									->description("The Applicant's Business (This field is not required and can be empty)")
-                                    ->columnSpan(8)
-                                    ->columns(12)
-                                    ->schema([
-                                        InfoLists\Components\TextEntry::make('applicant_business_address')
-                                                ->label("Address")
-                                                ->columnSpan(6),
-                                        InfoLists\Components\TextEntry::make('applicant_nature_of_business')
-                                                ->label("Nature of Business")
-                                                ->columnSpan(6),
-                            ]),
-                            InfoLists\Components\Section::make("Previous Employer")
-									->description("The Applicant's previous employment (This field is not required and can be empty)")
-                                    ->columnSpan(8)
-                                    ->columns(12)
-                                    ->schema([
-                                        InfoLists\Components\TextEntry::make('applicant_previous_employer')
-                                                ->label("Employer")
-                                                ->columnSpan(6),
-                                        InfoLists\Components\TextEntry::make('applicant_previous_employer_position')
-                                                ->label("Position")
-                                                ->columnSpan(6),
-                                        InfoLists\Components\TextEntry::make('applicant_how_long_prev_job_or_business')
-                                                ->label("How Long")
-                                                ->columnSpan(6),
-                            ]),
-                            InfoLists\Components\Section::make("Spouse's Present Employment Information")
-									->description("The Spouse's employment (This field is not required and can be empty)")
-                                    ->columnSpan(8)
-                                    ->columns(12)
-                                    ->schema([
-                                        InfoLists\Components\TextEntry::make('spouse_employer')
-                                                ->label("Employer")
-                                                ->columnSpan(6),
-                                        InfoLists\Components\TextEntry::make('spouse_position')
-                                                ->label("Position")
-                                                ->columnSpan(6),
-                                        InfoLists\Components\TextEntry::make('spouse_how_long_job_business')
-                                                ->label("How Long")
-                                                ->columnSpan(6),
-                            ]),
-                            InfoLists\Components\Section::make("Spouse's Present Business")
-									->description("The Spouse's business (This field is not required and can be empty)")
-                                    ->columnSpan(8)
-                                    ->columns(12)
-                                    ->schema([
-                                        InfoLists\Components\TextEntry::make('spouse_business_address')
-                                                ->label("Business Address")
-                                                ->columnSpan(6),
-                                        InfoLists\Components\TextEntry::make('spouse_nature_of_business')
-                                                ->label("Nature of Business")
-                                                ->columnSpan(6),
-                            		]),
-                            ]),
-						])
-						->columns(6)
-						->columnSpan(6),
-            ])->columns(4);
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's Present Employer")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('applicant_present_business_employer')
+                                                                            ->label("Employer")
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('applicant_position')
+                                                                            ->label("Position")
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('applicant_how_long_job_or_business')
+                                                                            ->label("School")
+                                                                            ->columnSpan(4),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Applicant's Business")
+                                                            ->description("The Applicant's Business (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicant_business_address')
+                                                                        ->label("Address")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('applicant_nature_of_business')
+                                                                        ->label("Nature of Business")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Previous Employer")
+                                                            ->description("The Applicant's previous employment (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicant_previous_employer')
+                                                                        ->label("Employer")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('applicant_previous_employer_position')
+                                                                        ->label("Position")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('applicant_how_long_prev_job_or_business')
+                                                                        ->label("How Long")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Spouse's Present Employment Information")
+                                                            ->description("The Spouse's employment (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('spouse_employer')
+                                                                        ->label("Employer")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('spouse_position')
+                                                                        ->label("Position")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('spouse_how_long_job_business')
+                                                                        ->label("How Long")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Spouse's Present Business")
+                                                            ->description("The Spouse's business (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('spouse_business_address')
+                                                                        ->label("Business Address")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('spouse_nature_of_business')
+                                                                        ->label("Nature of Business")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                            ]),
+                        ]),
+            ]);
     }
     public static function table(Table $table): Table
     {
@@ -1892,9 +1961,8 @@ class CustomerApplicationResource extends Resource
                         ->label("Application ID:")
                         ->searchable(),
                 Tables\Columns\TextColumn::make('application_type')
-                        ->label("Type:")
-                        ->badge()
-                        ->searchable(),
+                        ->label("Status:")
+                        ->badge(),                 
                 Tables\Columns\TextColumn::make('application_status')
                         ->label("Status:")
                         ->badge(),
