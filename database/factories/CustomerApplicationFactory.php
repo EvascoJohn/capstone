@@ -16,8 +16,6 @@ class CustomerApplicationFactory extends Factory
      */
     public function definition(): array
     {
-
-
         return [
             'application_status' => 'pending',
             'application_is_new' => true,

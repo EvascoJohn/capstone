@@ -4,6 +4,10 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
+/*
+
+*/
+
 enum ApplicationStatus:string implements HasLabel
 {
     case PENDING_STATUS         = "Pending";

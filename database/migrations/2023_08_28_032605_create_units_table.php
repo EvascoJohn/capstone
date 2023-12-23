@@ -31,7 +31,6 @@ return new class extends Migration
             $table->enum('status', UnitStatus::values());
             $table->string('notes')
                     ->nullable();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

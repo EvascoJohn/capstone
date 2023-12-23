@@ -1,7 +1,6 @@
 <?php
 
-use App\Enums\ApplicationStatus;
-use App\Enums\ReleaseStatus;
+use App\Enums;
 use App\Models\Branch;
 use App\Models\Unit;
 use App\Models\UnitModel;
@@ -25,19 +24,20 @@ return new class extends Migration
             $table->foreignId('account_id')->nullable();
 
             // Application related information
-            $table->enum('application_status', ApplicationStatus::values())->default(ApplicationStatus::PENDING_STATUS);
+            $table->enum('application_status', Enums\ApplicationStatus::values())->default(Enums\ApplicationStatus::PENDING_STATUS);
             $table->text('reject_note')->default(null)->nullable();
             $table->text('resubmission_note')->default(null)->nullable();
             $table->string('preffered_unit_status')->default(null)->nullable();
-            $table->enum('release_status', ReleaseStatus::values())->default(ReleaseStatus::UN_RELEASED);
+            $table->enum('release_status', Enums\ReleaseStatus::values())->default(Enums\ReleaseStatus::UN_RELEASED);
 
-            $table->string('plan')->nullable();
+            $table->enum('application_type', Enums\ApplicationType::values())->default(Enums\ApplicationType::WALK_IN);
+
+            $table->enum('plan', Enums\PlanStatus::values())->default(Enums\PlanStatus::INSTALLMENT);
 
             $table->foreignId('assumed_by_id')->default(null)->nullable();
 
             $table->foreignIdFor(Branch::class)->nullable()->onDelete('set null');
             $table->string('author_id')->nullable();
-            $table->enum('application_type',['online', 'walk-in']);
 
             // Unit Information
             $table->foreignIdFor(UnitModel::class)->onDelete('set null');
@@ -135,10 +135,42 @@ return new class extends Migration
             $table->double('spouse_deductions')->nullable();
             $table->double('spouse_net_monthly_income')->nullable();
 
-            // Personal References
-            $table->json('personal_references')->nullable();
+            // credit card information
+            $table->string('bank_acc_type')->nullable();
+            $table->string('account_number')->nullable();
+            $table->text('bank_or_branch')->nullable();
+            $table->string('date_openned')->nullable();
+            $table->double('average_monthly_balance')->nullable();
 
-            $table->json('properties')->nullable();
+
+            // creditors credit card
+            $table->string('credit_card_company')->nullable();
+            $table->string('card_number')->nullable();
+            $table->text('card_date_issued')->nullable();
+            $table->double('credit_limit')->nullable();
+            $table->double('outstanding_balance')->nullable();
+
+
+            // creditor's informaition
+            $table->string('creditor')->nullable();
+            $table->integer('term')->nullable();
+            $table->text('date_issued')->nullable();
+            $table->double('principal')->nullable();
+            $table->double('monthly_amorthization')->nullable();
+
+
+            // Dependent
+            $table->string('dependent_name')->nullable();
+            $table->string('dependent_birthdate')->nullable();
+            $table->text('dependent_school')->nullable();
+            $table->double('dependent_monthly_tuition')->nullable();
+
+
+
+            $table->integer('number_of_vehicles')->nullable();
+            $table->json('real_estate_property')->nullable();
+            $table->json('appliance_property')->nullable();
+            $table->json("personal_references")->nullable();
             $table->double('other_income')->nullable();
             $table->double('total_expenses')->nullable();
             $table->double('gross_monthly_income')->nullable();

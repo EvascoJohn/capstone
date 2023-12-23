@@ -39,7 +39,7 @@ class UnitModelResource extends Resource
                 ->columnSpan(1),
             Forms\Components\TextInput::make('displacement')
                 ->mask(Rawjs::make(<<<'JS'
-                    '9999'
+                    '9999999'
                 JS))
                 ->suffix('cc')
                 ->required()

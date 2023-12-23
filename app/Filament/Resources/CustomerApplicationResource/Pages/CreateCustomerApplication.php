@@ -6,6 +6,7 @@ use App\Filament\Resources\CustomerApplicationResource;
 use App\Models\CustomerApplication;
 use App\Models\CustomerPaymentAccount;
 use Filament\Actions;
+use App\Enums;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -36,7 +37,7 @@ class CreateCustomerApplication extends CreateRecord
     {
         $data['branch_id'] = auth()->user()->branch_id;
         $data['author_id'] = auth()->user()->id;
-        $data['application_type'] = "walk-in";
+        $data['application_type'] = Enums\ApplicationType::WALK_IN;
         return $data;
     }
 

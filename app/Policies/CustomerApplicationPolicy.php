@@ -47,9 +47,6 @@ class CustomerApplicationPolicy
      */
     public function update($user, CustomerApplication $customerApplication): bool
     {
-        if($user::class == Customer::class || $user->hasAnyPermission("read: customer-application")){
-            return true;
-        };
         return false;
     }
 

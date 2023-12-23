@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\ApplicationStatus;
-use App\Enums\ReleaseStatus;
-use App\Enums\UnitStatus;
+use App\Enums;
 use App\Models\Scopes\CustomerApplicationScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -77,15 +75,6 @@ class CustomerApplication extends Model implements HasMedia
         'applicant_previous_employer_position',
         'applicant_how_long_prev_job_or_business',
 
-        'applicant_present_business_employer',
-        'applicant_position',
-        'applicant_how_long_job_or_business',
-        'applicant_business_address',
-        'applicant_nature_of_business',
-        'applicant_previous_employer',
-        'applicant_previous_employer_position',
-        'applicant_how_long_prev_job_or_business',
-
         //Co owner Information
         'co_owner_firstname',
         'co_owner_middlename',
@@ -123,22 +112,37 @@ class CustomerApplication extends Model implements HasMedia
         'bank_references',
         'credit_references',
 
-        //Financials
-        'applicants_basic_monthly_salary',
-        'applicants_allowance_commission',
-        'applicants_deductions',
-        'applicants_net_monthly_income',
+        //credit card information
+        'bank_acc_type',
+        'account_number',
+        'bank_or_branch',
+        'date_openned',
+        'average_monthly_balance',
 
-        'spouses_basic_monthly_salary',
-        'spouse_allowance_commision',
-        'spouse_deductions',
-        'spouse_net_monthly_income',
+        //creditors credit card
+        'credit_card_company',
+        'card_number',
+        'date_issued',
+        'credit_limit',
+        'outstanding_balance',
 
-        //Personal References
-        'personal_references',
+        //creditors information
+        'creditor',
+        'term',
+        'date_issued',
+        'principal',
+        'monthly_amorthization',
+
+        // Dependent
+        'dependent_name',
+        'dependent_birthdate',
+        'dependent_school',
+        'dependent_monthly_tuition',
 
         //Personal & Real Estate Properties
-        'properties',
+        'number_of_vehicles',
+        'real_estate_property',
+        "appliance_property",
 
         //Applicant's Income
         'applicants_basic_monthly_salary',
@@ -155,6 +159,9 @@ class CustomerApplication extends Model implements HasMedia
 
         //Other Income
         'other_income',
+
+        //personal_references
+        'personal_references', 
 
         //Gross Monthly Income
         'gross_monthly_income',
@@ -177,8 +184,11 @@ class CustomerApplication extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'application_status'        =>  ApplicationStatus::class,
-        'properties'                => 'json',
+        'application_status'        =>  Enums\ApplicationStatus::class,
+        'plan'                      =>  Enums\PlanStatus::class,
+        'application_type'          =>  Enums\ApplicationType::class,
+        'real_estate_property'      => 'json',
+        'appliance_property'        => 'json',
         'applicant_valid_id'        => 'json',
         'spouse_valid_id'           => 'json',
         'co_owner_valid_id'         => 'json',
@@ -219,8 +229,7 @@ class CustomerApplication extends Model implements HasMedia
 
             $this->application_status,                  // account status
             $payment_status,                            // payment_status
-            $this->unit_srp,                            // remaining_balance                                            // original_amount
-
+            $this->unit_srp,                            // remaining_balance
             null                                        // unit_release_id
         ]);
         $new_account->save();
@@ -234,7 +243,7 @@ class CustomerApplication extends Model implements HasMedia
         // If the application is Released.
         // If the applicaton is approved.
         return static::query()
-                    ->where('application_status', ApplicationStatus::APPROVED_STATUS->value)
+                    ->where('application_status', Enums\ApplicationStatus::APPROVED_STATUS->value)
                     ->where(function ($query) use ($search) {
                         $query->where('applicant_firstname', 'like', '%' . $search . '%')
                             ->orWhere('applicant_lastname', 'like', '%' . $search . '%')
@@ -249,7 +258,7 @@ class CustomerApplication extends Model implements HasMedia
         // If the application is Released.
         // If the applicaton is approved.
         return static::query()
-                    ->where('application_status', ApplicationStatus::APPROVED_STATUS->value)
+                    ->where('application_status', Enums\ApplicationStatus::APPROVED_STATUS->value)
                     ->where('account_id', null)
                     ->where(function ($query) use ($search) {
                         $query->where('applicant_firstname', 'like', '%' . $search . '%')
@@ -266,9 +275,9 @@ class CustomerApplication extends Model implements HasMedia
         // If the application is Released.
         // If the applicaton is approved.
         return static::query()
-                    ->where('application_status', ApplicationStatus::APPROVED_STATUS->value)
+                    ->where('application_status', Enums\ApplicationStatus::APPROVED_STATUS->value)
                     ->where('account_id', null)
-                    ->where('preffered_unit_status', UnitStatus::REPOSESSION->value)
+                    ->where('preffered_unit_status', Enums\UnitStatus::REPOSESSION->value)
                     ->where(function ($query) use ($search) {
                         $query->where('applicant_firstname', 'like', '%' . $search . '%')
                             ->orWhere('applicant_lastname', 'like', '%' . $search . '%')
@@ -295,8 +304,8 @@ class CustomerApplication extends Model implements HasMedia
     public static function getApplicationsReadyForRelease(): Builder
     {
         return static::query()
-                    ->where('application_status', ApplicationStatus::ACTIVE_STATUS->value)
-                    ->where('released_status', ReleaseStatus::UN_RELEASED->value);
+                    ->where('application_status', Enums\ApplicationStatus::ACTIVE_STATUS->value)
+                    ->where('released_status', Enums\ReleaseStatus::UN_RELEASED->value);
     }
 
     public function hasMonthlyPayment(): bool
@@ -310,8 +319,8 @@ class CustomerApplication extends Model implements HasMedia
     public function releasesApplication(array $data = null): array
     {
         $this->due_date = $this->calculateDueDate(Carbon::now ());
-        $data["application_status"] = ApplicationStatus::ACTIVE_STATUS->value;
-        $data["release_status"] = ReleaseStatus::RELEASED->value;
+        $data["application_status"] = Enums\ApplicationStatus::ACTIVE_STATUS->value;
+        $data["release_status"] = Enums\ReleaseStatus::RELEASED->value;
         $this->release();
         dd($this->attributes);
     }
@@ -340,13 +349,13 @@ class CustomerApplication extends Model implements HasMedia
 
     }
 
-    public function setStatusTo(ApplicationStatus $status): void
+    public function setStatusTo(Enums\ApplicationStatus $status): void
     {
         $this->application_status = $status;
         $this->save();
     }
 
-    public function getStatus(): ApplicationStatus|null
+    public function getStatus(): Enums\ApplicationStatus|null
     {
         if($this->application_status != null)
         {
