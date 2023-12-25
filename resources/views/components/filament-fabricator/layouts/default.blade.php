@@ -123,7 +123,7 @@
         </div>
       </div>
       <div class="bottom">
-        <p>Copyright © 2023 <span>BrandName</span> Made by Group5</p>
+        <p>Copyright © 2023 <span>{{ env('APP_NAME') }}</span> Made by Group5</p>
       </div>
     </footer>
      {{-- Footer Here --}}
