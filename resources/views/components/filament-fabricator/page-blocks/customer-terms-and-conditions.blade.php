@@ -99,7 +99,7 @@
           </div>
         </div>
 
-        <div class="row2 box">
+        {{-- <div class="row2 box">
           <li><a href="../html/index.html">Home</a></li>
           <li><a href="../html/products.html">Products</a></li>
           <li><a href="../html/application.html">Application</a></li>
@@ -107,7 +107,17 @@
           <li><a href="../html/privacy-policy.html">Privacy Policy</a></li>
           <li><a href="../html/Terms-and-condition.html">Terms &amp Condition</a></li>
           <li><a href="../html/contact.html">FAQs</a></li>
+        </div> --}}
+
+        <div class="row2 box">
+          <li><a href="/home">Home</a></li>
+          <li></li>
+          <li><a href="/products">Products</a></li>
+          <br/>
+          <li><a href="/about-us">About Us</a></li>
+          <li><a href="/contact-us">Contact Us</a></li>
         </div>
+
 
         <div class="row3 box">
           <div class="topic">Contact us</div>
