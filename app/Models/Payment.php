@@ -51,8 +51,6 @@ class Payment extends Model
         $dueDateFormatted = $dueDate->format(config('app.date_format'));
         return $dueDateFormatted;
     }
-    
-    
 
     protected static function booted(): void
     {
