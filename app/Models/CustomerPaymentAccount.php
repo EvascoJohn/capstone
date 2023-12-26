@@ -28,8 +28,6 @@ class CustomerPaymentAccount extends Model
         'unit_release_id',          // reference to the unit release containing [unit_id, date_realeased].
     ];
 
-
-
     public static function getActiveAccounts(string $search): Builder
     {
         //returns a query builder for getting all the un-released applications.

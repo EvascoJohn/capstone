@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+
+
 class DealerhipCalculations
 {
     static function calculateSum(...$args): float {

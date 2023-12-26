@@ -23,9 +23,12 @@ class ViewCustomerApplication extends ViewRecord
             return Actions\Action::make("Approve")
                     ->color('success')
                     ->requiresConfirmation()
+                    ->modalHeading('Approve this application?')
+                    ->modalDescription("After approving this application a Payment Account will be created.")
+                    ->modalSubmitActionLabel('Yes, Approve this Application')
                     ->action(function(array $data){
                             $this->record->setStatusTo(ApplicationStatus::APPROVED_STATUS);
-                            // $this->record->assignAccount();
+                            $this->record->assignAccount();
                             $this->record->reject_note = null;
                             $this->getRecord()->save(); // saves the record
                     })->hidden(

@@ -21,11 +21,22 @@ class CustomerPaymentAccountResource extends Resource
 {
     protected static ?string $model = CustomerPaymentAccount::class;
 
-    protected static ?string $navigationLabel = 'Payment Accounts';
-    protected static ?string $modelLabel = "Payment Accounts";
-    // protected static ?string $navigationGroup = 'Payment Accounts';
+    // protected static ?string $navigationLabel = 'Installment';
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?string $navigationGroup = 'Payments';
+
+    protected static ?string $modelLabel = "Payment Management";
+
+    protected static ?string $pluralModelLabel = 'Installments';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Form $form): Form
     {
@@ -91,16 +102,24 @@ class CustomerPaymentAccountResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make("id"),
-                Tables\Columns\TextColumn::make("customerApplication.applicant_full_name"),
+                Tables\Columns\TextColumn::make("customer_application_id")
+                        ->label("Application ID"),
+                Tables\Columns\TextColumn::make("customerApplication.applicant_full_name")
+                        ->label('Applicant Name'),
+                Tables\Columns\TextColumn::make("original_amount")
+                        ->money("PHP"),
                 Tables\Columns\TextColumn::make("remaining_balance")
                         ->money("PHP"),
-                Tables\Columns\TextColumn::make("payment_status"),
+                Tables\Columns\TextColumn::make("payment_status")
+                        ->badge(),
+                Tables\Columns\TextColumn::make("term")
+                        ->badge(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 // no bulk actions.
@@ -119,7 +138,7 @@ class CustomerPaymentAccountResource extends Resource
         return [
             'index' => Pages\ListCustomerPaymentAccounts::route('/'),
             'create' => Pages\CreateCustomerPaymentAccount::route('/create'),
-            'edit' => Pages\EditCustomerPaymentAccount::route('/{record}/edit'),
+            // 'edit' => Pages\EditCustomerPaymentAccount::route('/{record}/edit'),
         ];
     }
 }

@@ -30,34 +30,29 @@ class PaymentResource extends Resource
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationGroup = 'Payments';
 
     public static function getApplicationInformation(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-            Forms\Components\Section::make("Customer Application's Information")
+            Forms\Components\Section::make("Customer Information")
+                    ->columns(12)
                     ->schema([
+                        PaymentResource::getApplicationDetails()
+                                ->columnSpan(12),
                         Forms\Components\TextInput::make('application_full_name')
-                                ->columnSpan(3)
-                                ->disabled()
+                                ->columnSpan(6)
+                                ->readOnly()
                                 ->label('Full name'),
                         Forms\Components\TextInput::make('application_unit')
                                 ->columnSpan(6)
-                                ->disabled()
+                                ->readOnly()
                                 ->label('Unit'),
-                        Forms\Components\TextInput::make('application_balance')
-                                ->columnSpan(6)
-                                ->disabled()
-                                ->label('Balance'),
                         Forms\Components\TextInput::make('est_monthly_payment')
+                                ->label("Monthly Payment")
                                 ->columnSpan(6)
-                                ->disabled()
-                                ->label('Estimated monthly payment'),
-                        Forms\Components\TextInput::make('application_unit_price')
-                                ->columnSpan(6)
-                                ->disabled()
-                                ->label('Price'),
+                                ->readOnly(),
                     ])
-                    ->columns(6)
         ]);
     }
 
@@ -107,11 +102,8 @@ class PaymentResource extends Resource
         return Forms\Components\Group::make([
                 Forms\Components\Select::make('customer_payment_account_id')
                         ->searchable()
-                        ->columnSpan(1)
-                        // queries the payment account.
-                        // 
                         ->getSearchResultsUsing(fn (string $search): array => CustomerPaymentAccount::query()->where('id', $search)->get()->pluck('id', 'id')->toArray())
-                        // ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value)->id)
+                        ->getOptionLabelUsing(fn ($value): ?string => CustomerPaymentAccount::find($value)->id)
                         ->required()
                         ->live()
                         ->afterStateUpdated(
@@ -143,8 +135,7 @@ class PaymentResource extends Resource
                                 $set('status', $account->payment_status);
                             }
                         ),
-                ])
-                ->columns(2);
+                ]);
     }
 
     public static function form(Form $form): Form
@@ -152,10 +143,8 @@ class PaymentResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Group::make([
-                    PaymentResource::getApplicationDetails()
-                            ->columnSpan(3),
-                    PaymentResource::getApplicationInformation()
-                            ->columnSpan(3),  
+                        PaymentResource::getApplicationInformation()
+                                ->columnSpan(3),  
                 ])
                 ->columns(3)
                 ->columnSpan(3),

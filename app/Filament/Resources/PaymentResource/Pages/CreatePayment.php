@@ -12,14 +12,28 @@ use App\Models\Payment;
 use App\Models\User;
 use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Notifications;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Carbon;
+use Livewire\Component;
 
 class CreatePayment extends CreateRecord
 {
     protected static string $resource = PaymentResource::class;
+
+    protected function getCancelFormAction(): Action
+    {
+        return Action::make('cancel')
+            ->requiresConfirmation()
+            ->action(function(){
+                redirect($this->previousUrl);
+            })
+            ->label(__('filament-panels::resources/pages/create-record.form.actions.cancel.label'))
+            // ->url($this->previousUrl ?? static::getResource()::getUrl())
+            ->color('info');
+    }
 
     protected function afterCreate(): void
     {

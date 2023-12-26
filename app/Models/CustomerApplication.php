@@ -186,6 +186,8 @@ class CustomerApplication extends Model implements HasMedia
     public function assignAccount(): void
     {
         //assigns an account to the customer application.
+
+
         $payment_status = null;
         if($this->plan == 'cash'){
             $payment_status = "cash-payment";
@@ -197,21 +199,20 @@ class CustomerApplication extends Model implements HasMedia
             $payment_status = 'uni-payment';
         }
         $new_account = CustomerPaymentAccount::create([
-            $this->unit_srp,                            // remaining_balance
-            $this->plan,                                // plan_type
-            0.00,                                       // monthly_interest
-
-            $this->unit_monthly_amort,                  // monthly_payment
-            $this->term,                                // term
-            $this->term,                                // term_left
-
-            $this->application_status,                  // account status
-            $payment_status,                            // payment_status
-            $this->unit_srp,                            // remaining_balance
-            null                                        // unit_release_id
+            'customer_application_id'   =>  $this->id,
+            'remaining_balance'         =>  $this->unit_srp,
+            'due_date'                  =>  null, 
+            'plan_type'                 =>  $this->plan,
+            'monthly_interest'          =>  0.00,
+            'monthly_payment'           =>  $this->unit_monthly_amort_fin,
+            'term'                      =>  $this->unit_term,
+            'status'                    => $this->application_status,
+            'payment_status'            => $payment_status,
+            'original_amount'           =>  $this->unit_srp,
+            'unit_release_id'           =>  null,
         ]);
+        // dd($new_account);
         $new_account->save();
-        $this->acount_id = $new_account->id;
     }
 
     public static function getSearchApplicationsReadyForPayment(string $search): Builder

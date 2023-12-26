@@ -702,6 +702,10 @@ class CustomerApplicationResource extends Resource
                                                     $component->state(0);
                                                 }
                                                 $deductions = $get('applicants_deductions');
+                                                $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                        $get('total_expenses'),
+                                                        $deductions,
+                                                );
                                                 $additionals = DealerhipCalculations::calculateSum(
                                                         $get('applicants_basic_monthly_salary'),
                                                         $get('applicants_allowance_commission')
@@ -717,7 +721,7 @@ class CustomerApplicationResource extends Resource
                                                 );
                                                 $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                         $gross,
-                                                        $get('total_expenses'),
+                                                        $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                 );
                                                 $set('applicants_net_monthly_income', $net);
                                                 $set('gross_monthly_income', $gross);
@@ -736,6 +740,10 @@ class CustomerApplicationResource extends Resource
                                                     $component->state(0);
                                                 }
                                                 $deductions = $get('applicants_deductions');
+                                                $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                        $get('total_expenses'),
+                                                        $deductions,
+                                                );
                                                 $additionals = DealerhipCalculations::calculateSum(
                                                         $get('applicants_basic_monthly_salary'),
                                                         $get('applicants_allowance_commission')
@@ -751,7 +759,7 @@ class CustomerApplicationResource extends Resource
                                                 );
                                                 $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                         $gross,
-                                                        $get('total_expenses'),
+                                                        $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                 );
                                                 $set('applicants_net_monthly_income', $net);
                                                 $set('gross_monthly_income', $gross);
@@ -770,6 +778,10 @@ class CustomerApplicationResource extends Resource
                                                         $component->state(0);
                                                     }
                                                     $deductions = $get('applicants_deductions');
+                                                    $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                            $get('total_expenses'),
+                                                            $deductions,
+                                                    );
                                                     $additionals = DealerhipCalculations::calculateSum(
                                                             $get('applicants_basic_monthly_salary'),
                                                             $get('applicants_allowance_commission')
@@ -785,7 +797,7 @@ class CustomerApplicationResource extends Resource
                                                     );
                                                     $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                             $gross,
-                                                            $get('total_expenses'),
+                                                            $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                     );
                                                     $set('applicants_net_monthly_income', $net);
                                                     $set('gross_monthly_income', $gross);
@@ -806,6 +818,15 @@ class CustomerApplicationResource extends Resource
                                                         $get('applicants_basic_monthly_salary'),
                                                         $get('applicants_allowance_commission')
                                                 );
+                                                $deductions = $get('applicants_deductions');
+                                                $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                        $get('total_expenses'),
+                                                        $deductions,
+                                                );
+                                                $additionals = DealerhipCalculations::calculateSum(
+                                                        $get('applicants_basic_monthly_salary'),
+                                                        $get('applicants_allowance_commission')
+                                                );
                                                 $net = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                         $additionals,
                                                         $deductions,
@@ -817,7 +838,7 @@ class CustomerApplicationResource extends Resource
                                                 );
                                                 $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                         $gross,
-                                                        $get('total_expenses'),
+                                                        $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                 );
                                                 $set('applicants_net_monthly_income', $net);
                                                 $set('gross_monthly_income', $gross);
@@ -841,8 +862,11 @@ class CustomerApplicationResource extends Resource
                                                             if($state == null){
                                                                     $component->state(0);
                                                             }
-
                                                             $deductions = $get('spouse_deductions');
+                                                            $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                                $get('total_expenses'),
+                                                                $deductions,
+                                                            );
                                                             $additionals = DealerhipCalculations::calculateSum(
                                                                     $get('spouses_basic_monthly_salary'),
                                                                     $get('spouse_allowance_commision')
@@ -858,7 +882,7 @@ class CustomerApplicationResource extends Resource
                                                             );
                                                             $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                                     $gross,
-                                                                    $get('total_expenses'),
+                                                                    $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                             );
                                                             $set('spouse_net_monthly_income', $net);
                                                             $set('gross_monthly_income', $gross);
@@ -877,6 +901,10 @@ class CustomerApplicationResource extends Resource
                                                                     $component->state(0);
                                                             }
                                                             $deductions = $get('spouse_deductions');
+                                                            $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                                $get('total_expenses'),
+                                                                $deductions,
+                                                            );
                                                             $additionals = DealerhipCalculations::calculateSum(
                                                                     $get('spouses_basic_monthly_salary'),
                                                                     $get('spouse_allowance_commision')
@@ -892,7 +920,7 @@ class CustomerApplicationResource extends Resource
                                                             );
                                                             $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                                     $gross,
-                                                                    $get('total_expenses'),
+                                                                    $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                             );
                                                             $set('spouse_net_monthly_income', $net);
                                                             $set('gross_monthly_income', $gross);
@@ -910,9 +938,11 @@ class CustomerApplicationResource extends Resource
                                                             if($state == null){
                                                                     $component->state(0);
                                                             }
-
-
                                                             $deductions = $get('spouse_deductions');
+                                                            $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                                $get('total_expenses'),
+                                                                $deductions,
+                                                            );
                                                             $additionals = DealerhipCalculations::calculateSum(
                                                                     $get('spouses_basic_monthly_salary'),
                                                                     $get('spouse_allowance_commision')
@@ -928,7 +958,7 @@ class CustomerApplicationResource extends Resource
                                                             );
                                                             $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                                     $gross,
-                                                                    $get('total_expenses'),
+                                                                    $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                             );
                                                             $set('spouse_net_monthly_income', $net);
                                                             $set('gross_monthly_income', $gross);
@@ -948,6 +978,10 @@ class CustomerApplicationResource extends Resource
                                                                     $component->state(0);
                                                             }
                                                             $deductions = $get('spouse_deductions');
+                                                            $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                                                $get('total_expenses'),
+                                                                $deductions,
+                                                            );
                                                             $additionals = DealerhipCalculations::calculateSum(
                                                                     $get('spouses_basic_monthly_salary'),
                                                                     $get('spouse_allowance_commision')
@@ -963,7 +997,7 @@ class CustomerApplicationResource extends Resource
                                                             );
                                                             $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                                     $gross,
-                                                                    $get('total_expenses'),
+                                                                    $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                                             );
                                                             $set('spouse_net_monthly_income', $net);
                                                             $set('gross_monthly_income', $gross);
@@ -988,9 +1022,12 @@ class CustomerApplicationResource extends Resource
                                     $get('spouse_net_monthly_income'),
                                     $get('other_income')
                                 );
+                                $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT = DealerhipCalculations::calculateSum(
+                                    $get('total_expenses'),
+                                );
                                 $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                     $gross,
-                                    $get('total_expenses'),
+                                    $TOTAL_EXPENSE_WITH_MONTHLY_PAYMENT,
                                 );
                                 $set('gross_monthly_income', $gross);
                                 $set('net_monthly_income', $overall);
@@ -1042,7 +1079,8 @@ class CustomerApplicationResource extends Resource
                                                 $get('rental'),
                                                 $get('utilities'),
                                                 $get('other_expenses'),
-                                            );
+                                                $get('unit_monthly_amort_fin')
+                                        );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
                                                 $additionals,
@@ -1063,13 +1101,13 @@ class CustomerApplicationResource extends Resource
                                                 $component->state(0);
                                         }
                                         $additionals = DealerhipCalculations::calculateSum(
-                                            $get('education'),
-                                            $get('living_expenses'),
-                                            $get('transportation'),
-                                            $get('rental'),
-                                            $get('utilities'),
-                                            $get('other_expenses'),
-                                            
+                                                $get('education'),
+                                                $get('living_expenses'),
+                                                $get('transportation'),
+                                                $get('rental'),
+                                                $get('utilities'),
+                                                $get('other_expenses'),
+                                                $get('unit_monthly_amort_fin')
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1097,6 +1135,7 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
+                                            $get('unit_monthly_amort_fin')
                                             
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
@@ -1125,6 +1164,7 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
+                                            $get('unit_monthly_amort_fin')
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1152,6 +1192,7 @@ class CustomerApplicationResource extends Resource
                                             $get('rental'),
                                             $get('utilities'),
                                             $get('other_expenses'),
+                                            $get('unit_monthly_amort_fin')
                                         );
                                         $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
                                                 $get('gross_monthly_income'),
@@ -1175,20 +1216,6 @@ class CustomerApplicationResource extends Resource
                                                 if($state == null){
                                                         $component->state(0);
                                                 }
-                                                $additionals = DealerhipCalculations::calculateSum(
-                                                        $get('education'),
-                                                        $get('living_expenses'),
-                                                        $get('transportation'),
-                                                        $get('rental'),
-                                                        $get('utilities'),
-                                                        $get('other_expenses'),
-                                                );
-                                                $overall = Models\StatementOfMonthlyIncomeHelper::calculateNetIncome(
-                                                        $get('gross_monthly_income'),
-                                                        $additionals,
-                                                );
-                                                $set('total_expenses', $additionals);
-                                                $set('net_monthly_income', $overall);
                                         }),
                         Forms\Components\TextInput::make("other_expenses")->label("Other Expenses:")->numeric()
                                 ->columnSpan(4)
@@ -1224,13 +1251,14 @@ class CustomerApplicationResource extends Resource
                                 ->readOnly()
                                 ->inputMode('decimal')
                                 ->minValue(0)
-                                ->default(0)
+                                ->default(function (Forms\Get $get):float {
+                                    return $get("unit_monthly_amort_fin");
+                                })
                                 ->numeric()
                                 ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
                                         if($state == null){
-                                                $component->state(0);
+                                                $component->state(0+$get("unit_monthly_amort_fin"));
                                         }
-
                                 }),
                 ]),
         ]);
@@ -1243,6 +1271,20 @@ class CustomerApplicationResource extends Resource
                     ->columns(12)
                     ->schema([
                             Forms\Components\TextInput::make("net_monthly_income")->label("Net Monthly Income:")
+                                    ->label("Net Monthly Income")
+                                    ->live(onBlur: true)
+                                    ->inputMode('decimal')
+                                    ->columnSpan(12)
+                                    ->minValue(0)
+                                    ->readOnly()
+                                    ->default(0)
+                                    ->numeric()
+                                    ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
+                                            if($state == null){
+                                                    $component->state(0);
+                                            }
+                                    }),
+                            Forms\Components\TextInput::make("net_monthly_income_")->label("Net Monthly Income:")
                                     ->label("Net Monthly Income")
                                     ->live(onBlur: true)
                                     ->inputMode('decimal')
