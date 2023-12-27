@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum UnitStatus:string implements HasLabel
+enum PaymentStatus:string implements HasLabel
 {
     case CURRENT = "Current";
     case DELINQUENT = "Delinquent";
