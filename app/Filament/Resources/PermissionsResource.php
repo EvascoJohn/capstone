@@ -25,6 +25,10 @@ class PermissionsResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('roles.name')
+                        ->label('Permission Name:')
+                        ->required()
+                        ->unique(),
                 Forms\Components\TextInput::make('name')
                         ->label('Permission Name:')
                         ->required()

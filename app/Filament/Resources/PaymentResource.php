@@ -7,6 +7,7 @@ use App\Enums\ReleaseStatus;
 use App\Filament\Resources\PaymentResource\Pages;
 use App\Models\CustomerApplication;
 use App\Models\Unit;
+use App\Enums;
 use App\Models\CustomerPaymentAccount;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Blade;
@@ -23,14 +24,21 @@ use Filament\Notifications;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Filament\Pages\TestPage;
-use App\Filament\Resources\CustomerApplicationResource\Pages\ViewCustomerApplication;
+use App\Filament\Resources\CustomerPaymentAccountResource\Pages\ViewCustomerPaymentAccount;
 
 class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
+    // protected static ?string $navigationLabel = 'Payments';
+
+    // protected static ?string $recordTitleAttribute = 'name';
+
+    // protected static ?string $modelLabel = "Payments";
+
+    // protected static ?string $pluralModelLabel = 'Payments';
+
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?string $navigationGroup = 'Payments';
 
     public static function getApplicationInformation(): Forms\Components\Component
     {
@@ -40,7 +48,7 @@ class PaymentResource extends Resource
                     ->schema([
                         PaymentResource::getApplicationDetails()
                                 ->columnSpan(12),
-                        Forms\Components\TextInput::make('application_full_name')
+                        Forms\Components\TextInput::make('customerApplication.applicant_full_name')
                                 ->columnSpan(6)
                                 ->readOnly()
                                 ->label('Full name'),
@@ -59,9 +67,9 @@ class PaymentResource extends Resource
     public static function getPaymentDetails(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
-                Forms\Components\TextInput::make("status")
-                    ->readOnly()
-                    ->columnSpan(2),
+                Forms\Components\TextInput::make("payment_status")
+                        ->readOnly()
+                        ->columnSpan(2),
                 Forms\Components\TextInput::make('due_date')
                         ->columnSpan(6)
                         ->readOnly()
@@ -76,12 +84,8 @@ class PaymentResource extends Resource
                         ->required()
                         ->readOnly(),
                 Forms\Components\Select::make('payment_status')
-                        ->live()
                         ->options([
-                            'advance' => 'Advance',
-                            'current' => 'Current',
-                            'overdue' => 'Overdue',
-                            'diligent' => 'Diligent',
+                            "current" => "current"
                         ])
                         ->columnSpan(2)
                         ->required(),
@@ -164,12 +168,19 @@ class PaymentResource extends Resource
                     Tables\Columns\TextColumn::make('customerApplication.applicant_full_name')
                             ->label('Full name:')
                             ->searchable(),
-                    Tables\Columns\TextColumn::make('payment_amount')
-                            ->label('Payment Amount')
+                    Tables\Columns\TextColumn::make('payment_status')
+                            ->label('Payment Type')
+                            ->badge(),
+                    Tables\Columns\TextColumn::make('status')
+                            ->label('Status')
+                            ->badge(),
+                    Tables\Columns\TextColumn::make('monthly_payment')
+                            ->label('Amount due')
                             ->money('php'),
-                    Tables\Columns\TextColumn::make('created_at')
-                            ->label('Date Paid')
-                            ->dateTime('d-M-Y'),
+                    Tables\Columns\TextColumn::make('remaining_balance')
+                            ->label('Remaining Balance')
+                            ->money('php'),
+                    
             ])
             ->defaultSort('created_at', 'desc')
 
@@ -177,27 +188,31 @@ class PaymentResource extends Resource
             ->filters([
                 Tables\Filters\Filter::make('created_at')
             ])
-            
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('pdf') 
-                ->label('Print')
-                ->color('success')
-                ->action(function (Model $record) {
-                    return response()->streamDownload(function () use ($record) {
-                        echo Pdf::loadHtml(
-                            Blade::render('monthly_amort_receipt', ['record' => $record, 'date_today' => Carbon::now()->format('d-M-Y')])
-                        )->stream();
-                    }, $record->id . '.pdf');
-                }), 
+                Tables\Actions\ViewAction::make()
+                    ->model(CustomerPaymentAccount::class)
+                    ->label('Make Payment')
+                    ->color('success'),
+                // Tables\Actions\Action::make('create')
+                //     ->label('Make Payment')
+                //     ->color('success'),
+                // Tables\Actions\Action::make('pdf') 
+                // ->label('Print')
+                // ->color('success')
+                // ->action(function (Model $record) {
+                //     return response()->streamDownload(function () use ($record) {
+                //         echo Pdf::loadHtml(
+                //             Blade::render('monthly_amort_receipt', ['record' => $record, 'date_today' => Carbon::now()->format('d-M-Y')])
+                //         )->stream();
+                //     }, $record->id . '.pdf');
+                // }), 
             ])
             ->bulkActions([
             ])
             ->emptyStateActions([
-                Tables\Actions\CreateAction::make()->requiresConfirmation(),
+                // 
             ]);
     }
-    
     public static function getRelations(): array
     {
         return [
@@ -210,8 +225,8 @@ class PaymentResource extends Resource
         return [
             'index' => Pages\ListPayments::route('/'),
             'create' => Pages\CreatePayment::route('/create'),
-            'edit' => Pages\EditPayment::route('/{record}/edit'),
-            'view-customer-application' => ViewCustomerApplication::route('/{record}'),
+            'edit' => Pages\EditPayment::route('/{record}/make-payment'),
+            'view' => ViewCustomerPaymentAccount::route('/{record}'),
         ];
     }
 }

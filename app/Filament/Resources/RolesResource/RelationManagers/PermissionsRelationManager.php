@@ -20,6 +20,9 @@ class PermissionsRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('roles.name')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),

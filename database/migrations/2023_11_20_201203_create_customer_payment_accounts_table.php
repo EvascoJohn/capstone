@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('customer_payment_accounts', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignIdFor(Models\CustomerApplication::class);
+            $table->foreignIdFor(Models\CustomerApplication::class)->nullable();
             $table->float('remaining_balance')->default(0.00);
             $table->string('plan_type')->nullable();
 

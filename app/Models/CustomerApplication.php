@@ -372,11 +372,6 @@ class CustomerApplication extends Model implements HasMedia
         return $this->payments()->sum();
     }
 
-    public function payments():HasMany
-    {
-        return $this->hasMany(Payment::class);
-    }
-
     public function unitModel():BelongsTo
     {
         return $this->belongsTo(UnitModel::class);

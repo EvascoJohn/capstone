@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CustomerPaymentAccount extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'customer_application_id',  // [big-int] reference to the customer application.
+        'customer_application_id',  // [big-int] repference to the customer application.
         'remaining_balance',        // [float] original amount - payments.
         'due_date',                 // the next due of the payment
         'plan_type',                // [cash, installament].
@@ -42,8 +44,6 @@ class CustomerPaymentAccount extends Model
                             ->orWhere('id', 'like', '%' . $search . '%');
                     });
     }
-
-    
 
     public function calculateDueDate($releaseDate)
     {

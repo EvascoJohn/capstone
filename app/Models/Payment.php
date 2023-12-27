@@ -146,9 +146,8 @@ class Payment extends Model
         return $discountedPrice;
     }
 
-
-    public function customerApplication():BelongsTo{
-        return $this->belongsTo(CustomerApplication::class, 'id');
+    public function customerPaymentAccount():BelongsTo{
+        return $this->belongsTo(CustomerPaymentAccount::class, 'customer_payment_account_id', 'id');
     }
 
 }

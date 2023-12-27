@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(CustomerPaymentAccount::class);
+            $table->foreignIdFor(CustomerPaymentAccount::class)->nullable();
             $table->string('payment_status')->nullable();
             $table->string('payment_type')->nullable();
             $table->decimal('payment_amount')->nullable();
