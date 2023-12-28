@@ -45,7 +45,7 @@ class CustomerPaymentAccount extends Model
                     });
     }
 
-    public function calculateDueDate($releaseDate)
+    public static function calculateDueDate($releaseDate)
     {
         // Convert the input release date to a Carbon instance
         $releaseDate = Carbon::parse($releaseDate); 
@@ -62,8 +62,6 @@ class CustomerPaymentAccount extends Model
             // If the release date is after the 16th, set due date to 30 (or 28)
             $dueDate->day($dueDate->daysInMonth);
         }
-
-        $dueDate->addMonth();
 
         // Format the due date as 'd-m-Y'
         $dueDateFormatted = $dueDate->format(config('app.date_format'));
@@ -99,6 +97,11 @@ class CustomerPaymentAccount extends Model
                             ->orWhere('applicant_lastname', 'like', '%' . $search . '%')
                             ->orWhere('id', 'like', '%' . $search . '%');
                     });
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(related:Payment::class);
     }
 
     public function customerApplication(): BelongsTo

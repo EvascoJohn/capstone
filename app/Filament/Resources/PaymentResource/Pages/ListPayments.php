@@ -21,8 +21,8 @@ class ListPayments extends ListRecords
     public function getTabs(): array
     {
         return [
-            'Instllaments' => ListRecords\Tab::make()->query(fn ($query) => $query->where('plan_type',  Enums\PlanStatus::INSTALLMENT->value)),
-            'Cash' => ListRecords\Tab::make()->query(fn ($query) => $query->where('plan_type', Enums\PlanStatus::CASH->value)),
+            // 'Instllaments' => ListRecords\Tab::make()->query(fn ($query) => $query->where('plan_type',  Enums\PlanStatus::INSTALLMENT->value)),
+            // 'Cash' => ListRecords\Tab::make()->query(fn ($query) => $query->where('plan_type', Enums\PlanStatus::CASH->value)),
         ];
     }
 }

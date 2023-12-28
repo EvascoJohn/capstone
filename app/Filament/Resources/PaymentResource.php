@@ -30,6 +30,11 @@ class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     // protected static ?string $navigationLabel = 'Payments';
 
     // protected static ?string $recordTitleAttribute = 'name';

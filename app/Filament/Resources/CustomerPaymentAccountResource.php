@@ -25,9 +25,9 @@ class CustomerPaymentAccountResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $modelLabel = "Account";
+    protected static ?string $modelLabel = "Payments";
 
-    // protected static ?string $pluralModelLabel = 'Installments';
+    protected static ?string $pluralModelLabel = 'Payments';
 
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';

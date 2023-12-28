@@ -20,8 +20,12 @@ use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class CreatePayment extends CreateRecord
+
 {
     protected static string $resource = PaymentResource::class;
+
+    protected static bool $canCreateAnother = false;
+
 
     protected function getCancelFormAction(): Action
     {
@@ -43,7 +47,6 @@ class CreatePayment extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-
         if(auth()->user()::class == Customer::class){
             $data['author_id'] = auth()->user()->id;
         }
