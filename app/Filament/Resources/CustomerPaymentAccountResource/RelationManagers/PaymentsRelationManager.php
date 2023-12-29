@@ -245,6 +245,7 @@ class PaymentsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
+                    ->disabled(fn (RelationManager $livewire) => $livewire->getOwnerRecord()->term_left == 0)
                         ->steps([
                                 Step::make('Make Payment')
                                     ->columns(12)
