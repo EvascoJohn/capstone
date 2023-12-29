@@ -253,4 +253,9 @@ class PaymentResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('customer_payment_account_id', auth()->id());
+    }
 }

@@ -9,6 +9,7 @@ use App\Models\CustomerApplication;
 use App\Models\Reposession;
 use App\Models;
 use App\Models\CustomerPaymentAccount;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -32,15 +33,15 @@ class ReposessionResource extends Resource
             ->schema([
                 // forms for passing the unit and payments to the new application.
                 Forms\Components\TextInput::make("id")
-                        ->columnSpan(1)
-                        ->label("Account ID")
-                        ->hint("account that is being repossesed")
-                        ->readOnly(),
+                    ->columnSpan(1)
+                    ->label("Account ID")
+                    ->hint("account that is being repossesed")
+                    ->readOnly(),
                 Forms\Components\Select::make("assumed_by_id")
                     ->searchable()
                     ->columnSpan(1)
                     ->getSearchResultsUsing(fn(string $search): array => Models\CustomerApplication::searchApprovedApplicationsWithNoAccountsPrefersRepo($search)
-                            ->get()->pluck("applicant_full_name", "id")->toArray())
+                        ->get()->pluck("applicant_full_name", "id")->toArray())
                     ->getOptionLabelUsing(fn($value): ?string => Models\CustomerApplication::find($value)->id)
                     ->required()
                     ->live()
@@ -53,11 +54,11 @@ class ReposessionResource extends Resource
                         }
                     }),
                 Forms\Components\Textarea::make('reposession_note')
-                        ->label('Note'),
+                    ->label('Note'),
                 Forms\Components\TextInput::make('assumed_by_full_name')
-                        ->label('Full name'),
+                    ->label('Full name'),
                 Forms\Components\TextInput::make('preferred_unit_status')
-                        ->label('Preferred Unit Status'),
+                    ->label('Preferred Unit Status'),
             ]);
     }
 
@@ -80,14 +81,14 @@ class ReposessionResource extends Resource
                 Tables\Columns\TextColumn::make("remaining_balance")
                     ->money("PHP")
                     ->label("Remaining Balance"),
-                
+
             ])
             ->filters([
                 // no filters required.
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                ->label('reposess'),
+                    ->label('reposess'),
             ])
             ->bulkActions([
                 // no bulk actions required.
@@ -108,5 +109,14 @@ class ReposessionResource extends Resource
             // 'create' => Pages\CreateReposession::route('/create'), CANNOT CREATE A REPO, IT TAKES FROM THE CUSTOMER APPLICATION.
             'edit' => Pages\EditReposession::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->wherehas('payments', function (Builder $query){
+                $twoMonthsAgo = Carbon::now()->subMonths(2);
+                $query->where('created_at', '<', $twoMonthsAgo);
+            });
     }
 }
