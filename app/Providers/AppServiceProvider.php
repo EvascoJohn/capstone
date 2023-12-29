@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Payment;
 use App\Observers\PaymentObserver;
+use Filament\Tables\Columns\Column;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,5 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Column::configureUsing(function (Column $column): void {
+            $column
+                ->searchable()
+                ->toggleable()
+                ->sortable();
+        });
     }
 }
