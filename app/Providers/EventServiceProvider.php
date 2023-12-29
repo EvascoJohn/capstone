@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\PaymentMade;
+use App\Listeners\UpdateCustomerPaymentAccount;
 use App\Models\CustomerApplication;
+use App\Models\Payment;
 use App\Models\Unit;
 use App\Observers\CustomerApplicationObserver;
+use App\Observers\PaymentObserver;
 use App\Observers\UnitObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,6 +26,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        PaymentMade::class =>[
+            UpdateCustomerPaymentAccount::class,
+        ]
     ];
 
     /**
@@ -31,6 +38,7 @@ class EventServiceProvider extends ServiceProvider
     {
         //
         Unit::observe(UnitObserver::class);
+        Payment::observe(PaymentObserver::class);
         CustomerApplication::observe(CustomerApplicationObserver::class);
     }
 

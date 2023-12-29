@@ -18,5 +18,4 @@ class ListReposessions extends ListRecords
             "Accounts" => ListRecords\Tab::make()->query(fn ($query) => $query->where('payment_status', 'monthly')),
         ];
     }
-
 }

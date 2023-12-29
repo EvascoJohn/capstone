@@ -19,8 +19,11 @@ class Payment extends Model
     protected $fillable = [
         'payment_status',
         'payment_type',
+        'term_covered',
+        'payment_is',
+        'rebate',
+        'amount_to_be_paid',
         'payment_amount',
-        'remaining',
         'author_id',
         'branch_id',
     ];
