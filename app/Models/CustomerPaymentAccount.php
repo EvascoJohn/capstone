@@ -24,6 +24,7 @@ class CustomerPaymentAccount extends Model
         'monthly_payment',          // float.
         'down_payment',             // float.
         'term',                     // 12-36 months.
+        'term_left',                // term left.
         'status',                   // [pending ,active, closed].
         'payment_status',           // [dp, cash, monthly].
         'original_amount',          // [float] price of the unit (references the customer application).
@@ -106,7 +107,7 @@ class CustomerPaymentAccount extends Model
 
     public function customerApplication(): BelongsTo
     {
-        return $this->belongsTo(CustomerApplication::class, 'customer_application_id');
+        return $this->belongsTo(CustomerApplication::class);
     }
 
 }

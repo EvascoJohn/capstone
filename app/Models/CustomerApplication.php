@@ -187,7 +187,6 @@ class CustomerApplication extends Model implements HasMedia
     {
         //assigns an account to the customer application.
 
-
         $payment_status = null;
         if($this->plan == 'cash'){
             $payment_status = "cash-payment";
@@ -206,8 +205,9 @@ class CustomerApplication extends Model implements HasMedia
             'monthly_interest'          =>  0.00,
             'monthly_payment'           =>  $this->unit_monthly_amort_fin,
             'term'                      =>  $this->unit_term,
-            'status'                    => $this->application_status,
-            'payment_status'            => $payment_status,
+            'term_left'                 =>  $this->unit_term,
+            'status'                    =>  $this->application_status,
+            'payment_status'            =>  $payment_status,
             'original_amount'           =>  $this->unit_srp,
             'unit_release_id'           =>  null,
         ]);

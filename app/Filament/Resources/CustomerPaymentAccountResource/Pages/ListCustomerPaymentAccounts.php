@@ -9,7 +9,6 @@ use Filament\Resources\Pages\ListRecords;
 class ListCustomerPaymentAccounts extends ListRecords
 {
     protected static string $resource = CustomerPaymentAccountResource::class;
-
     protected function getHeaderActions(): array
     {
         return [
