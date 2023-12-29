@@ -21,6 +21,80 @@ class PaymentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'payments';
 
+
+    public function getPaymentReviewComponent(): Forms\Components\Group
+    {
+        return Forms\Components\Group::make([
+
+            Forms\Components\Section::make('Account Details')
+                    ->columns(12)
+                    ->description('You are paying for this account')
+                    ->schema([
+                            Forms\Components\Placeholder::make('plan')
+                                    ->label('Applicant Full Name')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get, RelationManager $livewire): string {
+                                            return $livewire->getOwnerRecord()->customerApplication->applicant_full_name;
+                                    }),
+                            Forms\Components\Placeholder::make('unit')
+                                    ->label('Unit')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get, RelationManager $livewire): string {
+                                            return $livewire->getOwnerRecord()->customerApplication->unitModel->model_name;
+                                    }),
+                            Forms\Components\Placeholder::make('plan')
+                                    ->label('Plan')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get, RelationManager $livewire): string {
+                                            return  $livewire->getOwnerRecord()->customerApplication->plan->value;
+                                    }),
+                    ]),
+            Forms\Components\Section::make('Payment Details')
+                    ->description('review the details before proceeding')
+                    ->aside()
+                    ->columns(12)
+                    ->schema([
+                            Forms\Components\Placeholder::make('')
+                                    ->label('Term Covered')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get): string {
+                                            return $get('term_covered');
+                                    }),
+                            Forms\Components\Placeholder::make('')
+                                    ->label('Customer Is')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get): string {
+                                            
+                                            return $get('customer_is');
+                                    }),
+                            Forms\Components\Placeholder::make('')
+                                    ->label('Payment Is')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get): string {
+                                            return $get('payment_is');
+                                    }),
+                            Forms\Components\Placeholder::make('')
+                                    ->label('Payment Amount')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get): string {
+                                            return $get('payment_amount');
+                                    }),
+                            Forms\Components\Placeholder::make('')
+                                    ->label('Change')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get): string {
+                                            return $get('change');
+                                    }),
+                            Forms\Components\Placeholder::make('')
+                                    ->label('Amount to be paid')
+                                    ->columnSpan(4)
+                                    ->content(function (Forms\Get $get): string {
+                                            return $get('amount_to_be_paid');
+                                    }),
+                    ]),
+        ]);
+    }
+
     public function getPaymentInputComponent(): Forms\Components\Group
     {
         return Forms\Components\Group::make([
@@ -258,8 +332,11 @@ class PaymentsRelationManager extends RelationManager
                                     ->columns(4),
                                 Step::make('Review')
                                     ->description('Review the payment being made.')
+                                    ->columns(12)
                                     ->schema([
-                                        // static::getPaymentInformation()
+                                        static::getPaymentReviewComponent()
+                                                ->columns(12)
+                                                ->columnSpan(12)
                                     ])
                                     ->columns(4),
                         ])
