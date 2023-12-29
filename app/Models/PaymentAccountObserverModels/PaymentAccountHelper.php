@@ -26,7 +26,7 @@ class PaymentAccountHelper
     }
     public function updateTermLeft()
     {
-        //..
+        $this->customerPaymentAccount->term_left -= $this->payment->term_covered;
     }
     public function getCustomerPaymentAccount(): Model
     {
