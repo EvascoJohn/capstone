@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Events\PaymentMade;
 use App\Models\Payment;
 use App\Models\Payments;
 use App\Models\User;

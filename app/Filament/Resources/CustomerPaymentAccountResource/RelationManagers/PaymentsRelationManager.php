@@ -35,10 +35,10 @@ class PaymentsRelationManager extends RelationManager
                         )
                         ->numeric()
                         ->live()
-                        ->disabled()
+                        ->readOnly()
                         ->columnSpan(3),
                 Forms\Components\TextInput::make("payment_is")
-                        ->disabled()
+                        ->readOnly()
                         ->default(
                             function(RelationManager $livewire):string
                             {
@@ -48,7 +48,7 @@ class PaymentsRelationManager extends RelationManager
                         )
                         ->columnSpan(3),
                 Forms\Components\TextInput::make("customer_is")
-                        ->disabled()
+                        ->readOnly()
                         ->default(
                             function(RelationManager $livewire):string
                             {
@@ -93,7 +93,7 @@ class PaymentsRelationManager extends RelationManager
                         )
                         ->columnSpan(3),
                 Forms\Components\TextInput::make("rebate")
-                        ->disabled()
+                        ->readOnly()
                         ->default(
                             function(RelationManager $livewire):float
                             {

@@ -20,7 +20,11 @@ return new class extends Migration
                     ->cascadeOnDelete();
             $table->string('payment_status')->nullable();
             $table->string('payment_type')->nullable();
-            $table->decimal('payment_amount')->nullable();
+            $table->double('payment_amount')->nullable();
+            $table->integer('term_covered')->nullable();
+            $table->string('payment_is')->nullable();
+            $table->double('amount_to_be_paid')->nullable();
+            $table->double('rebate')->nullable();
             $table->bigInteger('author_id')->nullable();
             $table->bigInteger('branch_id')->nullable();
             $table->timestamps();
