@@ -17,8 +17,6 @@ class Reports extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            AmortizationRevenueSummary::class,
-            UnitStocksOverview::class,
             CustomerDues::class,
         ];
     }
