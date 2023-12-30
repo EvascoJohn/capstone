@@ -27,9 +27,9 @@ class DealershipDashboard extends BasePage
     protected function getHeaderWidgets(): array
     {
         return [
-            AmortizationRevenueSummary::class,
             UnitStocksOverview::class,
-            CustomerDues::class,
+            AmortizationRevenueSummary::class,
+            // CustomerDues::class,
         ];
     }
 

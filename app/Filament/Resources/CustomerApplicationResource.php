@@ -27,7 +27,11 @@ use Illuminate\Support\Facades\Blade;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Support\RawJs;
 use App\Models\DealerhipCalculations;
-
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\Filter;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class CustomerApplicationResource extends Resource
 {
@@ -2023,19 +2027,44 @@ class CustomerApplicationResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->paginated(false)
             ->filters([
+                Filter::make('created_at')
+                        ->form([
+                                DatePicker::make('created_from'),
+                                DatePicker::make('created_until'),
+                        ])
+                        ->query(function (Builder $query, array $data): Builder {
+                                return $query
+                                ->when(
+                                        $data['created_from'],
+                                        fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                )
+                                ->when(
+                                        $data['created_until'],
+                                        fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                );
+                        }),
                 Tables\Filters\SelectFilter::make('application_status')
                         ->options([
                             'pending' => 'Pending',
                             'active' => 'Active',
                             'reject' => 'Reject'
                         ]),
+                
             ])
+        //     ->headerActions([
+        //         ExportAction::make('export')->exports([
+        //             ExcelExport::make('form')
+        //                 ->askForFilename()
+        //                 ->withFilename(fn ($filename) => $filename . '-' . date('M-d-Y'))
+        //                 ->fromTable()
+        //         ]),
+        //     ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                // 
+                // ExportBulkAction::make(),
             ])
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),

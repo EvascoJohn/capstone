@@ -9,13 +9,18 @@ use App\Models\CustomerApplication;
 use App\Models\CustomerPaymentAccount;
 use App\Models\UnitModel;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class CustomerPaymentAccountResource extends Resource
 {
@@ -50,6 +55,8 @@ class CustomerPaymentAccountResource extends Resource
                     ->readOnly(),
                 Forms\Components\TextInput::make("term")
                     ->readOnly(),
+                Forms\Components\TextInput::make("term_left")
+                    ->readOnly(),
                 Forms\Components\TextInput::make("status")
                     ->readOnly(),
                 Forms\Components\TextInput::make("payment_status")
@@ -67,26 +74,50 @@ class CustomerPaymentAccountResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make("id"),
                 Tables\Columns\TextColumn::make("customer_application_id")
-                        ->label("Application ID"),
+                    ->label("Application ID"),
                 Tables\Columns\TextColumn::make("customerApplication.applicant_full_name")
-                        ->label('Applicant Name'),
+                    ->label('Applicant Name'),
                 Tables\Columns\TextColumn::make("original_amount")
-                        ->money("PHP"),
+                    ->money("PHP"),
                 Tables\Columns\TextColumn::make("remaining_balance")
-                        ->money("PHP"),
+                    ->money("PHP"),
                 Tables\Columns\TextColumn::make("payment_status")
-                        ->badge(),
+                    ->badge(),
                 Tables\Columns\TextColumn::make("term")
-                        ->badge(),
+                    ->badge(),
             ])
             ->filters([
+                Filter::make('created_at')
+                        ->form([
+                                DatePicker::make('created_from'),
+                                DatePicker::make('created_until'),
+                        ])
+                        ->query(function (Builder $query, array $data): Builder {
+                                return $query
+                                ->when(
+                                        $data['created_from'],
+                                        fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                )
+                                ->when(
+                                        $data['created_until'],
+                                        fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                );
+                        }),
             ])
+            // ->headerActions([
+            //     ExportAction::make('export')->exports([
+            //         ExcelExport::make('form')
+            //             ->askForFilename()
+            //             ->withFilename(fn ($filename) => $filename . '-' . date('M-d-Y'))
+            //             ->fromTable()
+            //     ]),
+            // ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                        ->label('make payment'),
+                    ->label('make payment'),
             ])
             ->bulkActions([
-                // no bulk actions.
+                // ExportBulkAction::make(),
             ]);
     }
 
