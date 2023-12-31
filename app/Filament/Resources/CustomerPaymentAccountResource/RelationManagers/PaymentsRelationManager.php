@@ -258,11 +258,14 @@ class PaymentsRelationManager extends RelationManager
                     function (RelationManager $livewire): float {
                         $owner_record = $livewire->getOwnerRecord();
                         if ($owner_record->payment_status == 'down payment') {
-                            return $owner_record->down_payment;
+                                return $owner_record->down_payment;
+                        }
+                        else if ($owner_record->payment_status == 'cash payment') {
+                                return $owner_record->unit_ttl_dp;
                         } else if ($owner_record->payment_status == 'monthly') {
-                            return $owner_record->monthly_payment;
+                                return $owner_record->monthly_payment;
                         } else {
-                            return $owner_record->remaining_balance;
+                                return $owner_record->remaining_balance;
                         }
                     }
                 ),
