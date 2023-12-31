@@ -186,17 +186,14 @@ class CustomerApplication extends Model implements HasMedia
     public function assignAccount(): void
     {
         //assigns an account to the customer application.
-
         $payment_status = null;
-        if($this->plan == 'cash'){
-            $payment_status = "cash-payment";
+        if($this->plan == Enums\PlanStatus::CASH){
+            $payment_status = "cash payment";
         }
-        else if($this->plan == 'installment'){
-            $payment_status = "downpayment";
+        else if($this->plan == Enums\PlanStatus::INSTALLMENT){
+            $payment_status = "down payment";
         }
-        else{
-            $payment_status = 'uni-payment';
-        }
+
         $new_account = CustomerPaymentAccount::create([
             'customer_application_id'   =>  $this->id,
             'remaining_balance'         =>  $this->unit_srp,
@@ -204,6 +201,7 @@ class CustomerApplication extends Model implements HasMedia
             'plan_type'                 =>  $this->plan,
             'monthly_interest'          =>  0.00,
             'monthly_payment'           =>  $this->unit_monthly_amort_fin,
+            'down_payment'              =>  $this->unit_ttl_dp,
             'term'                      =>  $this->unit_term,
             'term_left'                 =>  $this->unit_term,
             'status'                    =>  $this->application_status,
