@@ -29,6 +29,8 @@ class CustomerPaymentAccount extends Model
         'payment_status',           // [dp, cash, monthly].
         'original_amount',          // [float] price of the unit (references the customer application).
         'unit_release_id',          // reference to the unit release containing [unit_id, date_realeased].
+        'author_id',
+        'branch_id',
     ];
 
     public static function getActiveAccounts(string $search): Builder

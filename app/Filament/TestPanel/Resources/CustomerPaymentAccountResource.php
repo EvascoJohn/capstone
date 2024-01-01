@@ -1,25 +1,23 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\TestPanel\Resources;
 
-use App\Filament\Resources\CustomerPaymentAccountResource\Pages;
-use App\Models;
-use App\Filament\Resources\CustomerPaymentAccountResource\RelationManagers;
-use App\Models\CustomerApplication;
+use App\Filament\TestPanel\Resources\CustomerPaymentAccountResource\Pages;
+use App\Filament\TestPanel\Resources\CustomerPaymentAccountResource\RelationManagers;
 use App\Models\CustomerPaymentAccount;
-use App\Models\UnitModel;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class CustomerPaymentAccountResource extends Resource
 {
     protected static ?string $model = CustomerPaymentAccount::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationLabel = 'Payments';
 
@@ -28,9 +26,6 @@ class CustomerPaymentAccountResource extends Resource
     protected static ?string $modelLabel = "Payments";
 
     protected static ?string $pluralModelLabel = 'Payments';
-
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-group';
 
     public static function form(Form $form): Form
     {
@@ -53,11 +48,6 @@ class CustomerPaymentAccountResource extends Resource
                 Forms\Components\TextInput::make("original_amount")
                     ->readOnly(),
             ]);
-    }
-
-    public static function canCreate(): bool
-    {
-        return false;
     }
 
     public static function table(Table $table): Table
@@ -88,6 +78,7 @@ class CustomerPaymentAccountResource extends Resource
             ]);
     }
 
+    
     public static function getRelations(): array
     {
         return [
@@ -95,13 +86,24 @@ class CustomerPaymentAccountResource extends Resource
         ];
     }
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+    
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListCustomerPaymentAccounts::route('/'),
             'create' => Pages\CreateCustomerPaymentAccount::route('/create'),
-            'edit' => Pages\EditCustomerPaymentAccount::route('{record}/edit'),
             'view' => Pages\ViewCustomerPaymentAccount::route('/{record}'),
+            'edit' => Pages\EditCustomerPaymentAccount::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('author_id', auth()->id());
     }
 }

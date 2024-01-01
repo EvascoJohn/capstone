@@ -208,6 +208,8 @@ class CustomerApplication extends Model implements HasMedia
             'payment_status'            =>  $payment_status,
             'original_amount'           =>  $this->unit_srp,
             'unit_release_id'           =>  null,
+            'author_id'                 =>  $this->author_id,
+            'branch_id'                 =>  $this->branch_id,
         ]);
         // dd($new_account);
         $new_account->save();
