@@ -45,6 +45,7 @@ class PaymentsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\Action::make('Checkout')
+                    ->disabled(fn (RelationManager $livewire) => $livewire->getOwnerRecord()->term_left == 0)
                     ->steps([
                             Step::make('Make Payment')
                                     ->description('Enter payment details')
@@ -316,7 +317,8 @@ class PaymentsRelationManager extends RelationManager
                         if ($term >= 1) {
                             $monthly_payment = $livewire->getOwnerRecord()->monthly_payment;
                             $product = $monthly_payment * $get('term_covered');
-                            $set('amount_to_be_paid', $product);
+                            $set('amount_to_be_paid', $product - $get('rebate'));
+                            $set('payment_amount', $product - $get('rebate'));
                         }
                         $livewire->validateOnly($component->getStatePath());
                     }
@@ -326,7 +328,6 @@ class PaymentsRelationManager extends RelationManager
                 ->required()
                 ->live(onBlur: true)
                 ->numeric()
-                ->readOnly()
                 ->default(function (Forms\Get $get) {
                     return $get('amount_to_be_paid') - $get('rebate');
                 })
