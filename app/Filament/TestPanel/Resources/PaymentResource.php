@@ -35,6 +35,10 @@ class PaymentResource extends Resource
         return false;
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
     
     public static function getApplicationInformation(): Forms\Components\Component
     {

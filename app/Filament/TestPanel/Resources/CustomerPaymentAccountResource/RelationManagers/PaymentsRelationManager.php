@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Filament\Resources\CustomerPaymentAccountResource\RelationManagers;
+namespace App\Filament\TestPanel\Resources\CustomerPaymentAccountResource\RelationManagers;
 
 use App\Models;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Infolists;
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Carbon;
 use Filament\Forms\Components\Wizard\Step;
+
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 
 class PaymentsRelationManager extends RelationManager
 {
@@ -25,7 +26,7 @@ class PaymentsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                // ...
+                // ..
             ]);
     }
 
@@ -43,28 +44,30 @@ class PaymentsRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
+                Tables\Actions\Action::make('Checkout')
                     ->disabled(fn (RelationManager $livewire) => $livewire->getOwnerRecord()->term_left == 0)
                     ->steps([
-                        Step::make('Make Payment')
-                            ->columns(12)
-                            ->description('Enter payment details')
-                            ->schema([
-                                static::getPaymentInputComponent()
-                                    ->columns(12)
-                                    ->columnSpan(12),
-                            ])
-                            ->columns(4),
-                        Step::make('Review')
-                            ->description('Review the payment being made.')
-                            ->columns(12)
-                            ->schema([
-                                static::getPaymentReviewComponent()
-                                    ->columns(12)
-                                    ->columnSpan(12)
-                            ])
-                            ->columns(4),
-                    ])
+                            Step::make('Make Payment')
+                                    ->description('Enter payment details')
+                                    ->schema([
+                                            static::getPaymentInputComponent()
+                                                    ->columns(12)
+                                                    ->columnSpan(12),
+                                    ])
+                                    ->columns(4),
+                            Step::make('Review')
+                                    ->description('Review the payment being made.')
+                                    ->schema([
+                                            static::getPaymentReviewComponent()
+                                                    ->columns(12)
+                                                    ->columnSpan(12)
+                                    ])
+                                    ->columns(4),
+                        ])
+                        ->action(fn(RelationManager $livewire, array $data) => redirect()->route('paymongo', [
+                                'customerPaymentAccount' => http_build_query($livewire->getOwnerRecord()->getAttributes()),
+                                'payment' => http_build_query($data),
+                        ])),
             ])
             ->actions([
                 // ..
@@ -72,11 +75,6 @@ class PaymentsRelationManager extends RelationManager
             ->bulkActions([
                 // ..
             ]);
-    }
-
-    public function isReadOnly(): bool
-    {
-        return false;
     }
 
     public function getPaymentReviewComponent(): Forms\Components\Group
@@ -150,6 +148,11 @@ class PaymentsRelationManager extends RelationManager
                         }),
                 ]),
         ]);
+    }
+
+    public function isReadOnly(): bool
+    {
+        return false;
     }
 
     public function getPaymentInputComponent(): Forms\Components\Group
@@ -314,7 +317,8 @@ class PaymentsRelationManager extends RelationManager
                         if ($term >= 1) {
                             $monthly_payment = $livewire->getOwnerRecord()->monthly_payment;
                             $product = $monthly_payment * $get('term_covered');
-                            $set('amount_to_be_paid', $product);
+                            $set('amount_to_be_paid', $product - $get('rebate'));
+                            $set('payment_amount', $product - $get('rebate'));
                         }
                         $livewire->validateOnly($component->getStatePath());
                     }
@@ -324,19 +328,11 @@ class PaymentsRelationManager extends RelationManager
                 ->required()
                 ->live(onBlur: true)
                 ->numeric()
-                ->default(0)
+                ->default(function (Forms\Get $get) {
+                    return $get('amount_to_be_paid') - $get('rebate');
+                })
                 ->columnSpan(4)
-                ->minValue(fn (Forms\Get $get): float => $get('amount_to_be_paid'))
-                ->afterStateUpdated(
-                    function (Forms\Get $get, Forms\Set $set, RelationManager $livewire, Forms\Components\TextInput $component) {
-                        $payment_amount = $get('payment_amount');
-                        $amount_paid = $get('amount_to_be_paid');
-                        if ($payment_amount > $amount_paid) {
-                            $set('change', $payment_amount - $amount_paid);
-                        }
-                        $livewire->validateOnly($component->getStatePath());
-                    }
-                ),
+                ->minValue(fn (Forms\Get $get): float => $get('amount_to_be_paid')),
             Forms\Components\TextInput::make('change')
                 ->label('Change')
                 ->readOnly()
