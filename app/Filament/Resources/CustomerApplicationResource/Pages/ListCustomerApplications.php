@@ -19,7 +19,7 @@ class ListCustomerApplications extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            $this->export('Customer-Applicatio'),
+            $this->export('Customer-Application'),
             Actions\CreateAction::make(),
         ];
     }
