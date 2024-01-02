@@ -22,9 +22,9 @@ class BranchResource extends Resource
 {
     protected static ?string $model = Branch::class;
 
-    protected static ?string $navigationLabel = 'Branch Maintenance';
+    protected static ?string $navigationLabel = 'Branch Management';
 
-    protected static ?string $navigationGroup = 'Maintenance Module';
+    protected static ?string $navigationGroup = 'Management Module';
 
     protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 

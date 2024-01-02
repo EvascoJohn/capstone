@@ -14,7 +14,7 @@ class PermissionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'permissions';
 
-    protected static ?string $navigationGroup = 'Maintenance Module';
+    protected static ?string $navigationGroup = 'Management Module';
 
     public function form(Form $form): Form
     {

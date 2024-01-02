@@ -5,17 +5,21 @@ namespace App\Filament\Resources\UnitReleaseResource\Pages;
 use App\Enums\ApplicationStatus;
 use App\Enums\ReleaseStatus;
 use App\Filament\Resources\UnitReleaseResource;
+use App\Traits\ExportToExcelTrait;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListUnitReleases extends ListRecords
 {
+    use ExportToExcelTrait;
+
     protected static string $resource = UnitReleaseResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
             // Actions\CreateAction::make(),
+            $this->export('Unit-Releases'),
         ];
     }
 
