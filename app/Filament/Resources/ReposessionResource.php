@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\ApplicationStatus;
+use App\Enums\UnitStatus;
 use App\Filament\Resources\ReposessionResource\Pages;
 use App\Filament\Resources\ReposessionResource\RelationManagers;
 use App\Models\CustomerApplication;
@@ -42,9 +43,8 @@ class ReposessionResource extends Resource
                 Forms\Components\Select::make("assumed_by_id")
                     ->searchable()
                     ->columnSpan(1)
-                    ->getSearchResultsUsing(fn(string $search): array => Models\CustomerApplication::searchApprovedApplicationsWithNoAccountsPrefersRepo($search)
-                        ->get()->pluck("applicant_full_name", "id")->toArray())
-                    ->getOptionLabelUsing(fn($value): ?string => Models\CustomerApplication::find($value)->id)
+                    ->options(CustomerApplication::where('application_status', ApplicationStatus::APPROVED_STATUS)
+                        ->where('preffered_unit_status', UnitStatus::REPOSSESSION)->pluck('applicant_full_name', 'id'))
                     ->required()
                     ->live()
                     ->afterStateUpdated(function (string $state, Forms\Set $set, ?Model $record) {
@@ -55,11 +55,13 @@ class ReposessionResource extends Resource
                             $set('created_at', $cust_app->created_at);
                         }
                     }),
-                Forms\Components\Textarea::make('reposession_note')
+                Forms\Components\Textarea::make('note')
                     ->label('Note'),
                 Forms\Components\TextInput::make('assumed_by_full_name')
+                    ->readOnly()
                     ->label('Full name'),
                 Forms\Components\TextInput::make('preferred_unit_status')
+                    ->readOnly()
                     ->label('Preferred Unit Status'),
             ]);
     }

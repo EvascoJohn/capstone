@@ -27,7 +27,7 @@ class EditReposession extends EditRecord
         $account_id = $data['id'];                                                          // gets the account that is being passed to a new application.
         $account = CustomerPaymentAccount::query()->where("id", $account_id)->first();
         $account->customer_application_id = $assumed_by_id;                                 // passing the account to another application.
-        $account->save();
+        $account->update();
         return $data;
     }
 

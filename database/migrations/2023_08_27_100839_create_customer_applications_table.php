@@ -27,7 +27,7 @@ return new class extends Migration
             $table->enum('application_status', Enums\ApplicationStatus::values())->default(Enums\ApplicationStatus::PENDING_STATUS);
             $table->text('reject_note')->default(null)->nullable();
             $table->text('resubmission_note')->default(null)->nullable();
-            $table->string('preffered_unit_status')->default(null)->nullable();
+            $table->enum('preffered_unit_status', Enums\UnitStatus::values())->default(null)->nullable();
             $table->enum('release_status', Enums\ReleaseStatus::values())->default(Enums\ReleaseStatus::UN_RELEASED);
 
             $table->enum('application_type', Enums\ApplicationType::values())->default(Enums\ApplicationType::WALK_IN);
