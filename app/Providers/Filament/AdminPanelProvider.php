@@ -87,6 +87,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 FilamentFabricatorPlugin::make(),
                 FilamentSpatieLaravelBackupPlugin::make()->usingPage(CustomBackupPage::class)
-            ]);
+            ])
+            ->databaseNotifications()->databaseNotificationsPolling('1s');
     }
 }
