@@ -4,16 +4,22 @@ namespace App\Filament\Resources\CustomerApplicationResource\Pages;
 
 use App\Enums\ApplicationStatus;
 use App\Filament\Resources\CustomerApplicationResource;
+use App\Traits\ExportToExcelTrait;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use pxlrbt\FilamentExcel\Actions\Pages\ExportAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class ListCustomerApplications extends ListRecords
 {
+    use ExportToExcelTrait;
+
     protected static string $resource = CustomerApplicationResource::class;
 
     protected function getHeaderActions(): array
     {
         return [
+            $this->export('Customer-Application'),
             Actions\CreateAction::make(),
         ];
     }
