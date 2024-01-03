@@ -94,8 +94,8 @@ class CustomerApplicationResource extends Resource
                                                                         ->required()
                                                                         ->label("Plan")
                                                                         ->options(
-																				Enums\PlanStatus::class
-																		),
+                                                                            Enums\PlanStatus::class
+                                                                        ),
                                                         Forms\Components\Select::make('unit_term')
                                                                         ->columnSpan(2)
                                                                         ->live()
