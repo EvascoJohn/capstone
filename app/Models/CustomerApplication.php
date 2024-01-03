@@ -276,7 +276,7 @@ class CustomerApplication extends Model implements HasMedia
         return static::query()
                     ->where('application_status', Enums\ApplicationStatus::APPROVED_STATUS->value)
                     ->where('account_id', null)
-                    ->where('preffered_unit_status', Enums\UnitStatus::REPOSESSION->value)
+                    ->where('preffered_unit_status', Enums\UnitStatus::REPOSSESSION->value)
                     ->where(function ($query) use ($search) {
                         $query->where('applicant_firstname', 'like', '%' . $search . '%')
                             ->orWhere('applicant_lastname', 'like', '%' . $search . '%')
