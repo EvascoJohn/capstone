@@ -67,7 +67,7 @@ class UnitStocksTable extends BaseWidget
                 }),
                 SelectFilter::make('status')
                 ->options([
-                    'Reposession' => 'Reposession',
+                    'Repossession' => 'Repossession',
                     'Brand new' => 'Brand New',
                     'Depo' => 'Depo',
                 ])

@@ -6,14 +6,14 @@ use Filament\Support\Contracts\HasLabel;
 
 enum UnitStatus:string implements HasLabel
 {
-    case REPOSESSION = "Reposession";
+    case REPOSSESSION = "Repossession";
     case BRAND_NEW = "Brand new";
     case DEPO = "Depo";
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::REPOSESSION => "Reposession",
+            self::REPOSSESSION => "Repossession",
             self::BRAND_NEW => "Brand new",
             self::DEPO => "Depo",
         };

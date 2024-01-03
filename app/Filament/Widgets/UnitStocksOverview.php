@@ -28,7 +28,7 @@ class UnitStocksOverview extends BaseWidget
                     ->description('Total products in the inventory.'),
             Stat::make('Brand New Unit', $this->getPageTableRecords()->where('status', UnitStatus::BRAND_NEW->value)->count())
                     ->description('Total products that are brand new in the inventory.'),
-            Stat::make('Reposession Unit', $this->getPageTableRecords()->where('status', UnitStatus::REPOSESSION->value)->count())
+            Stat::make('Repossession Unit', $this->getPageTableRecords()->where('status', UnitStatus::REPOSSESSION->value)->count())
                     ->description('Total products that are in repo new in the inventory.'),
         ];
     }

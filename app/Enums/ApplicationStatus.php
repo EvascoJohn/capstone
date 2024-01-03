@@ -16,7 +16,7 @@ enum ApplicationStatus:string implements HasLabel
     case REJECTED_STATUS        = "Reject";
     case CLOSED_STATUS          = "Closed";
     case RESUBMISSION_STATUS    = "Resubmission";
-    case REPO_STATUS    =  "Reposession";
+    case REPO_STATUS    =  "Repossession";
 
     public function getLabel(): ?string
     {
@@ -27,7 +27,7 @@ enum ApplicationStatus:string implements HasLabel
             self::APPROVED_STATUS => 'Approved',
             self::REJECTED_STATUS => 'Rejected',
             self::RESUBMISSION_STATUS => 'Resubmission',
-            self::REPO_STATUS => 'Reposession',
+            self::REPO_STATUS => 'Repossession',
             self::CLOSED_STATUS => 'Closed'
         };
     }
