@@ -135,15 +135,15 @@ class ViewCustomerApplication extends ViewRecord
                     $this->record->resubmission_note = null;
                     $this->record->save();
                     $this->refreshFormData([
-                        'application_status',
+                            'application_status',
                     ]);
                     if($record->application_type == Enums\ApplicationType::ONLINE){
                         $customer = Models\Customer::query()->where('id', $record->author_id)->first();
                         Notification::make()
-                                ->title('Application has been approved!')
-                                ->body('An application has been approved.')
-                                ->success()
-                                ->color('success')
+                                ->title('Application has been rejected!')
+                                ->body('An application has been rejected.')
+                                ->danger()
+                                ->color('danger')
                                 ->actions([
                                         Action::make('view')->url(function() use ($record) {
                                                 return TestPanel\Resources\CustomerApplicationResource::getUrl(name:'view', parameters:[$record->id], panel:'customer');
@@ -156,10 +156,10 @@ class ViewCustomerApplication extends ViewRecord
                         event(new DatabaseNotificationsSent($customer));
                     }
                     Notification::make()
-                            ->title('Application has been approved!')
-                            ->body('An application has been approved.')
-                            ->success()
-                            ->color('success')
+                            ->title('Application has been rejected!')
+                            ->body('An application has been rejected.')
+                            ->danger()
+                            ->color('danger')
                             ->send()
                             ->actions([
                                     Action::make('view')->url(function () use ($record) {
@@ -172,7 +172,7 @@ class ViewCustomerApplication extends ViewRecord
                             ]);
                     event(new DatabaseNotificationsSent(auth()->user()));
                 })->hidden(
-                    function(array $data){
+                    function(){
                         if(
                                 $this->record->getStatus() == Enums\ApplicationStatus::RESUBMISSION_STATUS ||
                                 $this->record->getStatus() == Enums\ApplicationStatus::APPROVED_STATUS ||
