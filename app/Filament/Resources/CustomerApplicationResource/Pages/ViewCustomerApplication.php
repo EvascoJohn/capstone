@@ -129,7 +129,7 @@ class ViewCustomerApplication extends ViewRecord
                 ->form([
                     Forms\Components\Textarea::make('reject_note')->label('Reason of Rejection:'),
                 ])
-                ->action(function(array $data){
+                ->action(function(array $data, ?Model $record){
                     $this->record->setStatusTo(Enums\ApplicationStatus::REJECTED_STATUS);
                     $this->record->reject_note = $data["reject_note"];
                     $this->record->resubmission_note = null;
@@ -137,10 +137,40 @@ class ViewCustomerApplication extends ViewRecord
                     $this->refreshFormData([
                         'application_status',
                     ]);
+                    if($record->application_type == Enums\ApplicationType::ONLINE){
+                        $customer = Models\Customer::query()->where('id', $record->author_id)->first();
+                        Notification::make()
+                                ->title('Application has been approved!')
+                                ->body('An application has been approved.')
+                                ->success()
+                                ->color('success')
+                                ->actions([
+                                        Action::make('view')->url(function() use ($record) {
+                                                return TestPanel\Resources\CustomerApplicationResource::getUrl(name:'view', parameters:[$record->id], panel:'customer');
+                                        })
+                                        ->color('info'),
+                                ])
+                        ->sendToDatabase([
+                                    $customer
+                        ]);
+                        event(new DatabaseNotificationsSent($customer));
+                    }
                     Notification::make()
-                    ->title('This application has been rejected!')
-                    ->success()
-                    ->send();
+                            ->title('Application has been approved!')
+                            ->body('An application has been approved.')
+                            ->success()
+                            ->color('success')
+                            ->send()
+                            ->actions([
+                                    Action::make('view')->url(function () use ($record) {
+                                            return CustomerApplicationResource::getUrl('view', [$record->id]);
+                                    })
+                                    ->color('info'),
+                            ])
+                            ->sendToDatabase([
+                                    auth()->user(),
+                            ]);
+                    event(new DatabaseNotificationsSent(auth()->user()));
                 })->hidden(
                     function(array $data){
                         if(
