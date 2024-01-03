@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Auth\CustomerLogin;
+use App\Filament\TestPanel\Widgets\Homepage;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -21,7 +22,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 use App\Filament\Auth\Login;
 use App\Filament\TestPanel\Pages\Auth\Register;
-use App\Filament\TestPanel\Widgets\CustomerDues;
+use App\Filament\Widgets\CustomerDues;
 use App\Models\Customer;
 use Filament\Pages\Auth\EditProfile;
 use Filament\Pages\Auth\EmailVerification\EmailVerificationPrompt;
@@ -47,13 +48,14 @@ class TestPanelPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/TestPanel/Resources'), for: 'App\\Filament\\TestPanel\\Resources')
             ->discoverPages(in: app_path('Filament/TestPanel/Pages'), for: 'App\\Filament\\TestPanel\\Pages')
             ->pages([
-                // Pages\Dashboard::class,
+                Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/TestPanel/Widgets'), for: 'App\\Filament\\TestPanel\\Widgets')
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
-                // CustomerDues::class
+                Homepage::class,
+                CustomerDues::class,
             ])
             ->middleware([
                 EncryptCookies::class,
