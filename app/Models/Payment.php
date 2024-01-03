@@ -30,13 +30,13 @@ class Payment extends Model
         'branch_id',
     ];
 
-    public static function calculateDueDate($releaseDate)
+    public static function calculateDueDate($releaseDate, ?int $termCovered = 1)
     {
         // Convert the input release date to a Carbon instance
         $releaseDate = Carbon::parse($releaseDate);
     
         // Add one month to the release date
-        $nextMonth = $releaseDate->copy()->addMonth();
+        $nextMonth = $releaseDate->copy()->addMonth($termCovered);
     
         // Set the initial due date to the last day of the next month
         $dueDate = Carbon::createFromDate($nextMonth->year, $nextMonth->month, 1)->lastOfMonth();
