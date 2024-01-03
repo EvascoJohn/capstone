@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums;
+use App\Enums\UnitStatus;
+use App\Models;
 use App\Models\Scopes\CustomerApplicationScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -185,34 +187,52 @@ class CustomerApplication extends Model implements HasMedia
 
     public function assignAccount(): void
     {
-        //assigns an account to the customer application.
-        $payment_status = null;
-        if($this->plan == Enums\PlanStatus::CASH){
-            $payment_status = "cash payment";
+        if($this->preffered_unit_status == UnitStatus::BRAND_NEW->value){
+                $dp_percentage = Models\DealerhipCalculations::calculateDownPaymentPercentage(25);
+                $total_interest = Models\DealerhipCalculations::calculateTotalInterest(5, $this->unit_term);
+                $dp_amount = Models\DealerhipCalculations::calculateDownPaymentAmount(
+                        $this->unit_srp,
+                        $dp_percentage
+                );
+                $amount_to_be_financed = Models\DealerhipCalculations::calculateAmountToBeFinanced(
+                        $this->unit_srp,
+                        $dp_amount
+                );
+                $total_cost_wo_dp = Models\DealerhipCalculations::calculateTotalCostWithoutDP(
+                        $amount_to_be_financed,
+                        $total_interest
+                );
+        
+                $total_cost_wo_dp += $dp_amount;
+        
+                $payment_status = null;
+                if($this->plan == Enums\PlanStatus::CASH){
+                    $payment_status = "cash payment";
+                }
+                else if($this->plan == Enums\PlanStatus::INSTALLMENT){
+                    $payment_status = "down payment";
+                }
+        
+                $new_account = CustomerPaymentAccount::create([
+                        'customer_application_id'   =>  $this->id,
+                        'remaining_balance'         =>  $total_cost_wo_dp,
+                        'due_date'                  =>  null, 
+                        'plan_type'                 =>  $this->plan,
+                        'monthly_interest'          =>  0.00,
+                        'monthly_payment'           =>  $this->unit_monthly_amort_fin,
+                        'down_payment'              =>  $this->unit_ttl_dp,
+                        'term'                      =>  $this->unit_term,
+                        'term_left'                 =>  $this->unit_term,
+                        'status'                    =>  $this->application_status,
+                        'payment_status'            =>  $payment_status,
+                        'original_amount'           =>  $total_cost_wo_dp,
+                        'unit_release_id'           =>  null,
+                        'author_id'                 =>  $this->author_id,
+                        'branch_id'                 =>  $this->branch_id,
+                ]);
+        
+                $new_account->save();
         }
-        else if($this->plan == Enums\PlanStatus::INSTALLMENT){
-            $payment_status = "down payment";
-        }
-
-        $new_account = CustomerPaymentAccount::create([
-            'customer_application_id'   =>  $this->id,
-            'remaining_balance'         =>  $this->unit_srp,
-            'due_date'                  =>  null, 
-            'plan_type'                 =>  $this->plan,
-            'monthly_interest'          =>  0.00,
-            'monthly_payment'           =>  $this->unit_monthly_amort_fin,
-            'down_payment'              =>  $this->unit_ttl_dp,
-            'term'                      =>  $this->unit_term,
-            'term_left'                 =>  $this->unit_term,
-            'status'                    =>  $this->application_status,
-            'payment_status'            =>  $payment_status,
-            'original_amount'           =>  $this->unit_srp,
-            'unit_release_id'           =>  null,
-            'author_id'                 =>  $this->author_id,
-            'branch_id'                 =>  $this->branch_id,
-        ]);
-        // dd($new_account);
-        $new_account->save();
     }
 
     public static function getSearchApplicationsReadyForPayment(string $search): Builder
