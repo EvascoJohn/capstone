@@ -2,13 +2,16 @@
 
 namespace App\Filament\Resources\CustomerApplicationResource\Pages;
 
-use App\Enums\ApplicationStatus;
+use App\Enums;
 use App\Enums\ReleaseStatus;
+use Filament\Notifications\Actions\Action;
 use Filament\Forms;
 use App\Filament\Resources\CustomerApplicationResource;
 use App\Models\Unit;
 use App\Models;
+use App\Filament\TestPanel;
 use Filament\Actions;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\ViewRecord;
@@ -26,16 +29,53 @@ class ViewCustomerApplication extends ViewRecord
                     ->modalHeading('Approve this application?')
                     ->modalDescription("After approving this application a Payment Account will be created.")
                     ->modalSubmitActionLabel('Yes, Approve this Application')
-                    ->action(function(array $data){
-                            $this->record->setStatusTo(ApplicationStatus::APPROVED_STATUS);
+                    ->action(function(array $data, ?Model $record){
+                            $this->record->setStatusTo(Enums\ApplicationStatus::APPROVED_STATUS);
                             $this->record->assignAccount();
                             $this->record->reject_note = null;
                             $this->getRecord()->save(); // saves the record
+                            // sending two notifications.
+                            // checks if the application is walk-in, if so send it only to the employees of the dealerhsip.
+                            // checks if the application is online, if so check the author and send it to it.
+                            if($record->application_type == Enums\ApplicationType::ONLINE){
+                                $customer = Models\Customer::query()->where('id', $record->author_id)->first();
+                                Notification::make()
+                                        ->title('Application has been approved!')
+                                        ->body('An application has been approved.')
+                                        ->success()
+                                        ->color('success')
+                                        ->actions([
+                                                Action::make('view')->url(function() use ($record) {
+                                                        return TestPanel\Resources\CustomerApplicationResource::getUrl(name:'view', parameters:[$record->id], panel:'customer');
+                                                })
+                                                ->color('info'),
+                                        ])
+                                ->sendToDatabase([
+                                            $customer
+                                ]);
+                                event(new DatabaseNotificationsSent($customer));
+                            }
+                            Notification::make()
+                                    ->title('Application has been approved!')
+                                    ->body('An application has been approved.')
+                                    ->success()
+                                    ->color('success')
+                                    ->send()
+                                    ->actions([
+                                            Action::make('view')->url(function () use ($record) {
+                                                    return CustomerApplicationResource::getUrl('view', [$record->id]);
+                                            })
+                                            ->color('info'),
+                                    ])
+                                    ->sendToDatabase([
+                                            auth()->user(),
+                                    ]);
+                            event(new DatabaseNotificationsSent(auth()->user()));
                     })->hidden(
-                        function(array $data){
-                                if($this->record->getStatus() == ApplicationStatus::REJECTED_STATUS
-                                        || $this->record->getStatus() == ApplicationStatus::APPROVED_STATUS
-                                        || $this->record->getStatus() == ApplicationStatus::RESUBMISSION_STATUS)
+                        function(){
+                                if($this->record->getStatus() == Enums\ApplicationStatus::REJECTED_STATUS
+                                        || $this->record->getStatus() == Enums\ApplicationStatus::APPROVED_STATUS
+                                        || $this->record->getStatus() == Enums\ApplicationStatus::RESUBMISSION_STATUS)
                                     {
                                     return true;
                                 }
@@ -55,7 +95,7 @@ class ViewCustomerApplication extends ViewRecord
                             ->maxLength(255),
                     ])
                     ->action(function(array $data){
-                        $this->record->setStatusTo(ApplicationStatus::RESUBMISSION_STATUS);
+                        $this->record->setStatusTo(Enums\ApplicationStatus::RESUBMISSION_STATUS);
                         $this->record->resubmission_note = $data["resubmission_note"];
                         $this->record->reject_note = null;
                         Notification::make()
@@ -69,8 +109,10 @@ class ViewCustomerApplication extends ViewRecord
                     })->hidden(
                         function(array $data){
                             if(
-                                $this->record->getStatus() 
-                                    == ApplicationStatus::RESUBMISSION_STATUS) {
+                                $this->record->getStatus() == Enums\ApplicationStatus::RESUBMISSION_STATUS ||
+                                $this->record->getStatus() == Enums\ApplicationStatus::APPROVED_STATUS ||
+                                $this->record->getStatus() == Enums\ApplicationStatus::REJECTED_STATUS
+                                ) {
                                 return true;
                             }
                             return false;
@@ -88,7 +130,7 @@ class ViewCustomerApplication extends ViewRecord
                     Forms\Components\Textarea::make('reject_note')->label('Reason of Rejection:'),
                 ])
                 ->action(function(array $data){
-                    $this->record->setStatusTo(ApplicationStatus::REJECTED_STATUS);
+                    $this->record->setStatusTo(Enums\ApplicationStatus::REJECTED_STATUS);
                     $this->record->reject_note = $data["reject_note"];
                     $this->record->resubmission_note = null;
                     $this->record->save();
@@ -102,7 +144,10 @@ class ViewCustomerApplication extends ViewRecord
                 })->hidden(
                     function(array $data){
                         if(
-                            $this->getRecord()->application_status == ApplicationStatus::REJECTED_STATUS){
+                                $this->record->getStatus() == Enums\ApplicationStatus::RESUBMISSION_STATUS ||
+                                $this->record->getStatus() == Enums\ApplicationStatus::APPROVED_STATUS ||
+                                $this->record->getStatus() == Enums\ApplicationStatus::REJECTED_STATUS
+                            ){
                             return true;
                         }
                         return false;
@@ -110,74 +155,11 @@ class ViewCustomerApplication extends ViewRecord
                 );
     }
 
-    // protected function getRepositionButton(): Actions\Action
-    // {
-    //     return Actions\Action::make("Reposession")
-    //             ->color('info')
-    //             ->slideOver()
-    //             ->action(
-    //                 function(array $data){
-    //                 $this->record->setStatusTo(ApplicationStatus::REPO_STATUS);
-    //                 $this->record->assumed_by_id = $data['assumed_by_id'];
-    //                 // $this->record->application_status = ApplicationStatus::CLOSED_STATUS;
-    //                 Models\Unit::query()->where('id', $this->record->units->id)->update([
-    //                     'status'=> 'repo',
-    //                 ]);
-    //                 $this->record->release_status = ReleaseStatus::UN_RELEASED;
-    //                 $this->getRecord()->save(); // saves the record
-    //             })
-    //             ->hidden(
-    //                 function(array $data){
-    //                     if($this->record->getStatus() == ApplicationStatus::REJECTED_STATUS || $this->record->getStatus() == ApplicationStatus::APPROVED_STATUS || $this->record->getStatus() == ApplicationStatus::RESUBMISSION_STATUS)
-    //                     {
-    //                         return true;
-    //                     }
-    //                     return false;
-    //                 }
-    //             )
-    //             ->form([
-    //                 Forms\Components\Textarea::make('reposession_note')
-    //                         ->label('Note'),
-    //                 Forms\Components\TextInput::make('assumed_by_firstname')
-    //                         ->label('First name'),
-    //                 Forms\Components\TextInput::make('assumed_by_middlename')
-    //                         ->label('Middle name'),
-    //                 Forms\Components\TextInput::make('assumed_by_lastname')
-    //                         ->label('Last name'),
-    //                 Forms\Components\Select::make('assumed_by_id')
-    //                 ->required()
-    //                 ->live()
-    //                 ->label("Assumed By")
-    //                 ->options(
-    //                     fn (?Model $record): array => $record::where('application_status', ApplicationStatus::APPROVED_STATUS->value)
-    //                             ->limit(20)
-    //                             ->pluck('id', 'id')
-    //                             ->toArray()
-    //                 )
-    //                 ->afterStateUpdated(
-    //                     function(Forms\Get $get, Forms\Set $set)
-    //                     {
-    //                         if($get('assumed_by_id') != ""){
-    //                             $set('assumed_by_firstname', Models\CustomerApplication::where('id', $get('assumed_by_id'))->first()->applicant_firstname);
-    //                             $set('assumed_by_middlename', Models\CustomerApplication::where('id', $get('assumed_by_id'))->first()->applicant_middlename);
-    //                             $set('assumed_by_lastname', Models\CustomerApplication::where('id', $get('assumed_by_id'))->first()->applicant_lastname);
-    //                         }
-    //                         else if($get('assumed_by_id') == ""){
-    //                             $set('assumed_by_firstname', "");
-    //                             $set('assumed_by_middlename', "");
-    //                             $set('assumed_by_lastname', "");
-    //                         }
-    //                     }
-    //                 )
-    //             ])->requiresConfirmation();
-    // }
-
     protected function getHeaderActions(): array
     {
         return [
             $this->getApproveButton(),
             $this->getResubmissionButton(),
-            // $this->getRepositionButton(),
             $this->getRejectButton(),
         ];
     }
