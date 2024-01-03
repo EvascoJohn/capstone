@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerApplication;
+use App\Models\PaymongoFormatter;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -10,12 +11,17 @@ use Ixudra\Curl\Facades\Curl;
 
 class PaymongoController extends Controller
 {
-    public function pay(int $customerApplicationId)
+    public function pay(string $customerPaymentAccount, string $payment)
     {
-        $customer_application = CustomerApplication::where("id", $customerApplicationId)->first();
+
+        $l_payment = '';
+        $l_customerPaymentAccount = '';
+        parse_str($payment, $prsd_payment);
+        parse_str($customerPaymentAccount, $prsd_customerPaymentAccount);
+        // PaymongoFormatter::reverse_parse_str($payment, $l_payment);
+        // PaymongoFormatter::reverse_parse_str($prsd_customerPaymentAccount, $l_customerPaymentAccount);
 
 
-        $numberWithoutDecimal = str_replace('.', '', $customer_application->unit_monthly_amort);
 
         $data = [
             'data' => [
@@ -23,17 +29,19 @@ class PaymongoController extends Controller
                     'line_items' => [
                         [
                             'currency'      => 'PHP',
-                            'amount'        => intval($numberWithoutDecimal),
-                            'name'          => "Monhtly Amort. for Application No. ".$customer_application->id,
+                            'amount'        => PaymongoFormatter::convertNumber($prsd_payment['payment_amount']),
+                            'name'          => 'Payment',
                             'quantity'      => 1,
                         ]
                     ],
                     'payment_method_types' => [
                         'gcash', 'card'
                     ],
-                    // route("paymongo", ["customerApplicationId" => 1])
-                    'success_url' => env('APP_DOMAIN')."customer/payments",
-                    'cancel_url' => env('APP_DOMAIN').'customer/payments',
+                    'success_url' => route('payment-success', [
+                        'customerPaymentAccount' => http_build_query($prsd_customerPaymentAccount),
+                        'payment' => http_build_query($prsd_payment),
+                    ]),
+                    'cancel_url' => url('/customer/payments'),
                     'description' => "Payment Description",
                 ],
             ]
@@ -55,10 +63,13 @@ class PaymongoController extends Controller
         return redirect()->to($response->data->attributes->checkout_url);
     }
 
-    public function success(int $customerApplicationId){
-        $customer_application = CustomerApplication::where("id", $customerApplicationId)->first();
-        $sessionId = Session::get('session_id');
+    public function success(string $customerPaymentAccount, string $payment)
+    {
+        parse_str($payment, $payment);
+        parse_str($customerPaymentAccount, $customerPaymentAccount);
 
+
+        $sessionId = Session::get('session_id');
         $response = Curl::to('https://api.paymongo.com/v1/checkout_sessions/'.$sessionId)
                 ->withHeader('accept: application/json')
                 ->withHeader('Authorization: Basic '.config('app.auth_pay'))
@@ -66,12 +77,21 @@ class PaymongoController extends Controller
                 ->get();
 
         $amount = $response->data->attributes->line_items[0]->amount;
+
         Payment::query()->create([
-            'customer_application_id' => $customerApplicationId,
-            'payment_status' => 'predefined',
-            'payment_type' => 'predefined',
-            'payment_amount' => str_replace(',', '', number_format($amount / 100, 2)),
+            // 'payment_status' => $payment['payment_status'],
+            // 'payment_type' => $payment['payment_type'],
+            'customer_payment_account_id' => $customerPaymentAccount['id'],
+            'term_covered' => $payment['term_covered'],
+            'payment_is' => $payment['payment_is'],
+            'rebate' => $payment['rebate'],
+            'amount_to_be_paid' => $payment['amount_to_be_paid'],
+            'payment_amount' => $payment['payment_amount'],
+            'author_id' => auth()->user()->id,
+            'branch_id' => $customerPaymentAccount['branch_id'],
         ]);
+
+        return redirect(url('customer/customer-payment-accounts'));
     }
 
 }

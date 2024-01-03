@@ -18,6 +18,7 @@ class Payment extends Model
 
     protected $fillable = [
         'id',
+        'customer_payment_account_id',
         'payment_status',
         'payment_type',
         'term_covered',

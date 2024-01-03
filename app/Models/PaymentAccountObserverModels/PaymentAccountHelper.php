@@ -18,7 +18,8 @@ class PaymentAccountHelper
     {
         $payments = Models\Payment::where('customer_payment_account_id', $this->customerPaymentAccount->id)->get();
         $totalAmountPaid = $payments->sum('amount_to_be_paid');
-        $this->customerPaymentAccount->remaining_balance -= $totalAmountPaid;
+        $calc = ($this->customerPaymentAccount->original_amount - $totalAmountPaid);
+        $this->customerPaymentAccount->remaining_balance = $calc;
     }
     public function updatePaymentStatus()
     {
