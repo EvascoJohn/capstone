@@ -30,7 +30,7 @@ class CustomerPaymentAccountResource extends Resource
 
     protected static ?string $navigationLabel = 'Payments';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    // protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $modelLabel = 'Payment';
 

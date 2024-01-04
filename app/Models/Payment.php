@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Payment extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'id',
@@ -147,6 +149,11 @@ class Payment extends Model
 
     public function customerPaymentAccount():BelongsTo{
         return $this->belongsTo(CustomerPaymentAccount::class, 'customer_payment_account_id', 'id' );
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->useLogName('Payment')->logAll()->logOnlyDirty();
     }
 
 }

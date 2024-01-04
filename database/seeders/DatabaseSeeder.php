@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RegionSeeder::class);
         $this->call(ProvinceSeeder::class);
         $this->call(MunicipalitySeeder::class);
-        $this->call(BarangaySeeder::class);
+        // $this->call(BarangaySeeder::class);
     }
 
     private function createAdmin():void{

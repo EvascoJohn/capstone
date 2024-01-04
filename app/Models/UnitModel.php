@@ -10,11 +10,12 @@ use App\Models;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Filament\Support\RawJs;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class UnitModel extends Model implements HasMedia
 {
-    use HasFactory;
-    use InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, LogsActivity;
 
     protected $fillable = [
         'model_name',
@@ -48,4 +49,8 @@ class UnitModel extends Model implements HasMedia
         return $this->hasMany(Models\CustomerApplication::class);
     }
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->useLogName('Unit Model')->logAll()->logOnlyDirty();
+    }
 }
