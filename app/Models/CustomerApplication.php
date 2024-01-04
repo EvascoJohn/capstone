@@ -207,10 +207,10 @@ class CustomerApplication extends Model implements HasMedia
         
                 $payment_status = null;
                 if($this->plan == Enums\PlanStatus::CASH){
-                    $payment_status = "cash payment";
+                        $payment_status = "cash payment";
                 }
                 else if($this->plan == Enums\PlanStatus::INSTALLMENT){
-                    $payment_status = "down payment";
+                        $payment_status = "down payment";
                 }
         
                 $new_account = CustomerPaymentAccount::create([

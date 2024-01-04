@@ -36,23 +36,20 @@ class Payment extends Model
         $releaseDate = Carbon::parse($releaseDate);
     
         // Add one month to the release date
-        $nextMonth = $releaseDate->copy()->addMonth($termCovered);
-    
-        // Set the initial due date to the last day of the next month
-        $dueDate = Carbon::createFromDate($nextMonth->year, $nextMonth->month, 1)->lastOfMonth();
-        $lastDayOfMonth = $releaseDate->lastOfMonth();
+        $dueDate = $releaseDate->copy()->addMonths($termCovered);
     
         // Check the release date range and update the due date accordingly
         if ($releaseDate->day >= 1 && $releaseDate->day <= 9) {
             $dueDate->day(9);
         } elseif ($releaseDate->day > 9 && $releaseDate->day <= 16) {
             $dueDate->day(16);
-        } elseif ($releaseDate->day > 16 && $releaseDate <= $lastDayOfMonth) {
+        } elseif ($releaseDate->day > 16) {
+            // If the payment is made after the 16th, set the due date to the end of the month
             $dueDate->lastOfMonth();
-        }  
-
+        }
         return $dueDate;
-    }
+    }    
+    
 
     // protected static function booted(): void
     // {
