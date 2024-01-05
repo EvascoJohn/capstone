@@ -30,6 +30,7 @@ class CustomerApplication extends Model implements HasMedia
         'reject_note',
         'resubmission_note',
         'release_status',
+        'resubmission_id',
 
         "account_id",
         
@@ -371,7 +372,7 @@ class CustomerApplication extends Model implements HasMedia
         $unit->customer_application_id = $this->id;
         $unit->save();
     }
-    
+
     public function branches():BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');
@@ -390,6 +391,11 @@ class CustomerApplication extends Model implements HasMedia
     public function calculateTotalAmountOfPayment(): float
     {
         return $this->payments()->sum();
+    }
+
+    public function resubmissions(): HasOne
+    {
+        return $this->hasOne(Models\Resubmissions::class);
     }
 
     public function unitModel():BelongsTo
