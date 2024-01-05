@@ -30,7 +30,24 @@ class EditUnitRelease extends EditRecord
         $data["due_date"] = $due_date;
         $data["release_status"] = ReleaseStatus::RELEASED->value;
         Models\Unit::query()->where("id", $data['units_id'])
-                ->update(['customer_application_id' => $this->record->id]);
+            ->update(['customer_application_id' => $this->record->id]);
+
+        $property = [
+            "old" => [
+                "release_status" => $data['release_status']
+            ],
+            "attributes" => [
+                "release_status" => ReleaseStatus::RELEASED
+            ]
+        ];
+
+        activity('Unit Release')
+            ->event('released')
+            ->performedOn($customer_application)
+            ->subject($data['id'])
+            ->withProperties($property)
+            ->log('released');
+
         return $data;
     }
 
