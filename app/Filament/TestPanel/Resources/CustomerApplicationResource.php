@@ -4,8 +4,10 @@ namespace App\Filament\TestPanel\Resources;
 
 use App\Filament\TestPanel\Resources\CustomerApplicationResource\Pages;
 use App\Filament\TestPanel\Resources\CustomerApplicationResource\RelationManagers;
+use App\Models\ComponentHelper\ResubmissionHelper;
 use App\Models\CustomerApplication;
 use Filament\Forms;
+use Filament;
 use App\Models;
 use App\Enums;
 use App\Models\DealerhipCalculations;
@@ -26,11 +28,808 @@ use Illuminate\Support\HtmlString;
 use Filament\Actions\CreateAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Infolists\Components\TextEntry;
+use Livewire;
 
 class CustomerApplicationResource extends Resource
 {
     protected static ?string $model = CustomerApplication::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+        ->schema([
+            Forms\Components\Select::make("branch_id")
+                    ->relationship('branches', 'full_address')
+                    ->searchable('full_address')
+                    ->columnspan(6)
+                    ->required()
+                    ->preload(),
+            CustomerApplicationResource::getResubmissionNotes()
+                    ->columnSpan(6),
+            Forms\Components\Wizard::make([
+                    Forms\Components\Wizard\Step::make('Unit')
+                            ->hidden(function(?Model $record){
+                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                    return true;
+                                }
+                                return false;
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getUnitToBeFinanced()
+                                            ->disabled(
+                                                    function(string $operation){
+                                                        if($operation == "edit"){
+                                                            return true;
+                                            }}),
+                            ]),
+                    Forms\Components\Wizard\Step::make('Applicant Information')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::APPLICANT->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getApplicantInformation(),
+                                    CustomerApplicationResource::getSpouseComponents(),
+                                    CustomerApplicationResource::getCoOwnerInformation()
+                            ]),
+                    Forms\Components\Wizard\Step::make('Educational Attainment')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::EDUCATION->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getEducationalAttainment()
+                            ]),
+                    Forms\Components\Wizard\Step::make('References')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::REFERENCES->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getReferences()
+                            ]),
+                    Forms\Components\Wizard\Step::make('Employment')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::EMPLOYMENT->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getEmployment()
+                            ]),
+                    Forms\Components\Wizard\Step::make('Statement of Month. income')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::MONTHLY_INCOME->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getProperties(),
+                                    CustomerApplicationResource::getStatementOfMonthlyIncome(),
+                            ]),
+            ])
+            ->columnSpan(6)
+            ->disabled(false),
+            Forms\Components\Wizard::make([
+                    Forms\Components\Wizard\Step::make('Unit')
+                            ->hidden(function(?Model $record){
+                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                    return true;
+                                }
+                                return false;
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getUnitToBeFinanced()
+                                            ->disabled(
+                                                    function(string $operation){
+                                                        if($operation == "edit"){
+                                                            return true;
+                                            }}),
+                            ]),
+                    Forms\Components\Wizard\Step::make('Applicant Information')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::APPLICANT->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getApplicantInformation(),
+                                    CustomerApplicationResource::getSpouseComponents(),
+                                    CustomerApplicationResource::getCoOwnerInformation()
+                            ]),
+                    Forms\Components\Wizard\Step::make('Educational Attainment')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::EDUCATION->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getEducationalAttainment()
+                            ]),
+                    Forms\Components\Wizard\Step::make('References')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::REFERENCES->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getReferences()
+                            ]),
+                    Forms\Components\Wizard\Step::make('Employment')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::EMPLOYMENT->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getEmployment()
+                            ]),
+                    Forms\Components\Wizard\Step::make('Statement of Month. income')
+                            ->hidden(function(?Model $record){
+                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
+                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::MONTHLY_INCOME->value);
+                            })
+                            ->schema([
+                                    CustomerApplicationResource::getProperties(),
+                                    CustomerApplicationResource::getStatementOfMonthlyIncome(),
+                            ]),
+            ])
+            ->columnSpan(6)
+            ->hidden(function(string $operation){
+                if($operation == 'edit'){
+                    return true;
+                }
+            })
+            ->disabled(function(string $operation){
+                if($operation == 'edit'){
+                    return true;
+                }
+            })
+            ->submitAction(
+                Filament\Actions\Action::make('submit')
+            ),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+        ->columns([
+                Tables\Columns\TextColumn::make('id')
+                ->label("Application ID:")
+                ->searchable(),
+        Tables\Columns\TextColumn::make('application_type')
+                ->label("Status:")
+                ->badge(),                 
+        Tables\Columns\TextColumn::make('application_status')
+                ->label("Status:")
+                ->badge(),
+        Tables\Columns\TextColumn::make('applicant_firstname')
+                ->label("First Name:")
+                ->searchable(),
+        Tables\Columns\TextColumn::make('applicant_lastname')
+                ->label("Last Name:")
+                ->searchable(),
+        Tables\Columns\TextColumn::make('unitModel.model_name')
+                ->label("Unit Model:"),
+        Tables\Columns\TextColumn::make('created_at')
+                ->label("Date Created:")
+                ->dateTime('d-M-Y'),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                        ->label('Update')
+                        ->hidden(function(?Model $record): bool {
+                                if($record->application_status == ApplicationStatus::RESUBMISSION_STATUS){
+                                        return false;
+                                }
+                                return true;
+                        }
+                ),
+            ])
+            ->bulkActions([
+
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->columns(4)
+            ->schema([
+                    InfoLists\Components\Tabs::make("")
+                            ->columns(6)
+                            ->columnSpan(6)
+                            ->tabs([
+                                    InfoLists\Components\Tabs\Tab::make("Application's Information")
+                                            ->columns(6)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Application's Information")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('application_status')
+                                                                            ->columnSpan(2)
+                                                                            ->label("Application's status")
+                                                                            ->badge(),
+                                                                    InfoLists\Components\TextEntry::make('plan')
+                                                                            ->columnSpan(2)
+                                                                            ->label("Plan Type")
+                                                                            ->badge(),
+                                                                    InfoLists\Components\TextEntry::make('release_status')
+                                                                            ->columnSpan(2)
+                                                                            ->label("Relase status")
+                                                                            ->badge(),
+                                                                    InfoLists\Components\TextEntry::make('created_at')
+                                                                            ->columnSpan(2)
+                                                                            ->dateTime('M d Y')
+                                                                            ->label('Date Created')
+                                                                            ->badge(),
+                                                                    InfoLists\Components\TextEntry::make('preffered_unit_status')
+                                                                            ->badge()
+                                                                            ->columnSpan(2)
+                                                                            ->label("Preffered unit status"),
+                                                                    InfoLists\Components\TextEntry::make('due_date')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Upcoming Due')
+                                                                            ->badge()
+                                                                            ->color('danger'),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Branch Information")
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('branches.full_address')
+                                                                                    ->size(TextEntry\TextEntrySize::Small)
+                                                                                    ->columnSpan(6)
+                                                                                    ->label("Branch"),
+                                                                    InfoLists\Components\TextEntry::make('contact')
+                                                                                    ->size(TextEntry\TextEntrySize::Small)
+                                                                                    ->columnSpan(6)
+                                                                                    ->label("Contact No."),
+                                                            ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Unit Information')
+                                            ->columns(6)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Motorcycle's Image")
+                                                            ->columnSpan(2)
+                                                            ->schema([
+                                                                    InfoLists\Components\ImageEntry::make('unitModel.image_file')
+                                                                            ->label("")
+                                                                            ->disk('public')
+                                                                            ->height(200)
+                                                                            ->width(200),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Motorcycle's Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(4)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('unitModel.model_name')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Unit Model'),
+                                                                    InfoLists\Components\TextEntry::make('units.chasis_number')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Chasis number')
+                                                                            ->badge(),   
+                                                                    InfoLists\Components\TextEntry::make('unit_term')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Unit Term'),
+                                                                    InfoLists\Components\TextEntry::make('unit_ttl_dp')	
+                                                                            ->columnSpan(2)
+                                                                            ->label('Down Payment')
+                                                                            ->money('php'),   
+                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Monthly Payment')
+                                                                            ->money('php'),                     
+                                                                    InfoLists\Components\TextEntry::make('unit_srp')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Unit Price')
+                                                                            ->money('php'),
+                                                                    InfoLists\Components\TextEntry::make('preffered_unit_status')
+                                                                            ->columnSpan(2)
+                                                                            ->label('Status'),
+                                                            ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make("Customer's Information")
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Personal Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(3)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicant_firstname')
+                                                                        ->label('First Name')
+                                                                        ->columnSpan(2),
+                                                                InfoLists\Components\TextEntry::make('applicant_lastname')
+                                                                        ->label('Last Name')
+                                                                        ->columnSpan(2),
+                                                                InfoLists\Components\TextEntry::make('applicant_birthday')
+                                                                        ->label('Birthday')
+                                                                        ->columnSpan(2),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Contact Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(3)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('applicant_telephone')
+                                                                            ->label('Contact Number:')
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('applicant_email')->label('Email:')
+                                                                            ->columnSpan(3),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Location Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(6)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('applicant_house')
+                                                                            ->label('House:')
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('applicant_present_address')
+                                                                            ->label('Present Address:')
+                                                                            ->columnSpan(3),
+                                                            ]),
+                                                    InfoLists\Components\Section::make([
+                                                            InfoLists\Components\ImageEntry::make('applicant_valid_id')
+                                                                    ->columnSpan(6)
+                                                                    ->disk('public')
+                                                                    ->width(400)
+                                                                    ->height(400)
+                                                                    ->label("Provided ID(s)"),
+                                                    ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make("Co-maker's Information")
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Personal Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(3)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('co_owner_firstname')
+                                                                                ->label('First Name')
+                                                                                ->columnSpan(2),
+                                                                InfoLists\Components\TextEntry::make('co_owner_middlename')
+                                                                                ->label('Middle Name')
+                                                                                ->columnSpan(2),
+                                                                InfoLists\Components\TextEntry::make('co_owner_lastname')
+                                                                                ->label('Last Name')
+                                                                                ->columnSpan(2),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Contact Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(3)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('co_owner_mobile_number')
+                                                                            ->label('Contact Information')
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('co_owner_email')
+                                                                            ->label('Email')
+                                                                            ->columnSpan(3),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Location Information")
+                                                            ->columns(6)
+                                                            ->columnSpan(6)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('co_owner_address')
+                                                                            ->label('Address:')
+                                                                            ->columnSpan(3),
+                                                            ]),
+                                                    InfoLists\Components\ImageEntry::make('co_owner_valid_id')
+                                                                    ->label("Valid ID's:")
+                                                                    ->width(400)
+                                                                    ->height(400)
+                                                                    ->columnSpan(6),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
+                                            ->columns(8)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's Net Income")
+                                                            ->columnSpan(4)
+                                                            ->description("The applicant's net monthly income.")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicants_basic_monthly_salary')
+                                                                        ->label("Basic Monthly Salary")
+                                                                        ->color('success')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(4),
+                                                                InfoLists\Components\TextEntry::make('applicants_allowance_commission')
+                                                                        ->label("Allowance Commision")
+                                                                        ->color('success')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(4),
+                                                                InfoLists\Components\TextEntry::make('applicants_deductions')
+                                                                        ->label("Deductions")
+                                                                        ->color('danger')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(4),
+                                                                InfoLists\Components\TextEntry::make('applicants_net_monthly_income')
+                                                                        ->label(" Net Monthly Income")
+                                                                        ->color('success')
+                                                                        ->money('PHP')
+                                                                        ->columnSpan(12),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Spouse's Net Income")
+                                                            ->columnSpan(4)
+                                                            ->description("The spouse's net monthly income.")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('spouses_basic_monthly_salary')
+                                                                            ->label('Basic Monthly Salary')
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('spouse_allowance_commision')
+                                                                            ->label("Allowance Commision")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('spouse_deductions')
+                                                                            ->label("Deduction")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('spouse_net_monthly_income')
+                                                                            ->label("Net Monthly Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(12),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Expenses")
+                                                            ->columnSpan(8)
+                                                            ->description("These are expenses.")
+                                                            ->columns(8)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('living_expenses')
+                                                                            ->label("Living Expenses")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('education')
+                                                                            ->label("Education")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('transportation')
+                                                                            ->label("Transportation")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('rental')
+                                                                            ->label("Rentals")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('utilities')
+                                                                            ->label("Utilities")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
+                                                                            ->label("Monthly Payment")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                                    InfoLists\Components\TextEntry::make('total_expenses')
+                                                                            ->label("Total Expenses")
+                                                                            ->color('danger')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(2),
+                                                            ]),
+                                                    Infolists\Components\Section::make("")
+                                                            ->columns(12)
+                                                            ->columnSpan(8)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('other_income')
+                                                                            ->label("Other Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('gross_monthly_income')
+                                                                            ->label("Gross Monthly Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('net_monthly_income')
+                                                                            ->label("Net Monthly Income")
+                                                                            ->color('success')
+                                                                            ->money('PHP')
+                                                                            ->columnSpan(4),
+                                                            ]),
+                                                InfoLists\Components\Section::make("Applicant's Net Income")
+                                                                ->columnSpan(8)
+                                                                ->description("The applicant's net monthly income.")
+                                                                ->columns(12)
+                                                                ->schema([
+                                                                        InfoLists\Components\TextEntry::make('number_of_vehicles')
+                                                                                        ->label("Number of vehicles")
+                                                                                        ->columnSpan(12),
+                                                                        InfoLists\Components\RepeatableEntry::make('real_estate_property')
+                                                                                        ->label("Real Estate(s)")
+                                                                                        ->columnSpan(12)
+                                                                                        ->columns(12)
+                                                                                        ->schema([
+                                                                                                        InfoLists\Components\TextEntry::make('type')
+                                                                                                                        ->columnSpan(12)
+                                                                                                                        ->badge(),
+                                                                                                        InfoLists\Components\TextEntry::make('clean')
+                                                                                                                        ->columnSpan(3),
+                                                                                                        InfoLists\Components\TextEntry::make('mortgage')
+                                                                                                                        ->columnSpan(3)
+                                                                                                                        ->money('PHP'),
+                                                                                                        InfoLists\Components\TextEntry::make('to_whom')
+                                ->columnSpan(3),
+                                                                                                        InfoLists\Components\TextEntry::make('market_value')
+                                                                                                                        ->columnSpan(3)
+                                                                                                                        ->money('PHP'),
+                                                                                        ]),
+                                                                        InfoLists\Components\RepeatableEntry::make('appliance_property')
+                                                                                        ->label("Appliance(s)")
+                                                                                        ->columnSpan(6)
+                                                                                        ->schema([
+                                                                                                        InfoLists\Components\TextEntry::make('name'),
+                                                                                        ]),
+                                                                ]),
+                                                    InfoLists\Components\ImageEntry::make('proof_of_income_image')
+                                                            ->disk('public')
+                                                            ->label('Proof of income:')
+                                                            ->width(500)
+                                                            ->height(500)
+                                                            ->columnSpan(6),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Financial References')
+                                            ->columns(8)
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's Personal Reference(s)")
+                                                            ->columnSpan(8)
+                                                            ->description("The applicant's personal reference(s) (This field is required)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\RepeatableEntry::make("personal_references")
+                                                                            ->label("Applicant's Personal Reference(s)")
+                                                                            ->columnSpan(12)
+                                                                            ->columns(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('name')
+                                                                                            ->label("Name")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('address')
+                                                                                            ->label("Address")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('relationship')
+                                                                                            ->label("Relationship")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('telephone')
+                                                                                            ->label("Contact Information")
+                                                                                            ->columnSpan(3),
+                                                                            ]),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Applicant's Credit Card Information")
+                                                            ->columnSpan(8)
+                                                            ->description("The applicant's Credit Card Information (This field is not required and may be empty)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\RepeatableEntry::make('applicants_card_information')
+                                                                            ->columns(12)
+                                                                            ->columnSpan(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('bank_acc_type')
+                                                                                            ->label("Account Type")
+                                                                                            ->badge()
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('account_number')
+                                                                                            ->label("Account No.")
+                                                                                            ->badge()
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('bank_or_branch')
+                                                                                            ->label("Bank\\Branch")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('date_openned')
+                                                                                            ->label("Date Openned")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('average_monthly_balance')
+                                                                                            ->label("Avg. Monthly Balance")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                            ])
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Creditor's Credit Card Information")
+                                                            ->columnSpan(8)
+                                                            ->description("This is the creditor's card reference (This field is not required and may be empty)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\RepeatableEntry::make('creditors_card_information')
+                                                                            ->columns(12)
+                                                                            ->columnSpan(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('credit_card_company')
+                                                                                            ->label("Card Company")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('card_number')
+                                                                                            ->label("Card No.")
+                                                                                            ->badge()
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('card_date_issued')
+                                                                                            ->label("Date Issued")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('credit_limit')
+                                                                                            ->label("Date Openned")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('outstanding_balance')
+                                                                                            ->label("Outstanding Balance")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                            ]),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Creditor's Information")
+                                                            ->columnSpan(8)
+                                                            ->description("This is the creditor's information (This field is not required and may be empty)")
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    Infolists\Components\RepeatableEntry::make('creditors_information')
+                                                                            ->columnSpan(12)
+                                                                            ->columns(12)
+                                                                            ->schema([
+                                                                                    InfoLists\Components\TextEntry::make('name')
+                                                                                            ->label("Creditor Name")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('term')
+                                                                                            ->label("term")
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('present_balance')
+                                                                                            ->label("Present Balance")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('principal')
+                                                                                            ->label("Principal")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(3),
+                                                                                    InfoLists\Components\TextEntry::make('monthly_amorthization')
+                                                                                            ->label("Monthly Amortization")
+                                                                                            ->money('PHP')
+                                                                                            ->columnSpan(12),
+                                                                            ]),
+                                                            ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Educational Attainment')
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's educational Attainment")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\RepeatableEntry::make('educational_attainment')
+                                                                        ->columnSpan(12)
+                                                                        ->columns(12)
+                                                                        ->schema([
+                                                                                InfoLists\Components\TextEntry::make('course')
+                                                                                        ->label("Education")
+                                                                                        ->columnSpan(3),
+                                                                                InfoLists\Components\TextEntry::make('no_years')
+                                                                                        ->label("Number of Years")
+                                                                                        ->columnSpan(3),
+                                                                                InfoLists\Components\TextEntry::make('school')
+                                                                                        ->label("School")
+                                                                                        ->columnSpan(3),
+                                                                                InfoLists\Components\TextEntry::make('year_grad')
+                                                                                        ->label("Year of graduate")
+                                                                                        ->columnSpan(3),
+                                                                        ])
+                                                            ]),
+                                    InfoLists\Components\Section::make("Dependent")
+                                            ->columnSpan(8)
+                                            ->columns(12)
+                                            ->schema([
+                                                    InfoLists\Components\RepeatableEntry::make('dependents')
+                                                            ->columnSpan(12)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('dependent_name')
+                                                                            ->label("Name")
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('dependent_birthdate')
+                                                                            ->label("Birthday")
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('dependent_school')
+                                                                            ->label("School")
+                                                                            ->columnSpan(3),
+                                                                    InfoLists\Components\TextEntry::make('dependent_monthly_tuition')
+                                                                            ->label("Monthly Tuition")
+                                                                            ->columnSpan(3),
+                                                        ])
+                                            ]),
+                                            ]),
+                                    InfoLists\Components\Tabs\Tab::make('Employment')
+                                            ->schema([
+                                                    InfoLists\Components\Section::make("Applicant's Present Employer")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                    InfoLists\Components\TextEntry::make('applicant_present_business_employer')
+                                                                            ->label("Employer")
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('applicant_position')
+                                                                            ->label("Position")
+                                                                            ->columnSpan(4),
+                                                                    InfoLists\Components\TextEntry::make('applicant_how_long_job_or_business')
+                                                                            ->label("School")
+                                                                            ->columnSpan(4),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Applicant's Business")
+                                                            ->description("The Applicant's Business (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicant_business_address')
+                                                                        ->label("Address")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('applicant_nature_of_business')
+                                                                        ->label("Nature of Business")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Previous Employer")
+                                                            ->description("The Applicant's previous employment (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('applicant_previous_employer')
+                                                                        ->label("Employer")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('applicant_previous_employer_position')
+                                                                        ->label("Position")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('applicant_how_long_prev_job_or_business')
+                                                                        ->label("How Long")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Spouse's Present Employment Information")
+                                                            ->description("The Spouse's employment (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('spouse_employer')
+                                                                        ->label("Employer")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('spouse_position')
+                                                                        ->label("Position")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('spouse_how_long_job_business')
+                                                                        ->label("How Long")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                                    InfoLists\Components\Section::make("Spouse's Present Business")
+                                                            ->description("The Spouse's business (This field is not required and can be empty)")
+                                                            ->columnSpan(8)
+                                                            ->columns(12)
+                                                            ->schema([
+                                                                InfoLists\Components\TextEntry::make('spouse_business_address')
+                                                                        ->label("Business Address")
+                                                                        ->columnSpan(6),
+                                                                InfoLists\Components\TextEntry::make('spouse_nature_of_business')
+                                                                        ->label("Nature of Business")
+                                                                        ->columnSpan(6),
+                                                            ]),
+                                            ]),
+                        ]),
+            ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('author_id', auth()->id());
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListCustomerApplications::route('/'),
+            'create' => Pages\CreateCustomerApplication::route('/create'),
+            'edit' => Pages\EditCustomerApplication::route('/{record}/edit'),
+            'view' => Pages\ViewCustomerApplicationResource::route('/{record}'),
+        ];
+    }
 
     public static function canEdit(Model $record): bool
     {
@@ -44,7 +843,7 @@ class CustomerApplicationResource extends Resource
                         ->schema([
                                 Forms\Components\Fieldset::make("")
                                 ->columnSpan(1)
-                                        ->columns(1)
+                                ->columns(1)
                                 ->schema([
                                         Forms\Components\Group::make()
                                                 ->columns(6)
@@ -82,7 +881,7 @@ class CustomerApplicationResource extends Resource
                                                                         ->label("Unit status")
                                                                         ->options(function (Forms\Get $get):array
                                                                         {
-                                                                            return Models\Unit::getAvailableStatusOnUnit($get('unit_model_id'));
+                                                                                return Models\Unit::getAvailableStatusOnUnit($get('unit_model_id'));
                                                                         }),
                                                         Forms\Components\Select::make('plan')
                                                                         ->live()
@@ -91,8 +890,8 @@ class CustomerApplicationResource extends Resource
                                                                         ->required()
                                                                         ->label("Plan")
                                                                         ->options(
-																				Enums\PlanStatus::class
-																		),
+                                                                                Enums\PlanStatus::class
+									                                    ),
                                                         Forms\Components\Select::make('unit_term')
                                                                         ->columnSpan(2)
                                                                         ->live()
@@ -193,7 +992,7 @@ class CustomerApplicationResource extends Resource
                                         ]),
                 ]);
     }
-    
+
     public static function getCoOwnerInformation(): Forms\Components\Component
     {
         return Forms\Components\Section::make("Co-Maker")
@@ -253,6 +1052,7 @@ class CustomerApplicationResource extends Resource
                 ])
                 ->columns(6);
     }
+
     public static function getApplicantInformation(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
@@ -1348,8 +2148,6 @@ class CustomerApplicationResource extends Resource
         ]);
     }
 
-    
-
     public static function getRejectionNote(): Infolists\Components\Component
     {
         return Infolists\Components\Split::make([
@@ -1363,6 +2161,7 @@ class CustomerApplicationResource extends Resource
                     ->grow(),   
         ]);
     }
+
     public static function getStatementOfMonthlyIncome(): Forms\Components\Component
     {
         return Forms\Components\Group::make([
@@ -1373,708 +2172,4 @@ class CustomerApplicationResource extends Resource
         ])
         ->columns(6);
     }
-
-    public static function form(Form $form): Form
-    {
-        return $form
-        ->schema([
-            Forms\Components\Select::make("branch_id")
-                    ->relationship('branches', 'full_address')
-                    ->searchable('full_address')
-                    ->columnspan(6)
-                    ->required()
-                    ->preload(),
-                CustomerApplicationResource::getResubmissionNotes()
-                        ->columnSpan(6),
-                        Forms\Components\Wizard::make([
-                                Forms\Components\Wizard\Step::make('Unit')
-                                        ->schema([
-                                                CustomerApplicationResource::getUnitToBeFinanced()
-                                                        ->disabled(
-                                                                function(string $operation){
-                                                                    if($operation == "edit"){
-                                                                        return true;
-                                                        }}),
-                                        ]),
-                                Forms\Components\Wizard\Step::make('Applicant Information')
-                                        ->schema([
-                                                CustomerApplicationResource::getApplicantInformation(),
-                                                CustomerApplicationResource::getSpouseComponents(),
-                                                CustomerApplicationResource::getCoOwnerInformation()
-                                        ]),
-                                Forms\Components\Wizard\Step::make('Educational Attainment')
-                                        ->schema([
-                                                CustomerApplicationResource::getEducationalAttainment()
-                                        ]),
-                                Forms\Components\Wizard\Step::make('References')
-                                        ->schema([
-                                                CustomerApplicationResource::getReferences()
-                                        ]),
-                                Forms\Components\Wizard\Step::make('Employment')
-                                        ->schema([
-                                                CustomerApplicationResource::getEmployment()
-                                        ]),
-                                Forms\Components\Wizard\Step::make('Statement of Month. income')
-                                        ->schema([
-                                                CustomerApplicationResource::getProperties(),
-                                                CustomerApplicationResource::getStatementOfMonthlyIncome(),
-                                        ]),
-                        ])
-                        ->columnSpan(6)
-                        ->submitAction(new HtmlString(Blade::render(<<<BLADE
-                        <x-filament::button
-                            type="submit"
-                            size="sm"
-                        >
-                            Submit
-                        </x-filament::button>
-                    BLADE))),
-        ]);
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-        ->columns([
-                Tables\Columns\TextColumn::make('id')
-                ->label("Application ID:")
-                ->searchable(),
-        Tables\Columns\TextColumn::make('application_type')
-                ->label("Status:")
-                ->badge(),                 
-        Tables\Columns\TextColumn::make('application_status')
-                ->label("Status:")
-                ->badge(),
-        Tables\Columns\TextColumn::make('applicant_firstname')
-                ->label("First Name:")
-                ->searchable(),
-        Tables\Columns\TextColumn::make('applicant_lastname')
-                ->label("Last Name:")
-                ->searchable(),
-        Tables\Columns\TextColumn::make('unitModel.model_name')
-                ->label("Unit Model:"),
-        Tables\Columns\TextColumn::make('created_at')
-                ->label("Date Created:")
-                ->dateTime('d-M-Y'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()
-                        ->hidden(function(?Model $record): bool {
-                                if($record->getStatus() == ApplicationStatus::RESUBMISSION_STATUS){
-                                        return false;
-                                }
-                                return true;
-                        }
-                ),
-                
-            ])
-            ->bulkActions([
-                // ..
-            ]);
-    }
-
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->columns(4)
-            ->schema([
-                    InfoLists\Components\Tabs::make("")
-                            ->columns(6)
-                            ->columnSpan(6)
-                            ->tabs([
-                                    InfoLists\Components\Tabs\Tab::make("Application's Information")
-                                            ->columns(6)
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Application's Information")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('application_status')
-                                                                            ->columnSpan(2)
-                                                                            ->label("Application's status")
-                                                                            ->badge(),
-                                                                    InfoLists\Components\TextEntry::make('plan')
-                                                                            ->columnSpan(2)
-                                                                            ->label("Plan Type")
-                                                                            ->badge(),
-                                                                    InfoLists\Components\TextEntry::make('release_status')
-                                                                            ->columnSpan(2)
-                                                                            ->label("Relase status")
-                                                                            ->badge(),
-                                                                    InfoLists\Components\TextEntry::make('created_at')
-                                                                            ->columnSpan(2)
-                                                                            ->dateTime('M d Y')
-                                                                            ->label('Date Created')
-                                                                            ->badge(),
-                                                                    InfoLists\Components\TextEntry::make('preffered_unit_status')
-                                                                            ->badge()
-                                                                            ->columnSpan(2)
-                                                                            ->label("Preffered unit status"),
-                                                                    InfoLists\Components\TextEntry::make('due_date')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Upcoming Due')
-                                                                            ->badge()
-                                                                            ->color('danger'),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Branch Information")
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('branches.full_address')
-                                                                                    ->size(TextEntry\TextEntrySize::Small)
-                                                                                    ->columnSpan(6)
-                                                                                    ->label("Branch"),
-                                                                    InfoLists\Components\TextEntry::make('contact')
-                                                                                    ->size(TextEntry\TextEntrySize::Small)
-                                                                                    ->columnSpan(6)
-                                                                                    ->label("Contact No."),
-                                                            ]),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make('Unit Information')
-                                            ->columns(6)
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Motorcycle's Image")
-                                                            ->columnSpan(2)
-                                                            ->schema([
-                                                                    InfoLists\Components\ImageEntry::make('unitModel.image_file')
-                                                                            ->label("")
-                                                                            ->disk('public')
-                                                                            ->height(200)
-                                                                            ->width(200),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Motorcycle's Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(4)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('unitModel.model_name')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Unit Model'),
-                                                                    InfoLists\Components\TextEntry::make('units.chasis_number')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Chasis number')
-                                                                            ->badge(),   
-                                                                    InfoLists\Components\TextEntry::make('unit_term')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Unit Term'),
-                                                                    InfoLists\Components\TextEntry::make('unit_ttl_dp')	
-                                                                            ->columnSpan(2)
-                                                                            ->label('Down Payment')
-                                                                            ->money('php'),   
-                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Monthly Payment')
-                                                                            ->money('php'),                     
-                                                                    InfoLists\Components\TextEntry::make('unit_srp')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Unit Price')
-                                                                            ->money('php'),
-                                                                    InfoLists\Components\TextEntry::make('preffered_unit_status')
-                                                                            ->columnSpan(2)
-                                                                            ->label('Status'),
-                                                            ]),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make("Customer's Information")
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Personal Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(3)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('applicant_firstname')
-                                                                        ->label('First Name')
-                                                                        ->columnSpan(2),
-                                                                InfoLists\Components\TextEntry::make('applicant_lastname')
-                                                                        ->label('Last Name')
-                                                                        ->columnSpan(2),
-                                                                InfoLists\Components\TextEntry::make('applicant_birthday')
-                                                                        ->label('Birthday')
-                                                                        ->columnSpan(2),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Contact Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(3)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('applicant_telephone')
-                                                                            ->label('Contact Number:')
-                                                                            ->columnSpan(3),
-                                                                    InfoLists\Components\TextEntry::make('applicant_email')->label('Email:')
-                                                                            ->columnSpan(3),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Location Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(6)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('applicant_house')
-                                                                            ->label('House:')
-                                                                            ->columnSpan(3),
-                                                                    InfoLists\Components\TextEntry::make('applicant_present_address')
-                                                                            ->label('Present Address:')
-                                                                            ->columnSpan(3),
-                                                            ]),
-                                                    InfoLists\Components\Section::make([
-                                                            InfoLists\Components\ImageEntry::make('applicant_valid_id')
-                                                                    ->columnSpan(6)
-                                                                    ->disk('public')
-                                                                    ->width(400)
-                                                                    ->height(400)
-                                                                    ->label("Provided ID(s)"),
-                                                    ]),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make("Co-maker's Information")
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Personal Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(3)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('co_owner_firstname')
-                                                                                ->label('First Name')
-                                                                                ->columnSpan(2),
-                                                                InfoLists\Components\TextEntry::make('co_owner_middlename')
-                                                                                ->label('Middle Name')
-                                                                                ->columnSpan(2),
-                                                                InfoLists\Components\TextEntry::make('co_owner_lastname')
-                                                                                ->label('Last Name')
-                                                                                ->columnSpan(2),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Contact Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(3)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('co_owner_mobile_number')
-                                                                            ->label('Contact Information')
-                                                                            ->columnSpan(3),
-                                                                    InfoLists\Components\TextEntry::make('co_owner_email')
-                                                                            ->label('Email')
-                                                                            ->columnSpan(3),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Location Information")
-                                                            ->columns(6)
-                                                            ->columnSpan(6)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('co_owner_address')
-                                                                            ->label('Address:')
-                                                                            ->columnSpan(3),
-                                                            ]),
-                                                    InfoLists\Components\ImageEntry::make('co_owner_valid_id')
-                                                                    ->label("Valid ID's:")
-                                                                    ->width(400)
-                                                                    ->height(400)
-                                                                    ->columnSpan(6),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make('Statement of Monthly Income')
-                                            ->columns(8)
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Applicant's Net Income")
-                                                            ->columnSpan(4)
-                                                            ->description("The applicant's net monthly income.")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('applicants_basic_monthly_salary')
-                                                                        ->label("Basic Monthly Salary")
-                                                                        ->color('success')
-                                                                        ->money('PHP')
-                                                                        ->columnSpan(4),
-                                                                InfoLists\Components\TextEntry::make('applicants_allowance_commission')
-                                                                        ->label("Allowance Commision")
-                                                                        ->color('success')
-                                                                        ->money('PHP')
-                                                                        ->columnSpan(4),
-                                                                InfoLists\Components\TextEntry::make('applicants_deductions')
-                                                                        ->label("Deductions")
-                                                                        ->color('danger')
-                                                                        ->money('PHP')
-                                                                        ->columnSpan(4),
-                                                                InfoLists\Components\TextEntry::make('applicants_net_monthly_income')
-                                                                        ->label(" Net Monthly Income")
-                                                                        ->color('success')
-                                                                        ->money('PHP')
-                                                                        ->columnSpan(12),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Spouse's Net Income")
-                                                            ->columnSpan(4)
-                                                            ->description("The spouse's net monthly income.")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('spouses_basic_monthly_salary')
-                                                                            ->label('Basic Monthly Salary')
-                                                                            ->color('success')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('spouse_allowance_commision')
-                                                                            ->label("Allowance Commision")
-                                                                            ->color('success')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('spouse_deductions')
-                                                                            ->label("Deduction")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('spouse_net_monthly_income')
-                                                                            ->label("Net Monthly Income")
-                                                                            ->color('success')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(12),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Expenses")
-                                                            ->columnSpan(8)
-                                                            ->description("These are expenses.")
-                                                            ->columns(8)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('living_expenses')
-                                                                            ->label("Living Expenses")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                                    InfoLists\Components\TextEntry::make('education')
-                                                                            ->label("Education")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                                    InfoLists\Components\TextEntry::make('transportation')
-                                                                            ->label("Transportation")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                                    InfoLists\Components\TextEntry::make('rental')
-                                                                            ->label("Rentals")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                                    InfoLists\Components\TextEntry::make('utilities')
-                                                                            ->label("Utilities")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                                    InfoLists\Components\TextEntry::make('unit_monthly_amort_fin')
-                                                                            ->label("Monthly Payment")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                                    InfoLists\Components\TextEntry::make('total_expenses')
-                                                                            ->label("Total Expenses")
-                                                                            ->color('danger')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(2),
-                                                            ]),
-                                                    Infolists\Components\Section::make("")
-                                                            ->columns(12)
-                                                            ->columnSpan(8)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('other_income')
-                                                                            ->label("Other Income")
-                                                                            ->color('success')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('gross_monthly_income')
-                                                                            ->label("Gross Monthly Income")
-                                                                            ->color('success')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('net_monthly_income')
-                                                                            ->label("Net Monthly Income")
-                                                                            ->color('success')
-                                                                            ->money('PHP')
-                                                                            ->columnSpan(4),
-                                                            ]),
-                                                InfoLists\Components\Section::make("Applicant's Net Income")
-                                                                ->columnSpan(8)
-                                                                ->description("The applicant's net monthly income.")
-                                                                ->columns(12)
-                                                                ->schema([
-                                                                        InfoLists\Components\TextEntry::make('number_of_vehicles')
-                                                                                        ->label("Number of vehicles")
-                                                                                        ->columnSpan(12),
-                                                                        InfoLists\Components\RepeatableEntry::make('real_estate_property')
-                                                                                        ->label("Real Estate(s)")
-                                                                                        ->columnSpan(12)
-                                                                                        ->columns(12)
-                                                                                        ->schema([
-                                                                                                        InfoLists\Components\TextEntry::make('type')
-                                                                                                                        ->columnSpan(12)
-                                                                                                                        ->badge(),
-                                                                                                        InfoLists\Components\TextEntry::make('clean')
-                                                                                                                        ->columnSpan(3),
-                                                                                                        InfoLists\Components\TextEntry::make('mortgage')
-                                                                                                                        ->columnSpan(3)
-                                                                                                                        ->money('PHP'),
-                                                                                                        InfoLists\Components\TextEntry::make('to_whom')
-                                ->columnSpan(3),
-                                                                                                        InfoLists\Components\TextEntry::make('market_value')
-                                                                                                                        ->columnSpan(3)
-                                                                                                                        ->money('PHP'),
-                                                                                        ]),
-                                                                        InfoLists\Components\RepeatableEntry::make('appliance_property')
-                                                                                        ->label("Appliance(s)")
-                                                                                        ->columnSpan(6)
-                                                                                        ->schema([
-                                                                                                        InfoLists\Components\TextEntry::make('name'),
-                                                                                        ]),
-                                                                ]),
-                                                    InfoLists\Components\ImageEntry::make('proof_of_income_image')
-                                                            ->disk('public')
-                                                            ->label('Proof of income:')
-                                                            ->width(500)
-                                                            ->height(500)
-                                                            ->columnSpan(6),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make('Financial References')
-                                            ->columns(8)
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Applicant's Personal Reference(s)")
-                                                            ->columnSpan(8)
-                                                            ->description("The applicant's personal reference(s) (This field is required)")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\RepeatableEntry::make("personal_references")
-                                                                            ->label("Applicant's Personal Reference(s)")
-                                                                            ->columnSpan(12)
-                                                                            ->columns(12)
-                                                                            ->schema([
-                                                                                    InfoLists\Components\TextEntry::make('name')
-                                                                                            ->label("Name")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('address')
-                                                                                            ->label("Address")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('relationship')
-                                                                                            ->label("Relationship")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('telephone')
-                                                                                            ->label("Contact Information")
-                                                                                            ->columnSpan(3),
-                                                                            ]),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Applicant's Credit Card Information")
-                                                            ->columnSpan(8)
-                                                            ->description("The applicant's Credit Card Information (This field is not required and may be empty)")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\RepeatableEntry::make('applicants_card_information')
-                                                                            ->columns(12)
-                                                                            ->columnSpan(12)
-                                                                            ->schema([
-                                                                                    InfoLists\Components\TextEntry::make('bank_acc_type')
-                                                                                            ->label("Account Type")
-                                                                                            ->badge()
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('account_number')
-                                                                                            ->label("Account No.")
-                                                                                            ->badge()
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('bank_or_branch')
-                                                                                            ->label("Bank\\Branch")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('date_openned')
-                                                                                            ->label("Date Openned")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('average_monthly_balance')
-                                                                                            ->label("Avg. Monthly Balance")
-                                                                                            ->money('PHP')
-                                                                                            ->columnSpan(3),
-                                                                            ])
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Creditor's Credit Card Information")
-                                                            ->columnSpan(8)
-                                                            ->description("This is the creditor's card reference (This field is not required and may be empty)")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\RepeatableEntry::make('creditors_card_information')
-                                                                            ->columns(12)
-                                                                            ->columnSpan(12)
-                                                                            ->schema([
-                                                                                    InfoLists\Components\TextEntry::make('credit_card_company')
-                                                                                            ->label("Card Company")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('card_number')
-                                                                                            ->label("Card No.")
-                                                                                            ->badge()
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('card_date_issued')
-                                                                                            ->label("Date Issued")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('credit_limit')
-                                                                                            ->label("Date Openned")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('outstanding_balance')
-                                                                                            ->label("Outstanding Balance")
-                                                                                            ->money('PHP')
-                                                                                            ->columnSpan(3),
-                                                                            ]),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Creditor's Information")
-                                                            ->columnSpan(8)
-                                                            ->description("This is the creditor's information (This field is not required and may be empty)")
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    Infolists\Components\RepeatableEntry::make('creditors_information')
-                                                                            ->columnSpan(12)
-                                                                            ->columns(12)
-                                                                            ->schema([
-                                                                                    InfoLists\Components\TextEntry::make('name')
-                                                                                            ->label("Creditor Name")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('term')
-                                                                                            ->label("term")
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('present_balance')
-                                                                                            ->label("Present Balance")
-                                                                                            ->money('PHP')
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('principal')
-                                                                                            ->label("Principal")
-                                                                                            ->money('PHP')
-                                                                                            ->columnSpan(3),
-                                                                                    InfoLists\Components\TextEntry::make('monthly_amorthization')
-                                                                                            ->label("Monthly Amortization")
-                                                                                            ->money('PHP')
-                                                                                            ->columnSpan(12),
-                                                                            ]),
-                                                            ]),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make('Educational Attainment')
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Applicant's educational Attainment")
-                                                            ->columnSpan(8)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                InfoLists\Components\RepeatableEntry::make('educational_attainment')
-                                                                        ->columnSpan(12)
-                                                                        ->columns(12)
-                                                                        ->schema([
-                                                                                InfoLists\Components\TextEntry::make('course')
-                                                                                        ->label("Education")
-                                                                                        ->columnSpan(3),
-                                                                                InfoLists\Components\TextEntry::make('no_years')
-                                                                                        ->label("Number of Years")
-                                                                                        ->columnSpan(3),
-                                                                                InfoLists\Components\TextEntry::make('school')
-                                                                                        ->label("School")
-                                                                                        ->columnSpan(3),
-                                                                                InfoLists\Components\TextEntry::make('year_grad')
-                                                                                        ->label("Year of graduate")
-                                                                                        ->columnSpan(3),
-                                                                        ])
-                                                            ]),
-                                    InfoLists\Components\Section::make("Dependent")
-                                            ->columnSpan(8)
-                                            ->columns(12)
-                                            ->schema([
-                                                    InfoLists\Components\RepeatableEntry::make('dependents')
-                                                            ->columnSpan(12)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('dependent_name')
-                                                                            ->label("Name")
-                                                                            ->columnSpan(3),
-                                                                    InfoLists\Components\TextEntry::make('dependent_birthdate')
-                                                                            ->label("Birthday")
-                                                                            ->columnSpan(3),
-                                                                    InfoLists\Components\TextEntry::make('dependent_school')
-                                                                            ->label("School")
-                                                                            ->columnSpan(3),
-                                                                    InfoLists\Components\TextEntry::make('dependent_monthly_tuition')
-                                                                            ->label("Monthly Tuition")
-                                                                            ->columnSpan(3),
-                                                        ])
-                                            ]),
-                                            ]),
-                                    InfoLists\Components\Tabs\Tab::make('Employment')
-                                            ->schema([
-                                                    InfoLists\Components\Section::make("Applicant's Present Employer")
-                                                            ->columnSpan(8)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                    InfoLists\Components\TextEntry::make('applicant_present_business_employer')
-                                                                            ->label("Employer")
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('applicant_position')
-                                                                            ->label("Position")
-                                                                            ->columnSpan(4),
-                                                                    InfoLists\Components\TextEntry::make('applicant_how_long_job_or_business')
-                                                                            ->label("School")
-                                                                            ->columnSpan(4),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Applicant's Business")
-                                                            ->description("The Applicant's Business (This field is not required and can be empty)")
-                                                            ->columnSpan(8)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('applicant_business_address')
-                                                                        ->label("Address")
-                                                                        ->columnSpan(6),
-                                                                InfoLists\Components\TextEntry::make('applicant_nature_of_business')
-                                                                        ->label("Nature of Business")
-                                                                        ->columnSpan(6),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Previous Employer")
-                                                            ->description("The Applicant's previous employment (This field is not required and can be empty)")
-                                                            ->columnSpan(8)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('applicant_previous_employer')
-                                                                        ->label("Employer")
-                                                                        ->columnSpan(6),
-                                                                InfoLists\Components\TextEntry::make('applicant_previous_employer_position')
-                                                                        ->label("Position")
-                                                                        ->columnSpan(6),
-                                                                InfoLists\Components\TextEntry::make('applicant_how_long_prev_job_or_business')
-                                                                        ->label("How Long")
-                                                                        ->columnSpan(6),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Spouse's Present Employment Information")
-                                                            ->description("The Spouse's employment (This field is not required and can be empty)")
-                                                            ->columnSpan(8)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('spouse_employer')
-                                                                        ->label("Employer")
-                                                                        ->columnSpan(6),
-                                                                InfoLists\Components\TextEntry::make('spouse_position')
-                                                                        ->label("Position")
-                                                                        ->columnSpan(6),
-                                                                InfoLists\Components\TextEntry::make('spouse_how_long_job_business')
-                                                                        ->label("How Long")
-                                                                        ->columnSpan(6),
-                                                            ]),
-                                                    InfoLists\Components\Section::make("Spouse's Present Business")
-                                                            ->description("The Spouse's business (This field is not required and can be empty)")
-                                                            ->columnSpan(8)
-                                                            ->columns(12)
-                                                            ->schema([
-                                                                InfoLists\Components\TextEntry::make('spouse_business_address')
-                                                                        ->label("Business Address")
-                                                                        ->columnSpan(6),
-                                                                InfoLists\Components\TextEntry::make('spouse_nature_of_business')
-                                                                        ->label("Nature of Business")
-                                                                        ->columnSpan(6),
-                                                            ]),
-                                            ]),
-                        ]),
-            ]);
-    }
-
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->where('author_id', auth()->id());
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-    
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListCustomerApplications::route('/'),
-            'create' => Pages\CreateCustomerApplication::route('/create'),
-            'edit' => Pages\EditCustomerApplication::route('/{record}/edit'),
-            'view' => Pages\ViewCustomerApplicationResource::route('/{record}'),
-        ];
-    }    
 }

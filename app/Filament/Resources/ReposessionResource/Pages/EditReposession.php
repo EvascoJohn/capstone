@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\ReposessionResource\Pages;
 
+use App\Enums\ApplicationStatus;
 use App\Filament\Resources\ReposessionResource;
+use App\Models\CustomerApplication;
 use App\Models\CustomerPaymentAccount;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -16,19 +18,17 @@ class EditReposession extends EditRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            
-        ];
+        return [];
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $assumed_by_id = $data['assumed_by_id'];
-        $account_id = $data['id'];                                                          // gets the account that is being passed to a new application.
-        $account = CustomerPaymentAccount::query()->where("id", $account_id)->first();
-        $account->customer_application_id = $assumed_by_id;                                 // passing the account to another application.
-        $account->save();
+        CustomerApplication::where('id', $data['customer_application_id'])
+            ->update(['application_status' => ApplicationStatus::CLOSED_STATUS]);
+
+        CustomerPaymentAccount::where('id', $data['id'])
+            ->update(['customer_application_id' => $data['assumed_by_id']]);
+
         return $data;
     }
-
 }

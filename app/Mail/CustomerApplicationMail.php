@@ -18,11 +18,15 @@ class CustomerApplicationMail extends Mailable
      */
 
      private string $body;
+     private string $customerName;
+     private string $title;
 
-    public function __construct($body)
+    public function __construct($body, $customerName, $title)
     {
         //
         $this->body = $body;
+        $this->title = $title;
+        $this->customerName = $customerName;
     }
 
     /**
@@ -44,6 +48,8 @@ class CustomerApplicationMail extends Mailable
             markdown: 'mail.customer-application-mail',
             with: [
                 'body' => $this->body,
+                'customerName' => $this->customerName,
+                'title' => $this->title,
             ],
         );
     }

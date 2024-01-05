@@ -36,8 +36,14 @@ class PaymentsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
                 Tables\Columns\TextColumn::make('payment_amount')
-                    ->money('PHP'),
-                Tables\Columns\TextColumn::make('created_at'),
+                        ->money('PHP'),
+                Tables\Columns\TextColumn::make('payment_is')
+                        ->label('Payment is')
+                        ->badge(),
+                Tables\Columns\TextColumn::make('created_at')
+                        ->date()
+                        ->badge()
+                        ->label('Payment Date'),
             ])
             ->filters([
                 //
@@ -108,7 +114,6 @@ class PaymentsRelationManager extends RelationManager
                 ]),
             Forms\Components\Section::make('Payment Details')
                 ->description('review the details before proceeding')
-                ->aside()
                 ->columns(12)
                 ->schema([
                     Forms\Components\Placeholder::make('')

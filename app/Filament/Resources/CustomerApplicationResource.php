@@ -1422,7 +1422,6 @@ class CustomerApplicationResource extends Resource
             BLADE))),
         ]);
     }
-
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -2070,12 +2069,7 @@ class CustomerApplicationResource extends Resource
                 Tables\Actions\CreateAction::make(),
             ]);
     }
-    public static function getRelations(): array
-    {
-        return [
-        //     RelationManagers\PaymentsRelationManager::class,
-        ];
-    }
+
     public static function getPages(): array
     {
         return [
@@ -2084,5 +2078,13 @@ class CustomerApplicationResource extends Resource
             'view' => Pages\ViewCustomerApplication::route('/{record}'),
             'edit' => Pages\EditCustomerApplication::route('/{record}/edit'),
         ];
-    }    
+    } 
+
+    // helper functions.
+
+    public function hideFieldIfExistsInJson(string $json, Enums\ApplicationSections $section){
+            $decoded_json = json_decode($json);
+            $section = $section->value;
+    }
+    
 }

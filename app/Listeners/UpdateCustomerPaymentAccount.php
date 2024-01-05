@@ -25,8 +25,11 @@ class UpdateCustomerPaymentAccount
         $payment = $event->payment;
         $paymentAccountHelper = new PaymentAccountHelper($payment);
         $paymentAccountHelper->updateRemainingBalance();
+        $paymentAccountHelper->updatePaymentAccountDueDate();
+        $paymentAccountHelper->updateCustomerApplicationStatus();
         $paymentAccountHelper->updatePaymentStatus();
         $paymentAccountHelper->updateTermLeft();
+        $paymentAccountHelper->getCustomerApplication()->save();
         $paymentAccountHelper->getCustomerPaymentAccount()->save();
     }
 }

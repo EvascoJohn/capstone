@@ -30,6 +30,7 @@ class CustomerApplication extends Model implements HasMedia
         'reject_note',
         'resubmission_note',
         'release_status',
+        'resubmission_id',
 
         "account_id",
         
@@ -207,10 +208,10 @@ class CustomerApplication extends Model implements HasMedia
         
                 $payment_status = null;
                 if($this->plan == Enums\PlanStatus::CASH){
-                    $payment_status = "cash payment";
+                        $payment_status = "cash payment";
                 }
                 else if($this->plan == Enums\PlanStatus::INSTALLMENT){
-                    $payment_status = "down payment";
+                        $payment_status = "down payment";
                 }
         
                 $new_account = CustomerPaymentAccount::create([
@@ -276,7 +277,7 @@ class CustomerApplication extends Model implements HasMedia
         return static::query()
                     ->where('application_status', Enums\ApplicationStatus::APPROVED_STATUS->value)
                     ->where('account_id', null)
-                    ->where('preffered_unit_status', Enums\UnitStatus::REPOSESSION->value)
+                    ->where('preffered_unit_status', Enums\UnitStatus::REPOSSESSION->value)
                     ->where(function ($query) use ($search) {
                         $query->where('applicant_firstname', 'like', '%' . $search . '%')
                             ->orWhere('applicant_lastname', 'like', '%' . $search . '%')
@@ -371,7 +372,7 @@ class CustomerApplication extends Model implements HasMedia
         $unit->customer_application_id = $this->id;
         $unit->save();
     }
-    
+
     public function branches():BelongsTo
     {
         return $this->belongsTo(Branch::class, 'branch_id');
@@ -390,6 +391,11 @@ class CustomerApplication extends Model implements HasMedia
     public function calculateTotalAmountOfPayment(): float
     {
         return $this->payments()->sum();
+    }
+
+    public function resubmissions(): HasOne
+    {
+        return $this->hasOne(Models\Resubmissions::class);
     }
 
     public function unitModel():BelongsTo
