@@ -97,10 +97,10 @@
         <tr>
           <th width="50%" colspan="2">
             <h2 class="text-start">Probikes Motorcycle Center</h2>
-            <span>Nasugbu Branch</span> <br />
+            <span>{{ $customer->branches->full_address }}</span> <br />
           </th>
           <th width="50%" colspan="2" class="text-end company-data">
-            <span>Invoice Id: #6</span> <br />
+            <span>Invoice Id: #{{$customer->id}}</span> <br />
             <span>Date: 24 / 09 / 2022</span> <br />
             <span>Zip code : 4231</span> <br />
             <span
@@ -118,31 +118,31 @@
       <tbody>
         <tr>
           <td>Application Id:</td>
-          <td>6</td>
+          <td>{{ $customer->id }}</td>
 
           <td>Full Name:</td>
-          <td>Jess Gabriel Miranda</td>
+          <td>{{ $customer->applicant_full_name }}</td>
         </tr>
         <tr>
           <td>Reference No.:</td>
           <td>02342343278932</td>
 
           <td>Email Id:</td>
-          <td>jessmiranda0429@gmail.com</td>
+          <td>{{$customer->applicant_email}}</td>
         </tr>
         <tr>
           <td>Payment Date:</td>
-          <td>22-09-2022 10:54 AM</td>
+          <td>{{ $date_today }}</td>
 
           <td>Phone:</td>
-          <td>09476256034</td>
+          <td>{{ $customer->applicant_telephone }}</td>
         </tr>
         <tr>
           <td>Payment Mode:</td>
-          <td>Cash</td>
+          <td>{{$record->payment_is}}</td>
 
           <td>Address:</td>
-        <td>{{$record->$applicant_present_address}}</td>
+        <td>{{$customer->applicant_present_address}}</td>
         </tr>
         <tr>
           <td>Payment Status:</td>
@@ -170,16 +170,16 @@
       <tbody>
         <tr>
           <td width="10%">16235235260</td>
-          <td>StarX 150</td>
-          <td width="10%">$14000</td>
+          <td>{{ $customer->unitModel->model_name }}</td>
+          <td width="10%">{{ $customer->unitModel->unit_price }}</td>
           <td width="10%">1</td>
-          <td width="15%" class="fw-bold">$14000</td>
+          <td width="15%" class="fw-bold">{{ $customer->unitModel->price }}</td>
         </tr>
         <tr>
           <td colspan="4" class="total-heading">
             Total Amount - <small>Inc. all vat/tax</small> :
           </td>
-          <td colspan="1" class="total-heading">$14699</td>
+          <td colspan="1" class="total-heading">{{ $customer->unitModel->price }}</td>
         </tr>
       </tbody>
     </table>
