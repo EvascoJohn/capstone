@@ -107,17 +107,17 @@
 <!-- Frequently Asked Question Section -->
 <section id="Content4">
     <h2>Frequently Ask Questions</h2>
-@foreach ($frequently_asked_questions as $questions)
-<ul id="accordion">
-    <li>
-        <label for="{{ $loop->index + 1 }}">{{ $questions["question"] }} <span>&#x3e;</span></label>
-        <input type="checkbox" name="accordion" id="{{ $loop->index + 1 }}">
-        <div class="content">
-            <p>
-                {{ $questions["answer"] }}
-            </p>
-        </div>
-    </li>
-</ul>
-@endforeach
+    <ul id="accordion">
+    @foreach ($frequently_asked_questions as $questions)
+        <li>
+            <label for="{{ $loop->index + 1 }}">{{ $questions["question"] }} <span>&#x3e;</span></label>
+            <input type="checkbox" name="accordion" id="{{ $loop->index + 1 }}">
+            <div class="content">
+                <p>
+                    {{ $questions["answer"] }}
+                </p>
+            </div>
+        </li>
+    @endforeach
+  </ul>
 </section>

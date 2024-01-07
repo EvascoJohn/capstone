@@ -25,6 +25,7 @@ class ResubmissionHelper
         if (!$record) {
             return true;
         }
+
         $json = $record->resubmissions->getAttributes()['sections_visible'];
         $sections_visible = json_decode($json, true);
         foreach ($sections_visible as $item) {
@@ -39,7 +40,7 @@ class ResubmissionHelper
     public function showFieldIfExist(?Model $record, string $targetSection, string $fieldName): bool
     {
         if (!$record) {
-            return true;
+            return false;
         }
     
         $json = $record->resubmissions->getAttributes()['sections_visible'];
