@@ -41,6 +41,8 @@ Route::view('/about', 'components.filament-fabricator.page-blocks.about-page');
 
 Route::view('/terms-and-conditions', 'components.filament-fabricator.page-blocks.customer-terms-and-conditions')->name('terms-and-condition');
 
+Route::view('/privacy-policy', 'privacy-policy-page')->name('privacy-policy');
+
 // Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('pay/{customerPaymentAccount}/{payment}', [PaymongoController::class, 'pay'])->name('paymongo');
 Route::get('payment-success/{customerPaymentAccount}/{payment}', [PaymongoController::class, 'success'])->name('payment-success');

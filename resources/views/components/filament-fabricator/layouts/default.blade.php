@@ -70,36 +70,52 @@
       </div>
     </header>
     <x-filament-fabricator::page-blocks :blocks="$page->blocks" />
+     {{-- Footer Here --}}
+         <!--Footer Design-->
     <footer>
       <div class="content">
         <div class="row1 box">
           <div class="upper">
-            <div class="topic">{{ env('APP_NAME') }}</div>
+            <div class="topic">Motorstar</div>
+            <p>
+              Motorstar Philippines is a brand with Filipino-assembled
+              motorcycles with most of its parts coming from China. Established
+              in February 2002, its motorbikes and scooters are exclusively
+              assembled and distributed by Eastworld Motor Industries
+              Corporation (EMIC).
+            </p>
           </div>
         </div>
-  
+
         <div class="row2 box">
-          <li><a href="/home">Home</a></li>
-          <li></li>
-          <li><a href="/products">Products</a></li>
-          <br/>
-          <li><a href="/about-us">About Us</a></li>
-          <li><a href="/contact-us">Contact Us</a></li>
+          <li> <a href="/home" class="{{ request()->is('home') ? 'active': 'hidden' }}">Home</a> </li>
+          <li> <a href="/products" class="{{ request()->is('products') ? 'active': 'hidden' }}">Products</a> </li>
+          <br />
+          <li><a href="/privacy-policy">Privacy Policy</a></li>
+          <li>
+            <a href="/terms-and-conditions">Terms and Condition</a>
+          </li>
+          <li><a href="/contact-us" class="{{ request()->is('contact-us') ? 'active': 'hidden' }}>FAQs</a></li>
         </div>
 
         <div class="row3 box">
           <div class="topic">Contact us</div>
-          <div class="phone">
-            <a href="#"><i class="ri-phone-fill"></i>+6391234567</a>
-          </div>
           <div class="email">
-            <a href="#"><i class="ri-mail-fill"></i>group5@email.com</a>
+            <a
+              href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCJqWgTkZZRhQvVlgWGtxZRzLQWJgBMPDJbFRdXNNVMcMVrNtrGLNksvXJDDmwLTzWcVWwSV"
+              target="_blank"
+              ><i class="ri-mail-fill"></i>probikesmotorstar@email.com</a
+            >
           </div>
           <div class="address">
-            <a href="#"><i class="ri-navigation-fill"></i>Lian, Batangas</a>
+            <a
+              href="https://www.google.com/maps/place/Motorstar/@14.0747366,120.6313664,21z/data=!4m14!1m7!3m6!1s0x33bd96b1df99308b:0x4bc469e948fcecd9!2sMotorstar!8m2!3d14.074798!4d120.6314965!16s%2Fg%2F1hhmq6n_4!3m5!1s0x33bd96b1df99308b:0x4bc469e948fcecd9!8m2!3d14.074798!4d120.6314965!16s%2Fg%2F1hhmq6n_4?entry=ttu"
+              target="_blank"
+              ><i class="ri-navigation-fill"></i>Nasugbu, Batangas</a
+            >
           </div>
         </div>
-  
+
         <div class="row4 box">
           <div class="topic">Sign up to our Newsletter</div>
           <form action="#">
@@ -123,10 +139,9 @@
         </div>
       </div>
       <div class="bottom">
-        <p>Copyright © 2023 <span>{{ env('APP_NAME') }}</span> Made by Group5</p>
+        <p>Copyright © 2023 <span>Motorstar</span> Made by Group5</p>
       </div>
     </footer>
-     {{-- Footer Here --}}
     </x-filament-fabricator::layouts.base>
     @filamentScripts
     <script type="text/javascript" src="{{ asset('js/own/script.js') }}"></script>

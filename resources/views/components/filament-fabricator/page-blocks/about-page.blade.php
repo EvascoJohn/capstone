@@ -30,38 +30,19 @@
     </div>
 </section>
 
-<!--Mission and Vission Section-->
-<section id="Content3">
-    <div class="heading">
-        <!--Brand Title-->
-        <h2 class="brandName"> {{ env('APP_NAME') }} </h2>
-        <!--Brand Description-->
-        <p class="brandDescription">
+    <section id="Content2">
+        <div class="heading">
+        <h1 class="Title">ABOUT US</h1>
+        <p class="content">
             {{ $brand_description_text }}
         </p>
-    </div>
-    <div class="mission-container">
-        <div class="mission-image">
-        <img src="../images/Banner.jpg" alt="mission-image" />
-        </div>
-        <div class="mission-text">
-        <!--Mission-->
-        <h2 class="mission">Mission</h2>
-        <p class="mission-content">
+        <h1 class="Title">Our Mission</h1>
+        <p class="content">
             {{ $mission_text }}
         </p>
-        </div>
-    </div>
-    <div class="vision-container">
-        <div class="vision-text">
-        <!--Vision-->
-        <h2 class="vision">Vision</h2>
-        <p class="vision-content">
+        <h1 class="Title">Our Vision</h1>
+        <p class="content">
             {{ $vision_text }}
         </p>
         </div>
-        <div class="vision-image">
-        <img src="../images/Banner.jpg" alt="vision-image" />
-        </div>
-    </div>
-</section>
+    </section>

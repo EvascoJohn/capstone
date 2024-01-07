@@ -51,7 +51,7 @@
   </div>
 </section>
 
-<section id="Content4">
+<section id="Content4" style="background-color: white">
   <!--requirements-->
   <div class="heading">
     <h1 class="Title">REQUIREMENTS:</h1>
@@ -68,6 +68,52 @@
   @endforeach
   </div>
   <div class="c4-buttons">
-    {{-- <a href="../html/application.html">Application</a> --}}
+    <a href="/customer/login">Send Application Now</a>
+  </div>
+</section>
+
+<section id="Content6" style="background-color: white">
+  <!--ratings-->
+  <h1>What Our Customer Says</h1>
+  <p>
+    Echoes of Satisfaction: Unveiling the Stories and Smiles Shared by Our
+    Valued Customers
+  </p>
+
+  <div class="testimonial-row">
+    <div class="testimonial-col">
+      <p>
+        <span>"</span>I am extremely pleased with my recent purchase from
+        this website. The variety of motorcycles available made it easy
+        for me to find the perfect match. The ordering process was
+        straightforward. The bike arrived in pristine condition, and I
+        can't wait to hit the road.<span>"</span>
+      </p>
+      <h2 class="testi-name">John Doe</h2>
+    </div>
+    <div class="testimonial-col">
+      <p>
+        <span>"</span>I had a seamless experience buying a motorcycle from
+        this website. The website design is user-friendly, and I
+        appreciate the detailed specifications provided for each bike. The
+        transaction process was quick and secure.<span>"</span>
+      </p>
+      <h2 class="testi-name">Michael Johnson</h2>
+    </div>
+    <div class="testimonial-col">
+      <p>
+        <span>"</span>I can't express how impressed I am with the level of
+        service I received from this online motorcycle store. The staff
+        was responsive and went above and beyond to answer my queries. The
+        bike I ordered was exactly as described, and the entire process
+        from browsing to delivery was a breeze.<span>"</span>
+      </p>
+      <h2 class="testi-name">Jessica Miller</h2>
+    </div>
+  </div>
+  <div class="back-to-top">
+    <button class="btt-button" onclick="toggleTopSection()">
+      Back to top <i class="ri-arrow-up-s-line"></i>
+    </button>
   </div>
 </section>
