@@ -45,13 +45,18 @@ class CustomerApplicationResource extends Resource
                     ->columnspan(6)
                     ->required()
                     ->preload(),
-            Forms\Components\Wizard::make([
-                    Forms\Components\Wizard\Step::make('Unit')
+            
+            // This wizard is for resubmission.
+            Forms\Components\Wizard::make()
+                ->schema([
+                    Forms\Components\Wizard\Step::make('Resubmit Unit')
                             ->hidden(function(?Model $record){
-                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
-                                    return true;
+                                if($record != null){
+                                    if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                        return false;
+                                    }
                                 }
-                                return false;
+                                return true;
                             })
                             ->schema([
                                     CustomerApplicationResource::getUnitToBeFinanced()
@@ -61,7 +66,7 @@ class CustomerApplicationResource extends Resource
                                                             return true;
                                             }}),
                             ]),
-                    Forms\Components\Wizard\Step::make('Applicant Information')
+                    Forms\Components\Wizard\Step::make('Resubmit Applicant Information')
                             ->hidden(function(?Model $record){
                                     $helper = new Models\ComponentHelpers\ResubmissionHelper();
                                     return  $helper->showSectionIfExist($record, Enums\ApplicationSections::APPLICANT->value);
@@ -161,12 +166,34 @@ class CustomerApplicationResource extends Resource
                             ]),
             ])
             ->columnSpan(6)
-            ->disabled(false),
+            ->hidden(function(string $operation){
+                if($operation == 'edit'){
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            })
+            ->disabled(function(string $operation){
+                if($operation == 'edit'){
+                    return false;
+                }
+                else{
+                    return true;
+                }
+            })
+            ->submitAction(
+                Filament\Actions\Action::make('submit')
+            ),
+
+            // This wizard is for fillups.
             Forms\Components\Wizard::make([
                     Forms\Components\Wizard\Step::make('Unit')
                             ->hidden(function(?Model $record){
-                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
-                                    return true;
+                                if($record != null){
+                                    if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                        return true;
+                                    }
                                 }
                                 return false;
                             })
@@ -176,47 +203,30 @@ class CustomerApplicationResource extends Resource
                                                     function(string $operation){
                                                         if($operation == "edit"){
                                                             return true;
-                                            }}),
+                                                    
+                                                        }
+                                                    return false;
+                                        }),
                             ]),
                     Forms\Components\Wizard\Step::make('Applicant Information')
-                            ->hidden(function(?Model $record){
-                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::APPLICANT->value);
-                            })
                             ->schema([
                                     CustomerApplicationResource::getApplicantInformation(),
                                     CustomerApplicationResource::getSpouseComponents(),
                                     CustomerApplicationResource::getCoOwnerInformation()
                             ]),
                     Forms\Components\Wizard\Step::make('Educational Attainment')
-                            ->hidden(function(?Model $record){
-                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::EDUCATION->value);
-                            })
                             ->schema([
                                     CustomerApplicationResource::getEducationalAttainment()
                             ]),
                     Forms\Components\Wizard\Step::make('References')
-                            ->hidden(function(?Model $record){
-                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::REFERENCES->value);
-                            })
                             ->schema([
                                     CustomerApplicationResource::getReferences()
                             ]),
                     Forms\Components\Wizard\Step::make('Employment')
-                            ->hidden(function(?Model $record){
-                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::EMPLOYMENT->value);
-                            })
                             ->schema([
                                     CustomerApplicationResource::getEmployment()
                             ]),
                     Forms\Components\Wizard\Step::make('Statement of Month. income')
-                            ->hidden(function(?Model $record){
-                                    $helper = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return  $helper->showSectionIfExist($record, Enums\ApplicationSections::MONTHLY_INCOME->value);
-                            })
                             ->schema([
                                     CustomerApplicationResource::getProperties(),
                                     CustomerApplicationResource::getStatementOfMonthlyIncome(),
@@ -227,13 +237,20 @@ class CustomerApplicationResource extends Resource
                 if($operation == 'edit'){
                     return true;
                 }
+                else{
+                    return false;
+                }
             })
             ->disabled(function(string $operation){
                 if($operation == 'edit'){
                     return true;
                 }
+                else{
+                    return false;
+                }
             })
             ->submitAction(
+                
                 Filament\Actions\Action::make('submit')
             ),
         ]);
@@ -941,10 +958,10 @@ class CustomerApplicationResource extends Resource
                                                         Forms\Components\Select::make('unit_term')
                                                                         ->columnSpan(2)
                                                                         ->live()
-                                                                        ->disabled(fn (Forms\Get $get): bool => ($get('plan') !== Enums\PlanStatus::INSTALLMENT->value))
+                                                                        ->disabled(fn (Forms\Get $get): bool => ($get('plan') != Enums\PlanStatus::INSTALLMENT->value))
                                                                         ->required()
                                                                         ->label("Term/Months")
-                                                                        ->options([
+                                                                        ->options(
                                                                                 function():array
                                                                                 {
                                                                                     $terms_and_amortizations = Models\CustomerApplicationMaintenance::first();
@@ -953,7 +970,7 @@ class CustomerApplicationResource extends Resource
                                                                                     }
                                                                                     return [];
                                                                                 }
-                                                                        ])
+                                                                        )
                                                                         ->afterStateUpdated(
                                                                                 function(Forms\Get $get, Forms\Set $set){
                                                                                         $unit_model = Models\UnitModel::find($get("unit_model_id"));
@@ -998,32 +1015,32 @@ class CustomerApplicationResource extends Resource
                                                         }
                                                 ),
                                         ]),
-                                        Forms\Components\Fieldset::make("")
-                                        ->columnSpan(1)
-                                        ->columns(6)
-                                        ->schema([
-                                                Forms\Components\TextInput::make('unit_monthly_amort_fin')
-                                                        ->columnSpan(6)
-                                                        ->readOnly()
-                                                        ->label('Monthly Payment'),
-                                                Forms\Components\TextInput::make('unit_ttl_dp')
-                                                        ->columnSpan(3)
-                                                        ->readOnly()
-                                                        ->label('Down Payment'),
-                                                Forms\Components\TextInput::make('amount_to_be_financed')
-                                                        ->columnSpan(3)
-                                                        ->readOnly(true)
-                                                        ->numeric()
-                                                        ->minValue(1)
-                                                        ->label('Amount to be financed'),
-                                                Forms\Components\TextInput::make('total_price')
-                                                        ->columnSpan(6)
-                                                        ->hint("Down Payment added to amount to be financed")
-                                                        ->readOnly(true)
-                                                        ->numeric()
-                                                        ->minValue(1)
-                                                        ->label('Total Cost'),
-                                        ]),
+                                Forms\Components\Fieldset::make("")
+                                ->columnSpan(1)
+                                ->columns(6)
+                                ->schema([
+                                        Forms\Components\TextInput::make('unit_monthly_amort_fin')
+                                                ->columnSpan(6)
+                                                ->readOnly()
+                                                ->label('Monthly Payment'),
+                                        Forms\Components\TextInput::make('unit_ttl_dp')
+                                                ->columnSpan(3)
+                                                ->readOnly()
+                                                ->label('Down Payment'),
+                                        Forms\Components\TextInput::make('amount_to_be_financed')
+                                                ->columnSpan(3)
+                                                ->readOnly(true)
+                                                ->numeric()
+                                                ->minValue(1)
+                                                ->label('Amount to be financed'),
+                                        Forms\Components\TextInput::make('total_price')
+                                                ->columnSpan(6)
+                                                ->hint("Down Payment added to amount to be financed")
+                                                ->readOnly(true)
+                                                ->numeric()
+                                                ->minValue(1)
+                                                ->label('Total Cost'),
+                                ]),
                 ]);
     }
 
@@ -1040,15 +1057,25 @@ class CustomerApplicationResource extends Resource
                                         ->required(true)
                                         ->hidden(
                                             function(?Model $record):bool{
-                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'co_maker_fname_textinput');
+                                                    if($record!=null){
+                                                        if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                            $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'co_maker_fname_textinput');
+                                                        }
+                                                    }
+                                                    return false;
                                             }
                                         )
                                         ->disabled(
                                             function(?Model $record):bool{
-                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'co_maker_fname_textinput');
-                                            }
+                                                if($record!=null){
+                                                    if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'co_maker_fname_textinput');
+                                                    }
+                                                }
+                                                return false;
+                                        }
                                         ),
                                 Forms\Components\TextInput::make('co_owner_middlename')
                                         ->columnSpan(2)
@@ -1194,33 +1221,50 @@ class CustomerApplicationResource extends Resource
                                     ->columnSpan(2)
                                     ->required(true)
                                     ->hidden(
-                                        function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_fname_textinput');
+                                            function(?Model $record):bool{
+                                                if($record!=null){
+                                                    if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_fname_textinput');
+                                                    }
+                                                }
+                                            return false;
                                         }
                                     )
                                     ->disabled(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_fname_textinput');
-                                        }
-                                    ),
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_fname_textinput');
+                                                }
+                                            }
+                                        return false;
+                                    }),
                             Forms\Components\TextInput::make('applicant_middlename')
                                     ->label('Middle Name:')
                                     ->alpha()
                                     ->columnSpan(2)
                                     ->hidden(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_mname_textinput');
-                                        }
-                                    )
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_mname_textinput');
+                                                }
+                                            }
+                                        return false;
+                                    })
                                     ->disabled(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_mname_textinput');
-                                        }
-                                    ),
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_mname_textinput');
+                                                }
+                                            }
+                                        return false;
+                                    }),
                             Forms\Components\TextInput::make('applicant_lastname')
                                     ->label('Last Name:')
                                     ->regex('/^[a-zA-Z\s]+$/')
@@ -1228,16 +1272,24 @@ class CustomerApplicationResource extends Resource
                                     ->required(true)
                                     ->hidden(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_lname_textinput');
-                                        }
-                                    )
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_lname_textinput');
+                                                }
+                                            }
+                                        return false;
+                                    })
                                     ->disabled(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_lname_textinput');
-                                        }
-                                    ),
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_lname_textinput');
+                                                }
+                                            }
+                                        return false;
+                                    }),
                             Forms\Components\DatePicker::make('applicant_birthday')
                                     ->label('Birthday:')
                                     ->maxDate(now()->subYears(150))
@@ -1246,16 +1298,24 @@ class CustomerApplicationResource extends Resource
                                     ->required(true)
                                     ->hidden(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_bday_datetime');
-                                        }
-                                    )
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_bday_datetime');
+                                                }
+                                            }
+                                        return false;
+                                        })
                                     ->disabled(
                                         function(?Model $record):bool{
-                                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_bday_datetime');
-                                        }
-                                    ),
+                                            if($record!=null){
+                                                if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_bday_datetime');
+                                                }
+                                            }
+                                        return false;
+                                    }),
                             Forms\Components\Select::make('applicant_civil_status')
                                         ->label('Civil Status')
                                         ->live()
@@ -1263,17 +1323,25 @@ class CustomerApplicationResource extends Resource
                                         ->required(true)
                                         ->options(['single'=> 'Single', 'married' => 'Married', 'separated' => 'Separated', 'widow' => 'Widow'])
                                         ->hidden(
-                                                function(?Model $record):bool{
+                                            function(?Model $record):bool{
+                                                if($record!=null){
+                                                    if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
                                                         return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_civil_status_select');
+                                                    }
                                                 }
-                                            )
+                                            return false;
+                                            })
                                         ->disabled(
                                             function(?Model $record):bool{
-                                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_civil_status_select');
-                                            }
-                                        ),
+                                                if($record!=null){
+                                                    if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
+                                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_civil_status_select');
+                                                    }
+                                                }
+                                            return false;
+                                        }),
         ])
         ->columnSpan(3)
         ->columns(6),
@@ -1285,15 +1353,15 @@ class CustomerApplicationResource extends Resource
                                 ->label('Contact Number:')
                                 ->required()
                                 ->hidden(
-                                    function(?Model $record):bool{
-                                            $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_contact_textinput');
+                                    function(?Model $record): bool {
+                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                        return $check_field->showFieldIfExist($record, Enums\ApplicationSections::APPLICANT->value, 'applicant_contact_textinput');
                                     }
                                 )
                                 ->disabled(
-                                    function(?Model $record):bool{
-                                            $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_contact_textinput');
+                                    function(?Model $record): bool {
+                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                        return $check_field->showFieldIfExist($record, Enums\ApplicationSections::APPLICANT->value, 'applicant_contact_textinput');
                                     }
                                 ),
                         Forms\Components\TextInput::make('applicant_email')
@@ -1302,17 +1370,18 @@ class CustomerApplicationResource extends Resource
                                 ->required()
                                 ->label('Email:')
                                 ->hidden(
-                                    function(?Model $record):bool{
-                                            $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_email_textinput');
+                                    function (?Model $record): bool {
+                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                        return $check_field->showFieldIfExist($record, Enums\ApplicationSections::APPLICANT->value, 'applicant_email_textinput');
                                     }
                                 )
                                 ->disabled(
-                                    function(?Model $record):bool{
-                                            $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_email_textinput');
+                                    function (?Model $record): bool {
+                                        $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                        return $check_field->showFieldIfExist($record, Enums\ApplicationSections::APPLICANT->value, 'applicant_email_textinput');
                                     }
                                 ),
+                                
                 ])
         ->columnSpan(3)
         ->columns(6),
@@ -1324,17 +1393,18 @@ class CustomerApplicationResource extends Resource
                         ->inputMode('integer')
                         ->label('Lived There:')
                         ->hidden(
-                            function(?Model $record):bool{
-                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_lived_there_numeric');
+                            function (?Model $record): bool {
+                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                return $check_field->showFieldIfExist($record, Enums\ApplicationSections::APPLICANT->value, 'applicant_lived_there_numeric');
                             }
                         )
                         ->disabled(
-                            function(?Model $record):bool{
-                                    $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_lived_there_numeric');
+                            function (?Model $record): bool {
+                                $check_field = new Models\ComponentHelpers\ResubmissionHelper();
+                                return $check_field->showFieldIfExist($record, Enums\ApplicationSections::APPLICANT->value, 'applicant_lived_there_numeric');
                             }
-                        ),
+                        ),                        
+                        
                 Forms\Components\Select::make('applicant_house')
                         ->columnSpan(3)
                         ->label('House:')
