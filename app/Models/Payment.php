@@ -25,6 +25,7 @@ class Payment extends Model
         'payment_type',
         'term_covered',
         'payment_is',
+        'customer_is',
         'rebate',
         'amount_to_be_paid',
         'payment_amount',

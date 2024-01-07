@@ -20,4 +20,16 @@ class ListCustomerPaymentAccounts extends ListRecords
             $this->export('Customer-Payments'),
         ];
     }
+
+    public function getTabs(): array
+    {
+        return [
+
+            'active' => ListRecords\Tab::make()->query(fn ($query) 
+                => $query->where('term_left', '>' , 0)),
+            'closed' => ListRecords\Tab::make()->query(fn ($query) 
+                => $query->where('term_left', '<=',0)),
+        ];
+    }
+
 }

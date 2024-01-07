@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CustomerPaymentAccountResource\RelationManagers;
 
 use App\Models;
+use App\Enums;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -177,7 +178,7 @@ class PaymentsRelationManager extends RelationManager
                 ->default(
                     function (RelationManager $livewire): string {
                         $owner_record = $livewire->getOwnerRecord();
-                        return $owner_record->payment_status;
+                        return $owner_record->payment_status->value;
                     }
                 )
                 ->columnSpan(3),
@@ -186,35 +187,35 @@ class PaymentsRelationManager extends RelationManager
                 ->default(
                     function (RelationManager $livewire): string {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == "down payment") {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value) {
                             $set_due = Models\Payment::calculateDueDate(Carbon::now());
                             $owner_record->due_date = $set_due->toDateString();
-                            return "Current";
-                        } else if ($owner_record->payment_status == "cash") {
-                            return "Current";
-                        } else if ($owner_record->payment_status == "monthly") {
+                            return Enums\PaymentStatus::CURRENT->value;
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::CASH->value) {
+                            return Enums\PaymentStatus::CURRENT->value;
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::MONTHLY->value) {
                             $now = Carbon::now();
                             $due_date = Carbon::parse($owner_record->due_date);
 
                             // Compare the current time and due date
                             if ($now->lessThan($due_date)) {
                                 // Advance (current time is less than due date)
-                                return 'Advance';
+                                return Enums\PaymentStatus::ADVANCED->value;
                             } elseif ($now->equalTo($due_date)) {
                                 // Current (current time is equal to due date)
-                                return 'Current';
+                                return Enums\PaymentStatus::CURRENT->value;
                             } elseif ($now->greaterThan($due_date)) {
                                 // Overdue (current time is past due date)
 
                                 // Check if it's one or two months overdue
                                 $monthsOverdue = $now->diffInMonths($due_date);
                                 if ($monthsOverdue == 1) {
-                                    return 'Overdue (1 month)';
+                                    return Enums\PaymentStatus::OVERDUE->value;
                                 } elseif ($monthsOverdue == 2) {
-                                    return 'Delinquent (2 months)';
+                                    return Enums\PaymentStatus::DELINQUENT->value;
                                 } else {
                                     // Handle other cases as needed
-                                    return 'Overdue (more than 2 months)';
+                                    return Enums\PaymentStatus::OVERDUE->value;
                                 }
                             }
                         }
@@ -227,13 +228,13 @@ class PaymentsRelationManager extends RelationManager
                 ->default(
                     function (RelationManager $livewire): float {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == "down payment") {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value) {
                             $set_due = Models\Payment::calculateDueDate(Carbon::now());
                             $owner_record->due_date = $set_due->toDateString();
                             return 0;
-                        } else if ($owner_record->payment_status == "cash") {
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::CASH->value) {
                             return 400.00;;
-                        } else if ($owner_record->payment_status == "monthly") {
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::MONTHLY->value) {
                             $now = Carbon::now();
                             $due_date = Carbon::parse($owner_record->due_date);
 
@@ -262,12 +263,12 @@ class PaymentsRelationManager extends RelationManager
                 ->default(
                     function (RelationManager $livewire): float {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == 'down payment') {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value) {
                                 return $owner_record->down_payment;
                         }
-                        else if ($owner_record->payment_status == 'cash payment') {
+                        else if ($owner_record->payment_status->value == Enums\PaymentStatus::CASH->value) {
                                 return $owner_record->unit_ttl_dp;
-                        } else if ($owner_record->payment_status == 'monthly') {
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::MONTHLY->value) {
                                 return $owner_record->monthly_payment;
                         } else {
                                 return $owner_record->remaining_balance;
@@ -279,7 +280,7 @@ class PaymentsRelationManager extends RelationManager
                 ->readOnly(
                     function (RelationManager $livewire): int {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == 'down payment' || $owner_record->payment_status == 'cash') {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value || $owner_record->payment_status->value == Enums\PaymentStatus::CASH->value) {
                             return true;
                         }
                         return false;
@@ -288,7 +289,7 @@ class PaymentsRelationManager extends RelationManager
                 ->minvalue(
                     function (RelationManager $livewire): int {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == 'down payment') {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value) {
                             return 0;
                         }
                         return 1;
@@ -304,7 +305,7 @@ class PaymentsRelationManager extends RelationManager
                 ->default(
                     function (RelationManager $livewire): int {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == 'down payment') {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value) {
                             return 0;
                         }
                         return 1;
