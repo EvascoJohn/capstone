@@ -6,6 +6,7 @@ use App\Filament\Resources\CustomerApplicationResource;
 use App\Models\CustomerApplication;
 use App\Models\CustomerPaymentAccount;
 use Filament\Actions;
+use Filament\Notifications\Notification;
 use App\Enums;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
@@ -14,6 +15,18 @@ use Filament\Support\Enums\MaxWidth;
 
 class CreateCustomerApplication extends CreateRecord
 {
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        $title = "Application has been created!";
+
+        if (blank($title)) {
+            return null;
+        }
+        return Notification::make()
+            ->success()
+            ->title($title);
+    }
 
     protected function getFormActions(): array
     {

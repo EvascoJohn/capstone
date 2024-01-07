@@ -35,6 +35,8 @@ use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class CustomerApplicationResource extends Resource
 {
+
+
     protected static ?string $model = CustomerApplication::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
@@ -106,45 +108,29 @@ class CustomerApplicationResource extends Resource
                                                                         ->disabled(fn (Forms\Get $get): bool => ($get('plan') !== Enums\PlanStatus::INSTALLMENT->value))
                                                                         ->required()
                                                                         ->label("Term/Months")
-                                                                        ->options([
-                                                                                36 => '36',
-                                                                                30 => '30',
-                                                                                24 => '24',
-                                                                                18 => '18',
-                                                                                12 => '12',
-                                                                        ])
+                                                                        ->options(
+                                                                                function():array
+                                                                                {
+                                                                                    $terms_and_amortizations = Models\CustomerApplicationMaintenance::first();
+                                                                                    if($terms_and_amortizations != null){
+                                                                                        return Models\DealerhipCalculations::extractKeyValuePairs($terms_and_amortizations->getAttributes()['monthly_amortizations']);
+                                                                                    }
+                                                                                    return [];
+                                                                                }
+                                                                        )
                                                                         ->afterStateUpdated(
-                                                                                function(Forms\Get $get, Forms\Set $set){
+                                                                                function(Forms\Get $get, Forms\Set $set, ?Model $record){
                                                                                         $unit_model = Models\UnitModel::find($get("unit_model_id"));
+                                                                                        $terms_and_amortizations = Models\CustomerApplicationMaintenance::first()->getAttributes()['monthly_amortizations'];
+                                                                                        if($unit_model != null){
+                                                                                                $dp_amount = $unit_model->down_payment_amount;
+                                                                                                $monthly_payment = $unit_model->price * (float)Models\DealerhipCalculations::getAmortizationByTerm($terms_and_amortizations, $get('unit_term'));
+                                                                                                $amount_to_be_financed = (int)$get('unit_term') * $monthly_payment;
 
-                                                                                        if($unit_model){
-                                                                                                $dp_percentage = Models\DealerhipCalculations::calculateDownPaymentPercentage(25);
-                                                                                                $total_interest = Models\DealerhipCalculations::calculateTotalInterest(5, $get('unit_term'));
-                                                                                                $dp_amount = Models\DealerhipCalculations::calculateDownPaymentAmount(
-                                                                                                        $unit_model->price,
-                                                                                                        $dp_percentage
-                                                                                                );
-                                                                                                $amount_to_be_financed = Models\DealerhipCalculations::calculateAmountToBeFinanced(
-                                                                                                        $unit_model->price,
-                                                                                                        $dp_amount
-                                                                                                );
-                                                                                                $total_cost_wo_dp = Models\DealerhipCalculations::calculateTotalCostWithoutDP(
-                                                                                                        $amount_to_be_financed,
-                                                                                                        $total_interest
-                                                                                                );
-                                                                                                $total_cost = Models\DealerhipCalculations::calculateTotalCost(
-                                                                                                        $amount_to_be_financed,
-                                                                                                        $total_interest,
-                                                                                                        $dp_amount,
-                                                                                                );
-                                                                                                $monthly_payment = Models\DealerhipCalculations::calculateMonthlyPayment(
-                                                                                                        $total_cost_wo_dp,
-                                                                                                        $get('unit_term')
-                                                                                                );
-                                                                                                $set('total_price', $total_cost);
+                                                                                                $set('total_price', $amount_to_be_financed + $dp_amount);
                                                                                                 $set('unit_ttl_dp', $dp_amount);
                                                                                                 $set('unit_monthly_amort_fin', $monthly_payment);
-                                                                                                $set('amount_to_be_financed', $total_cost_wo_dp);
+                                                                                                $set('amount_to_be_financed', $amount_to_be_financed);
                                                                                                 $set('unit_srp', $unit_model->price);
                                                                                         }
                                                                                 }
@@ -183,18 +169,19 @@ class CustomerApplicationResource extends Resource
                                                 Forms\Components\TextInput::make('unit_ttl_dp')
                                                         ->columnSpan(3)
                                                         ->readOnly()
+                                                        ->default(0)
                                                         ->label('Down Payment'),
                                                 Forms\Components\TextInput::make('amount_to_be_financed')
                                                         ->columnSpan(3)
                                                         ->readOnly(true)
-                                                        ->numeric()
+                                                        ->default(0)
                                                         ->minValue(1)
                                                         ->label('Amount to be financed'),
                                                 Forms\Components\TextInput::make('total_price')
                                                         ->columnSpan(6)
+                                                        ->default(0)
                                                         ->hint("Down Payment added to amount to be financed")
                                                         ->readOnly(true)
-                                                        ->numeric()
                                                         ->minValue(1)
                                                         ->label('Total Cost'),
                                         ]),
@@ -383,7 +370,7 @@ class CustomerApplicationResource extends Resource
                                             ->required(true),
                                     Forms\Components\TextInput::make('spouse_telephone')
                                             ->label('Contact Information')
-                                                                                        ->numeric()
+                                            ->numeric()
                                             ->columnSpan(3),
                                     Forms\Components\Textarea::make('spouse_present_address')
                                             ->columnSpan(3)
@@ -1207,15 +1194,12 @@ class CustomerApplicationResource extends Resource
                                 }),
                         Forms\Components\TextInput::make("unit_monthly_amort_fin")
                                         ->label("Monthly Amortization:")
-                                        ->numeric()
                                         ->readOnly()
                                         ->columnSpan(4)
                                         ->label("Monthly Amortization")
                                         ->live(onBlur: true)
-                                        ->inputMode('decimal')
                                         ->minValue(0)
                                         ->default(0)
-                                        ->numeric()
                                         ->afterStateUpdated(function (Forms\Components\TextInput $component, ?string $state, Forms\Get $get, Forms\Set $set) {
                                                 if($state == null){
                                                         $component->state(0);

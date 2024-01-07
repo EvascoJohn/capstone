@@ -157,10 +157,40 @@ class ViewCustomerApplication extends ViewRecord
                     ->action(function(array $data, ?Model $record){
                         $this->record->setStatusTo(Enums\ApplicationStatus::RESUBMISSION_STATUS);
                         $this->record->reject_note = null;
-                        Notification::make()
-                                ->title('Application is now in resubmission')
-                                ->info()
-                                ->send();
+                        if($record->application_type == Enums\ApplicationType::ONLINE){
+                                $customer = Models\Customer::query()->where('id', $record->author_id)->first();
+                                Notification::make()
+                                        ->title('An application needs resubmission!')
+                                        ->body('Updated the application')
+                                        ->success()
+                                        ->color('success')
+                                        ->actions([
+                                                Action::make('view')->url(function() use ($record) {
+                                                        return TestPanel\Resources\CustomerApplicationResource::getUrl(name:'view', parameters:[$record->id], panel:'customer');
+                                                })
+                                                ->color('info'),
+                                        ])
+                                ->sendToDatabase([
+                                            $customer
+                                ]);
+                                event(new DatabaseNotificationsSent($customer));
+                            }
+                            Notification::make()
+                                    ->title('Application is now in Resubmission')
+                                    ->body('An application has been set to resubmission')
+                                    ->success()
+                                    ->color('info')
+                                    ->send()
+                                    ->actions([
+                                            Action::make('view')->url(function () use ($record) {
+                                                    return CustomerApplicationResource::getUrl('view', [$record->id]);
+                                            })
+                                            ->color('info'),
+                                    ])
+                                    ->sendToDatabase([
+                                            auth()->user(),
+                                    ]);
+                            event(new DatabaseNotificationsSent(auth()->user()));
                         $resubmission = Models\Resubmissions::query()->create(
                             [
                                 'sections_visible' => json_encode($data['resubmit_section']),

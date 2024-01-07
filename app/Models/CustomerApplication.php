@@ -190,34 +190,27 @@ class CustomerApplication extends Model implements HasMedia
     public function assignAccount(): void
     {
         if($this->preffered_unit_status == UnitStatus::BRAND_NEW->value){
-                $dp_percentage = Models\DealerhipCalculations::calculateDownPaymentPercentage(25);
-                $total_interest = Models\DealerhipCalculations::calculateTotalInterest(5, $this->unit_term);
-                $dp_amount = Models\DealerhipCalculations::calculateDownPaymentAmount(
-                        $this->unit_srp,
-                        $dp_percentage
-                );
-                $amount_to_be_financed = Models\DealerhipCalculations::calculateAmountToBeFinanced(
-                        $this->unit_srp,
-                        $dp_amount
-                );
-                $total_cost_wo_dp = Models\DealerhipCalculations::calculateTotalCostWithoutDP(
-                        $amount_to_be_financed,
-                        $total_interest
-                );
+
+                $unit_model = Models\UnitModel::find($this->unit_model_id);
+                $terms_and_amortizations = Models\CustomerApplicationMaintenance::first()->getAttributes()['monthly_amortizations'];
+
+                $dp_amount = $unit_model->down_payment_amount;
+                $monthly_payment = $unit_model->price * (float)Models\DealerhipCalculations::getAmortizationByTerm($terms_and_amortizations, $this->unit_term);
+                $amount_to_be_financed = $this->unit_term * $monthly_payment;
         
-                $total_cost_wo_dp += $dp_amount;
+                $amount_to_be_financed += $dp_amount;
         
                 $payment_status = null;
                 if($this->plan == Enums\PlanStatus::CASH){
-                        $payment_status = "cash payment";
+                        $payment_status = Enums\PaymentStatus::CASH->value;;
                 }
                 else if($this->plan == Enums\PlanStatus::INSTALLMENT){
-                        $payment_status = "down payment";
+                        $payment_status = Enums\PaymentStatus::DOWN_PAYMENT->value;;
                 }
         
                 $new_account = CustomerPaymentAccount::create([
                         'customer_application_id'   =>  $this->id,
-                        'remaining_balance'         =>  $total_cost_wo_dp,
+                        'remaining_balance'         =>  $amount_to_be_financed,
                         'due_date'                  =>  null, 
                         'plan_type'                 =>  $this->plan,
                         'monthly_interest'          =>  0.00,
@@ -227,7 +220,7 @@ class CustomerApplication extends Model implements HasMedia
                         'term_left'                 =>  $this->unit_term,
                         'status'                    =>  $this->application_status,
                         'payment_status'            =>  $payment_status,
-                        'original_amount'           =>  $total_cost_wo_dp,
+                        'original_amount'           =>  $amount_to_be_financed,
                         'unit_release_id'           =>  null,
                         'author_id'                 =>  $this->author_id,
                         'branch_id'                 =>  $this->branch_id,
@@ -401,7 +394,7 @@ class CustomerApplication extends Model implements HasMedia
 
     public function unitModel():HasOne
     {
-        return $this->hasOne(UnitModel::class, 'unit_model_id', 'id');
+        return $this->hasOne(UnitModel::class, 'id', 'unit_model_id');
     }
 
     public function units():BelongsTo
