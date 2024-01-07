@@ -24,7 +24,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasPermissions, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -110,8 +110,8 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(ActivityLog::class, 'causer_id', 'id');
     }
 
-    // public function getActivitylogOptions(): LogOptions
-    // {
-    //     return LogOptions::defaults()->useLogName('User')->logAll()->logOnlyDirty();
-    // }
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->useLogName('User')->logAll()->logOnlyDirty();
+    }
 }

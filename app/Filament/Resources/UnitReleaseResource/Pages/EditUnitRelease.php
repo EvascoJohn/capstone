@@ -44,7 +44,6 @@ class EditUnitRelease extends EditRecord
         activity('Unit Release')
             ->event('released')
             ->performedOn($customer_application)
-            ->subject($data['id'])
             ->withProperties($property)
             ->log('released');
 

@@ -43,7 +43,6 @@ class EditReposession extends EditRecord
         activity('Repossession')
             ->event('repossessed')
             ->performedOn(new CustomerPaymentAccount)
-            ->subject($data['id'])
             ->withProperties($property)
             ->log('repossessed');
 
