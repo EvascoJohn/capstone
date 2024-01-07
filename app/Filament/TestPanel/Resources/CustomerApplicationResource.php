@@ -180,10 +180,7 @@ class CustomerApplicationResource extends Resource
             else{
                 return true;
             }
-        })
-        ->submitAction(
-            Filament\Actions\Action::make('submit')
-        ),
+        }),
 
             // This wizard is for fillups.
             Forms\Components\Wizard::make([
