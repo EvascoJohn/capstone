@@ -49,14 +49,14 @@ class PaymentAccountHelper
 
     public function updateCustomerApplicationStatus()
     {
-        if($this->customerPaymentAccount->payment_status == Enums\PaymentStatus::DOWN_PAYMENT->value)
+        if($this->customerPaymentAccount->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value)
         {
-            $this->customerApplication->application_status = ApplicationStatus::ACTIVE_STATUS;
+            $this->customerApplication->application_status = ApplicationStatus::ACTIVE_STATUS->value;
             $this->customerPaymentAccount->status = $this->customerApplication->application_status;
         }
-        else if($this->customerPaymentAccount->payment_status == Enums\PaymentStatus::CASH->value)
+        else if($this->customerPaymentAccount->payment_status->value == Enums\PaymentStatus::CASH->value)
         {
-            $this->customerApplication->application_status = ApplicationStatus::CLOSED_STATUS;
+            $this->customerApplication->application_status = ApplicationStatus::CLOSED_STATUS->value;
             $this->customerPaymentAccount->status = $this->customerApplication->application_status;
         }
     }
@@ -65,7 +65,7 @@ class PaymentAccountHelper
     {
         $this->customerPaymentAccount->term_left -= $this->payment->term_covered;
         if($this->customerPaymentAccount->term_left == 0){
-            $this->customerApplication->application_status = ApplicationStatus::CLOSED_STATUS;
+            $this->customerApplication->application_status->value = ApplicationStatus::CLOSED_STATUS->value;
             $this->customerPaymentAccount->status = $this->customerApplication->application_status;
         }
     }

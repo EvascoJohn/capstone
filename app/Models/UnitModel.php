@@ -45,9 +45,9 @@ class UnitModel extends Model implements HasMedia
         return $this->hasMany(Unit::class, 'unit_model_id', 'id');
     }
 
-    public function customerApplication():BelongsTo
+    public function customerApplication():HasMany
     {
-        return $this->belongsTo(Models\CustomerApplication::class, 'unit_model_id', 'id');
+        return $this->hasMany(Models\CustomerApplication::class);
     }
 
     public function getActivitylogOptions(): LogOptions
