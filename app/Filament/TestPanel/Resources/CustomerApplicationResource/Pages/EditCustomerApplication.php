@@ -21,6 +21,7 @@ class EditCustomerApplication extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['application_status'] = Enums\ApplicationStatus::PENDING_STATUS->value;
+            $date['resubmission_id'] = null;
         return $data;
     }
 
