@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         //\App\Models\CustomerApplication::factory(10)->create();
+        $this->call(AmortizationSeeder::class);
         $this->call(RolesAndPermissionsSeeder::class);
         $this->call(BranchSeeder::class);
         $this->call(UserSeeder::class);
@@ -29,7 +30,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProvinceSeeder::class);
         $this->call(MunicipalitySeeder::class);
         $this->call(BarangaySeeder::class);
-        $this->call(AmortizationSeeder::class);
     }
 
     private function createAdmin():void{
