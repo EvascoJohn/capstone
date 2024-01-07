@@ -39,24 +39,28 @@ class ResubmissionHelper
 
     public function showFieldIfExist(?Model $record, string $targetSection, string $fieldName): bool
     {
-        if (!$record) {
-            return false;
-        }
-    
-        $json = $record->resubmissions->getAttributes()['sections_visible'];
-        $sectionsVisible = json_decode($json, true);
-    
-        foreach ($sectionsVisible as $item) {
-            if ($item['section'] == $targetSection) {
-                // Check if 'visible_fields' is set in the section
-                if (isset($item['visible_fields']) && is_array($item['visible_fields'])) {
-                    // Check if the specified $fieldName is in the 'visible_fields' array
-                    return !in_array($fieldName, $item['visible_fields']);
+        // if (!$record) {
+        //     return false;
+        // }
+
+        if($record != null){
+
+            $json = $record->resubmissions->getAttributes()['sections_visible'];
+            $sectionsVisible = json_decode($json, true);    
+
+            foreach ($sectionsVisible as $item) {
+                if ($item['section'] == $targetSection) {
+                    // Check if 'visible_fields' is set in the section
+                    if (isset($item['visible_fields']) && is_array($item['visible_fields'])) {
+                        // Check if the specified $fieldName is in the 'visible_fields' array
+                        return !in_array($fieldName, $item['visible_fields']);
+                    }
                 }
             }
+            return true;
         }
     
-        return true; // Default to false if the section or 'visible_fields' is not found
+        return false; // Default to false if the section or 'visible_fields' is not found
     }
 
     public function getSectionNote(?Model $record, string $targetSection, string $field): ?string
