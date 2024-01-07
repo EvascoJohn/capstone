@@ -41,8 +41,6 @@ class ResubmissionHelper
     {
         if (!$record) {
             return false;
-        }else if ($record == null){
-            return false;
         }
     
         $json = $record->resubmissions->getAttributes()['sections_visible'];
