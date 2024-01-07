@@ -4,6 +4,7 @@ namespace App\Models\PaymentAccountObserverModels;
 
 use App\Enums\ApplicationStatus;
 use App\Models;
+use App\Enums;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,13 +29,13 @@ class PaymentAccountHelper
     public function updatePaymentAccountDueDate()
     {
         // Sets initial due date for the payment account by taking the current time.
-        if($this->customerPaymentAccount->payment_status == 'down payment'){
+        if($this->customerPaymentAccount->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value){
             $current_date = Carbon::now();
             $newDueDate = Models\Payment::calculateDueDate($current_date);
             $this->customerPaymentAccount->due_date = $newDueDate;
         }
         // Takes the existing due date and recalculate the next due.
-        else if($this->customerPaymentAccount->payment_status == 'monthly'){
+        else if($this->customerPaymentAccount->payment_status->value == Enums\PaymentStatus::MONTHLY->value){
             $current_date = $this->customerPaymentAccount->due_date;
             $newDueDate = Models\Payment::calculateDueDate($current_date);
             $this->customerPaymentAccount->due_date = $newDueDate;
@@ -43,17 +44,17 @@ class PaymentAccountHelper
 
     public function updatePaymentStatus()
     {
-        $this->customerPaymentAccount->payment_status = 'monthly';
+        $this->customerPaymentAccount->payment_status = Enums\PaymentStatus::MONTHLY->value;
     }
 
     public function updateCustomerApplicationStatus()
     {
-        if($this->customerPaymentAccount->payment_status == 'down payment')
+        if($this->customerPaymentAccount->payment_status == Enums\PaymentStatus::DOWN_PAYMENT->value)
         {
             $this->customerApplication->application_status = ApplicationStatus::ACTIVE_STATUS;
             $this->customerPaymentAccount->status = $this->customerApplication->application_status;
         }
-        else if($this->customerPaymentAccount->payment_status == 'cash')
+        else if($this->customerPaymentAccount->payment_status == Enums\PaymentStatus::CASH->value)
         {
             $this->customerApplication->application_status = ApplicationStatus::CLOSED_STATUS;
             $this->customerPaymentAccount->status = $this->customerApplication->application_status;

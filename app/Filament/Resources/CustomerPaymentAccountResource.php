@@ -30,7 +30,7 @@ class CustomerPaymentAccountResource extends Resource
 
     protected static ?string $navigationLabel = 'Payments';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    // protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $modelLabel = 'Payment';
 
@@ -79,7 +79,7 @@ class CustomerPaymentAccountResource extends Resource
                                         ->columns(6)
                                         ->schema([
                                                 InfoLists\Components\Section::make("Customer's Information")
-                                                        ->aside()
+                                                        // ->aside()
                                                         ->columns(12)
                                                         ->description("Information about the customer's account for payment")
                                                         ->schema([
@@ -105,6 +105,7 @@ class CustomerPaymentAccountResource extends Resource
                                                                         ->color('danger'),
                                                     ]),
                                                 InfoLists\Components\Section::make("Account's Details")
+                                                        // ->aside()
                                                         ->columns(12)
                                                         ->description("Details of the customer's account")
                                                         ->schema([

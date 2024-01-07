@@ -10,6 +10,11 @@ class CustomerApplicationMaintenance extends Model
     use HasFactory;
     
     protected $fillable = [
-        'rebate_value',
+        'monthly_amortizations',
     ];
+
+    protected $casts = [
+        'monthly_amortizations' => 'json',
+    ];
+
 }

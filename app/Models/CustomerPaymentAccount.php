@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-
+use App\Enums;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -32,6 +32,12 @@ class CustomerPaymentAccount extends Model
         'author_id',
         'branch_id',
         'note'
+    ];
+
+    protected $casts = [
+        'status'            =>  Enums\ApplicationStatus::class,
+        'plan_type'         =>  Enums\PlanStatus::class,
+        'payment_status'    =>  Enums\PaymentStatus::class,
     ];
 
     public static function getActiveAccounts(string $search): Builder

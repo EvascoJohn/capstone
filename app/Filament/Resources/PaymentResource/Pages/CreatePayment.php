@@ -18,6 +18,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
+use Filament\Notifications\Notification;
 
 class CreatePayment extends CreateRecord
 
@@ -26,6 +27,17 @@ class CreatePayment extends CreateRecord
 
     protected static bool $canCreateAnother = false;
 
+    protected function getCreatedNotification(): ?Notification
+    {
+        $title = "Payment Succesful!";
+
+        if (blank($title)) {
+            return null;
+        }
+        return Notification::make()
+            ->success()
+            ->title($title);
+    }
 
     protected function getCancelFormAction(): Action
     {
@@ -38,12 +50,6 @@ class CreatePayment extends CreateRecord
             // ->url($this->previousUrl ?? static::getResource()::getUrl())
             ->color('info');
     }
-
-    protected function afterCreate(): void
-    {
-        // runs after creation of record.
-    }
-
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

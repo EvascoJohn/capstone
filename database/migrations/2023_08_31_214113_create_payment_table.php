@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums;
 use App\Models\CustomerApplication;
 use App\Models\CustomerPaymentAccount;
 use Illuminate\Database\Migrations\Migration;
@@ -15,11 +16,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('payment_status')->nullable();
+            $table->enum('payment_status', Enums\PaymentStatus::values())->nullable();
             $table->string('payment_type')->nullable();
+            $table->enum('payment_is', Enums\PaymentStatus::values())->nullable();
             $table->double('payment_amount')->nullable();
             $table->integer('term_covered')->nullable();
-            $table->string('payment_is')->nullable();
             $table->double('amount_to_be_paid')->nullable();
             $table->double('rebate')->nullable();
             $table->bigInteger('author_id')->nullable();
@@ -27,6 +28,13 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
+    
+    protected $casts = [
+        'payment_status'            =>  Enums\PaymentStatus::class,
+        'customer_is'               =>  Enums\PaymentStatus::class,
+    ];
+
     /**
      * Reverse the migrations.
      */

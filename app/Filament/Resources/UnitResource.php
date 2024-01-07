@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Support\RawJs;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class UnitResource extends Resource
@@ -44,7 +45,7 @@ class UnitResource extends Resource
                     ->mask(Rawjs::make(<<<'JS'
                         'aaaaaaaa9aa999999'
                     JS))
-                    ->unique(table: Unit::class)
+                    ->unique(ignoreRecord:true)
                     ->minLength(17)
                     ->maxLength(17)
                     ->columnSpan(1)
@@ -53,7 +54,7 @@ class UnitResource extends Resource
                     ->mask(Rawjs::make(<<<'JS'
                         '999aaa99a99999'
                     JS))
-                    ->unique(table: Unit::class)
+                    ->unique(ignoreRecord:true)
                     ->minLength(14)
                     ->maxLength(14)
                     ->columnSpan(1)

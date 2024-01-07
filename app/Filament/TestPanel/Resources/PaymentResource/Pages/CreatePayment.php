@@ -13,10 +13,23 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components;
 use App\Filament\TestPanel\Pages\CreateCustomerPayment;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 
 class CreatePayment extends CreateRecord
 {
     // protected static string $view = 'create-customer-payment';
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        $title = "Payment Succesful!";
+
+        if (blank($title)) {
+            return null;
+        }
+        return Notification::make()
+            ->success()
+            ->title($title);
+    }
 
     protected static string $resource = PaymentResource::class;
 
@@ -29,8 +42,8 @@ class CreatePayment extends CreateRecord
     {
         //gets the customer application object.
         $customer_application = CustomerApplication::query()
-                                                        ->where('id', $this->data['customer_application_id'])
-                                                        ->first();
+                ->where('id', $this->data['customer_application_id'])
+                ->first();
         $this_payment = $this->data; //a dictionary
         $prev_due = $customer_application->due_date;
         $new_due =  Carbon::parse(Carbon::createFromFormat('Y-m-d', $prev_due)

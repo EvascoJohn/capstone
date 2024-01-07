@@ -136,7 +136,7 @@ class ReposessionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->label('Reposess'),
+                    ->label('Repossess'),
             ])
             ->bulkActions([
                 // no bulk actions required.

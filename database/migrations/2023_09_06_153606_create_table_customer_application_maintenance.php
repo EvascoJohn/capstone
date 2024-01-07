@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('customer_application_maintenances', function (Blueprint $table) {
             $table->id();
-            $table->string('rebate_value');
+            $table->json('monthly_amortizations')->nullable();
             $table->timestamps();
         });
     }

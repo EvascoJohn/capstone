@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.1",
         "ext-zip": "*",
+        "alexjustesen/filament-spatie-laravel-activitylog": "^0.7.0",
         "barryvdh/laravel-dompdf": "^2.0",
         "doctrine/dbal": "^3.6",
         "filament/filament": "^3.0-stable",
@@ -24,6 +25,7 @@
         "pxlrbt/filament-excel": "^2.2",
         "shuvroroy/filament-spatie-laravel-backup": "^2.1",
         "spatie/db-dumper": "^3.4",
+        "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-permission": "^5.11",
         "z3d0x/filament-fabricator": "^2.0"

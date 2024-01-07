@@ -41,7 +41,7 @@ class PaymongoController extends Controller
                         'customerPaymentAccount' => http_build_query($prsd_customerPaymentAccount),
                         'payment' => http_build_query($prsd_payment),
                     ]),
-                    'cancel_url' => url('/customer/payments'),
+                    'cancel_url' => url('/customer/customer-payment-accounts'),
                     'description' => "Payment Description",
                 ],
             ]
@@ -83,6 +83,8 @@ class PaymongoController extends Controller
             // 'payment_type' => $payment['payment_type'],
             'customer_payment_account_id' => $customerPaymentAccount['id'],
             'term_covered' => $payment['term_covered'],
+            'payment_type' => $payment['payment_type'],
+            'customer_is' => $payment['customer_is'],
             'payment_is' => $payment['payment_is'],
             'rebate' => $payment['rebate'],
             'amount_to_be_paid' => $payment['amount_to_be_paid'],
