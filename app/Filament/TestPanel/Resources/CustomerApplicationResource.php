@@ -52,7 +52,7 @@ class CustomerApplicationResource extends Resource
                         ->hidden(function(?Model $record){
                             if($record != null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
-                                    return false;
+                                    return true;
                                 }
                             }
                             return true;
