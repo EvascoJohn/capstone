@@ -24,6 +24,7 @@
         "pxlrbt/filament-excel": "^2.2",
         "shuvroroy/filament-spatie-laravel-backup": "^2.1",
         "spatie/db-dumper": "^3.4",
+        "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-permission": "^5.11",
         "z3d0x/filament-fabricator": "^2.0"

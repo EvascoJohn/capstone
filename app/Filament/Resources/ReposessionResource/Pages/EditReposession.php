@@ -16,6 +16,8 @@ class EditReposession extends EditRecord
     protected static ?string $modelLabel = "Repossession";
     protected static string $resource = ReposessionResource::class;
 
+    // protected static ?string $model = CustomerPaymentAccount::class;
+
     protected function getHeaderActions(): array
     {
         return [];
@@ -28,6 +30,21 @@ class EditReposession extends EditRecord
 
         CustomerPaymentAccount::where('id', $data['id'])
             ->update(['customer_application_id' => $data['assumed_by_id']]);
+
+        $property = [
+            "old" => [
+                "customer_application_id" => $data['customer_application_id']
+            ],
+            "attributes" => [
+                "customer_application_id" => $data['assumed_by_id']
+            ]
+        ];
+
+        activity('Repossession')
+            ->event('repossessed')
+            ->performedOn(new CustomerPaymentAccount)
+            ->withProperties($property)
+            ->log('repossessed');
 
         return $data;
     }

@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Branch extends Model
 {
 
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     public $fillable = [
         'brgyCode',
@@ -49,4 +51,8 @@ class Branch extends Model
         return $this->hasMany(CustomerApplication::class);
     }
 
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->useLogName('Branch')->logAll()->logOnlyDirty();
+    }
 }

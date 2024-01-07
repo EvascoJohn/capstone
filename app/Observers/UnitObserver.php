@@ -73,6 +73,8 @@ class UnitObserver
             "model" => class_basename($unit),
             "details" => "Deleted Unit",
             "record_id" => $unit->id,
+            "new_details" => "",
+            "old_details" => "",
         ]);
     }
 
