@@ -19,8 +19,8 @@ class EditCustomerApplicationMaintenance extends Page
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
-    protected static ?string $modelLabel = 'Customer Application Maintenance';
-    protected static ?string $navigationLabel = 'Customer Application Maintenance';
+    protected static ?string $modelLabel = 'M.A and Terms Maintenance';
+    protected static ?string $navigationLabel = 'M.A and Terms Maintenance';
     protected static ?string $navigationGroup = 'Maintenance Module';
     protected static string $view = 'filament.pages.edit-customer-application';
 
@@ -54,6 +54,7 @@ class EditCustomerApplicationMaintenance extends Page
                     ->columns(12)
                     ->schema([
                             Forms\Components\Repeater::make('monthly_amortizations')
+                                    ->label('Monthly Amortization A')
                                     ->grid(2)
                                     ->columns(12)
                                     ->columnSpan(12)
