@@ -8,7 +8,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ asset('css/miranda/contact-page.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/miranda/global.css') }}" />
-    <link rel="stylesheet" href="{{ asset('css/miranda/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/miranda/media-queries.css') }}" />
     <title>Motorstar - Probike Motorcycle Center</title>
     <link

@@ -28,7 +28,11 @@ class CustomerDues extends BaseWidget
         return $table
             ->query(
                 function (Builder $query){
-                    return Models\CustomerPaymentAccount::query()->where('due_date', '!=', 'null')->latest();
+                    if(auth()->user()::class == Models\Customer::class){
+                        // query by author_id
+                        return Models\CustomerPaymentAccount::query()->where('author_id', auth()->user()->id)->latest();
+                    }
+                    return Models\CustomerPaymentAccount::query()->where('branch_id', auth()->user()->branch_id)->latest();
                 }
             )
             ->columns([

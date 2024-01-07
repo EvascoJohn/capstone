@@ -78,7 +78,7 @@
       <section id="Content2">
         <div class="heading">
           <h1 class="Title">Privacy Policy</h1>
-          <p class="content">
+          <p class="content" style="color:black">
             This Privacy Policy describes how we collect, use, and protect your personal information when you interact with our website. By using our website, you consent to the collection and use of your personal information as described in this Privacy Policy.
           </p>
         </div>
@@ -90,7 +90,7 @@
       <div class="content">
         <div class="row1 box">
           <div class="upper">
-            <div class="topic">BrandName</div>
+            <div class="topic">{{  }}</div>
             <p>
               Lorem ipsum dolor, sit amet consectetur adipisicing elit. Amet,
               deleniti enim eum itaque voluptas saepe provident atque voluptate
@@ -98,16 +98,6 @@
             </p>
           </div>
         </div>
-
-        {{-- <div class="row2 box">
-          <li><a href="../html/index.html">Home</a></li>
-          <li><a href="../html/products.html">Products</a></li>
-          <li><a href="../html/application.html">Application</a></li>
-          <br />
-          <li><a href="../html/privacy-policy.html">Privacy Policy</a></li>
-          <li><a href="../html/Terms-and-condition.html">Terms &amp Condition</a></li>
-          <li><a href="../html/contact.html">FAQs</a></li>
-        </div> --}}
 
         <div class="row2 box">
           <li><a href="/home">Home</a></li>

@@ -94,8 +94,11 @@ class ViewCustomerApplication extends ViewRecord
                     ->form([
                         Forms\Components\Repeater::make('resubmit_section')
                             ->required()
+                            ->columns(12)
+                            ->columnSpan(12)
                             ->schema([
                                     Forms\Components\Select::make('section')
+                                            ->columnSpan(12)
                                             ->options(Enums\ApplicationSections::class)
                                             ->live()
                                             ->afterStateUpdated(fn (Forms\Components\Select $component) => $component
@@ -106,48 +109,86 @@ class ViewCustomerApplication extends ViewRecord
                                     Forms\Components\Section::make("fields")
                                             ->schema(fn (Forms\Get $get): array => match ($get('section')) {
                                                 Enums\ApplicationSections::APPLICANT->value => [
+                                                        // Applicant
                                                         Forms\Components\Textarea::make('applicant_section_note')
                                                                 ->label("Note"),
-                                                        Forms\Components\Toggle::make("applicant_info")
-                                                                ->label("Applicant's Information"),
-                                                        Forms\Components\Toggle::make("co_maker_info")
-                                                                ->label("Co-Maker's Information"),
-                                                        Forms\Components\Toggle::make("applicant_valid_id")
-                                                                ->label("Applicant's ID"),
-                                                        Forms\Components\Toggle::make("co_maker_valid_id")
-                                                                ->label("Co-Maker's ID"),
+                                                        Forms\Components\Select::make('visible_fields')
+                                                                ->multiple()
+                                                                ->native(false)
+                                                                ->options([
+                                                                    'applicant_fname_textinput' => 'Applicant First Name',
+                                                                    'applicant_mname_textinput' => 'Applicant Middle Name',
+                                                                    'applicant_lname_textinput' => 'Applicant Last Name',
+                                                                    'applicant_bday_datetime' => 'Applicant Birthday',
+                                                                    'applicant_present_address_textarea' => 'Applicant Present Address',
+                                                                    'applicant_previous_address_textarea' => 'Applicant Previous Address',
+                                                                    'applicant_provincial_address_textarea' => 'Applicant Provincial Address',
+                                                                    'applicant_lived_there_numeric' => 'Applicant Lived There',
+                                                                    'applicant_house_select' => 'Applicant House',
+                                                                    'applicant_civil_status_select' => 'Applicant Civil',
+                                                                    'applicant_email_textinput' => 'Applicant Email',
+                                                                    'applicant_contact_textinput' => 'Applicant Contact',
+                                                                    'applicant_id_fileupload' => 'Applicant Valid ID',
+                                                                    // Co Maker
+                                                                    'co_maker_fname_textinput' => 'Co maker First Name',
+                                                                    'co_maker_mname_textinput' => 'Co maker Middle Name',
+                                                                    'co_maker_lname_textinput' => 'Co Maker Last Name',
+                                                                    'co_maker_bday_datetime' => 'Co maker Birthday',
+                                                                    'co_maker_present_address_textarea' => 'Co maker Present Address',
+                                                                    'co_maker_email_textinput' => 'Co Maker Email',
+                                                                    'co_maker_contact_textinput' => 'Co maker Contact',
+                                                                    'co_maker_id_fileupload' => 'Co maker Valid ID',
+                                                                ]),
                                                 ],
                                                 Enums\ApplicationSections::EDUCATION->value => [
                                                         Forms\Components\Textarea::make('education_section_note')
                                                                 ->label("Note"),
-                                                        Forms\Components\Toggle::make("educational_attainment")
-                                                                ->label("Educational Attainment"),
-                                                        Forms\Components\Toggle::make("dependents")
-                                                                ->label("Dependents"),
+                                                        Forms\Components\Select::make('visible_fields')
+                                                                ->multiple()
+                                                                ->native(false)
+                                                                ->options([
+                                                                    'educational_attainment' => 'Educational Attainment',
+                                                                    'dependents' => 'Dependents',
+                                                                ]),
                                                 ],
                                                 Enums\ApplicationSections::REFERENCES->value => [
-                                                        Forms\Components\Textarea::make('education_section_note')
+                                                        Forms\Components\Textarea::make('references_section_note')
                                                                 ->label("Note"),
-                                                        Forms\Components\Toggle::make("educational_attainment")
-                                                                ->label("Educational Attainment"),
-                                                        Forms\Components\Toggle::make("dependents")
-                                                                ->label("Dependents"),
+                                                        Forms\Components\Select::make('visible_fields')
+                                                                ->multiple()
+                                                                ->native(false)
+                                                                ->options([
+                                                                    'applicant_personal_references' => 'Personal References',
+                                                                    'creditor_credit_card' => "Creditor's Credit Card",
+                                                                    'applicant_credit_card' => "Applicant's Credit Card",
+                                                                    'creditor_information' => 'Creditor Information',
+                                                                ]),
                                                 ],
                                                 Enums\ApplicationSections::EMPLOYMENT->value => [
-                                                        Forms\Components\Textarea::make('education_section_note')
+                                                        Forms\Components\Textarea::make('employment_section_note')
                                                                 ->label("Note"),
-                                                        Forms\Components\Toggle::make("educational_attainment")
-                                                                ->label("Educational Attainment"),
-                                                        Forms\Components\Toggle::make("dependents")
-                                                                ->label("Dependents"),
+                                                        Forms\Components\Select::make('visible_fields')
+                                                                ->multiple()
+                                                                ->native(false)
+                                                                ->options([
+                                                                    'applicant_present_employer' => 'Applicant Present Employer',
+                                                                    'applicant_business' => 'Applicant Business',
+                                                                    'applicant_previous_employer' => 'Applicant Previous Employer',
+                                                                    'applicant_position' => 'Applicant Position',
+                                                                    'applicant_how_long_employed' => 'Applicant How long Employed',
+                                                                ]),
                                                 ],
                                                 Enums\ApplicationSections::MONTHLY_INCOME->value => [
-                                                        Forms\Components\Textarea::make('education_section_note')
+                                                        Forms\Components\Textarea::make('monthy_income_section_note')
                                                                 ->label("Note"),
-                                                        Forms\Components\Toggle::make("educational_attainment")
-                                                                ->label("Educational Attainment"),
-                                                        Forms\Components\Toggle::make("dependents")
-                                                                ->label("Dependents"),
+                                                        Forms\Components\Select::make('visible_fields')
+                                                                ->multiple()
+                                                                ->native(false)
+                                                                ->options([
+                                                                    'properties' => 'Properties',
+                                                                    'recalculate_monthly_income' => 'Recalculate Monthly Income',
+                                                                    'proof_of_income_images' => 'Proof of Income images',
+                                                                ]),
                                                 ],
                                                 default => [],
                                             })
