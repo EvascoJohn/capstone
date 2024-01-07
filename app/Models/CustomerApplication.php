@@ -399,9 +399,9 @@ class CustomerApplication extends Model implements HasMedia
         return $this->hasOne(Models\Resubmissions::class);
     }
 
-    public function unitModel():HasOne
+    public function unitModel():BelongsTo
     {
-        return $this->hasOne(UnitModel::class, 'unit_model_id', 'id');
+        return $this->belongsTo(UnitModel::class);
     }
 
     public function units():BelongsTo

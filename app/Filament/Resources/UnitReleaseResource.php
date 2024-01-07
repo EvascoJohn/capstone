@@ -57,97 +57,12 @@ class UnitReleaseResource extends Resource
         {
                 return true;
         }
-
-        public static function getAvailableUnit(): Forms\Components\Component
-        {
-                return Forms\Components\Group::make([
-                        Forms\Components\Select::make('search_by')
-                                ->options([
-                                        'engine_number' => "Engine No.",
-                                        'frame_number' => "Frame No.",
-                                ])
-                                ->live(),
-                        Forms\Components\Select::make('units_id')
-                                ->live()
-                                ->options(
-                                        function (Forms\Get $get, ?Model $record): array {
-                                                $preffered_unit_model = $record->unit_model_id;
-                                                $preffered_unit_status = $record->preffered_unit_status;
-                                                $search_by = $get('search_by');
-                                                //check if there is no selected value in search by.
-                                                if ($search_by == null) {
-                                                        return [];
-                                                }
-
-                                                $units_query = Models\Unit::query()
-                                                        ->where([
-                                                                'unit_model_id' => $preffered_unit_model,
-                                                                'status' => $preffered_unit_status
-                                                        ]);
-                                                return $units_query->pluck($search_by, 'id')->toArray();
-                                        }
-                                )
-                                ->afterStateUpdated(
-                                        function (Forms\Get $get, Forms\Set $set) {
-                                                if ($get('units_id') != "") {
-                                                        $set('unit_status', Models\Unit::find($get('units_id'))->status);
-                                                } else if ($get('units_id') == "") {
-                                                        $set('unit_status', "");
-                                                }
-                                        }
-                                )
-                                ->prefix('#')
-                                ->label('Chasis Number')
-                                ->required(true)
-                                ->label('Chassis number'),
-                ])->columns(2);
-        }
-
-        public static function getApplicationDetails(): Forms\Components\Component
-        {
-                return Forms\Components\Group::make([
-                        Forms\Components\Placeholder::make("preffered_unit_status")
-                                ->content(fn (?Model $record): string => $record->preffered_unit_status)
-                ]);
-        }
-
-        public static function getUnitInofrmationComponent(): Forms\Components\Component
-        {
-                return Forms\Components\Group::make([
-                        Forms\Components\Fieldset::make('Unit Information')
-                                ->schema([
-                                        Forms\Components\TextInput::make('unit_model_id')
-                                                ->label('Unit Model')
-                                                // ->default(fn (?Model $record): string => $record->preffered_unit_status)
-                                                ->disabled(),
-                                        Forms\Components\TextInput::make('unit_srp')
-                                                ->disabled(),
-                                ]),
-                ]);
-        }
-
-        public static function getReleaseDetailsComponent(): Forms\Components\Component
-        {
-                return Forms\Components\Group::make([
-                        Forms\Components\TextInput::make("preffered_unit_status")
-                                ->default(fn (?Model $record): string => $record->preffered_unit_status)
-                                ->readOnly(),
-                        Forms\Components\Select::make('unit_mode_of_payment')
-                                ->required(true)
-                                ->label('Mode of Payment:')
-                                ->options(
-                                        ['Office', 'Field', 'Bank',]
-                                )
-                                ->columnSpan(1),
-                ]);
-        }
-
         public static function form(Form $form): Form
         {
                 return $form
                         ->schema([
-                                UnitReleaseResource::getApplicationDetails(),
-                                UnitReleaseResource::getUnitInofrmationComponent()
+                                // UnitReleaseResource::getApplicationDetails(),
+                                UnitReleaseResource::getUnitInformationComponent()
                                         ->columnSpan(2),
                                 UnitReleaseResource::getReleaseDetailsComponent()
                                         ->columns(2)
@@ -243,4 +158,77 @@ class UnitReleaseResource extends Resource
         //                 $query->where('created_at', '<', $twoMonthsAgo);
         //             });
         //     }
+
+
+        public static function getAvailableUnit(): Forms\Components\Component
+        {
+                return Forms\Components\Group::make([
+                        Forms\Components\Select::make('search_by')
+                                ->options([
+                                        'engine_number' => "Engine No.",
+                                        'frame_number' => "Frame No.",
+                                ])
+                                ->live(),
+                        Forms\Components\Select::make('units_id')
+                                ->live()
+                                ->options(
+                                        function (Forms\Get $get, ?Model $record): array {
+                                                $search_by = $get('search_by');
+                                                if ($search_by == null) {
+                                                        return [];
+                                                }
+                                                $units_query = Models\Unit::query()
+                                                        ->where([
+                                                                'unit_model_id' => $record->unit_model_id,
+                                                                'status' => $record->preffered_unit_status,
+                                                                'released_status' => ReleaseStatus::UN_RELEASED
+                                                        ]);
+                                                return $units_query->pluck($search_by, 'id')->toArray();
+                                        }
+                                )
+                                ->prefix('#')
+                                ->label('Chasis Number')
+                                ->required(true),
+                ])->columns(2);
+        }
+
+        public static function getApplicationDetails(): Forms\Components\Component
+        {
+                return Forms\Components\Group::make([
+                        Forms\Components\Placeholder::make("preffered_unit_status")
+                                ->content(fn (?Model $record): string => $record->preffered_unit_status)
+                ]);
+        }
+
+        public static function getUnitInformationComponent(): Forms\Components\Component
+        {
+                return Forms\Components\Group::make([
+                        Forms\Components\Fieldset::make('Unit Information')
+                                ->schema([
+                                        Forms\Components\Hidden::make('id'),
+                                        Forms\Components\TextInput::make('unit_model_id')
+                                                ->label('Unit Model')
+                                                // ->default(fn (?Model $record): string => $record->preffered_unit_status)
+                                                ->disabled(),
+                                        Forms\Components\TextInput::make('unit_srp')
+                                                ->disabled(),
+                                ]),
+                ]);
+        }
+
+        public static function getReleaseDetailsComponent(): Forms\Components\Component
+        {
+                return Forms\Components\Group::make([
+                        Forms\Components\TextInput::make("preffered_unit_status")
+                                ->default(fn (?Model $record): string => $record->preffered_unit_status)
+                                ->readOnly(),
+                        Forms\Components\Select::make('unit_mode_of_payment')
+                                ->required(true)
+                                ->label('Mode of Payment:')
+                                ->options(
+                                        ['Office', 'Field', 'Bank',]
+                                )
+                                ->columnSpan(1),
+                ]);
+        }
 }

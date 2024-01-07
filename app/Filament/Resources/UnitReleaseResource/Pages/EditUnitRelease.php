@@ -30,7 +30,13 @@ class EditUnitRelease extends EditRecord
         $data["due_date"] = $due_date;
         $data["release_status"] = ReleaseStatus::RELEASED->value;
         Models\Unit::query()->where("id", $data['units_id'])
-            ->update(['customer_application_id' => $this->record->id]);
+            ->update([
+                'customer_application_id' => $this->record->id,
+                'released_status' => $data["release_status"]
+            ]);
+
+        Models\CustomerPaymentAccount::where("customer_application_id", $data['id'])
+            ->update(['unit_release_id' => $data['units_id']]);
 
         $property = [
             "old" => [
