@@ -26,7 +26,7 @@ class ResubmissionHelper
             return true;
         }
 
-        $json = $record->resubmissions->getAttributes()['sections_visible'];
+        $json = $record->resubmissions()->latest('created_at')->first()->getAttributes()['sections_visible'];
         $sections_visible = json_decode($json, true);
         foreach ($sections_visible as $item) {
             if ($item['section'] == $targetSection) {
@@ -45,7 +45,7 @@ class ResubmissionHelper
 
         if($record != null){
 
-            $json = $record->resubmissions->getAttributes()['sections_visible'];
+            $json = $record->resubmissions()->latest('created_at')->first()->getAttributes()['sections_visible'];
             $sectionsVisible = json_decode($json, true);    
 
             foreach ($sectionsVisible as $item) {
@@ -69,7 +69,7 @@ class ResubmissionHelper
             return null;
         }
     
-        $json = $record->resubmissions->getAttributes()['sections_visible'];
+        $json = $record->resubmissions()->latest('created_at')->first()->getAttributes()['sections_visible'];
         $sectionsVisible = json_decode($json, true);
     
         foreach ($sectionsVisible as $item) {

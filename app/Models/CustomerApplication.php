@@ -387,9 +387,9 @@ class CustomerApplication extends Model implements HasMedia
         return $this->payments()->sum();
     }
 
-    public function resubmissions(): HasOne
+    public function resubmissions(): HasMany
     {
-        return $this->hasOne(Models\Resubmissions::class);
+        return $this->hasMany(Models\Resubmissions::class);
     }
 
     public function unitModel():BelongsTo

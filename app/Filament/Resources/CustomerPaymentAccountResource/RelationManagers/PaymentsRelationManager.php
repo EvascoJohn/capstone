@@ -51,6 +51,7 @@ class PaymentsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
+                    ->label("Make Payment")
                     ->disabled(fn (RelationManager $livewire) => $livewire->getOwnerRecord()->term_left == 0)
                     ->steps([
                         Step::make('Make Payment')
@@ -332,14 +333,18 @@ class PaymentsRelationManager extends RelationManager
                 ->numeric()
                 ->default(0)
                 ->columnSpan(4)
-                ->minValue(fn (Forms\Get $get): float => $get('amount_to_be_paid'))
+                ->minValue(fn (Forms\Get $get): float => $get('amount_to_be_paid') - $get('rebate'))
                 ->afterStateUpdated(
                     function (Forms\Get $get, Forms\Set $set, RelationManager $livewire, Forms\Components\TextInput $component) {
-                        $payment_amount = $get('payment_amount');
-                        $amount_paid = $get('amount_to_be_paid');
-                        if ($payment_amount > $amount_paid) {
-                            $set('change', $payment_amount - $amount_paid);
-                        }
+                        $payment_amount = (float) $get('payment_amount');
+                        $rebate = (float) $get('rebate');
+                        $amount_to_be_paid = (float) $get('amount_to_be_paid');
+
+                        $final_payment_amount = $amount_to_be_paid - $rebate;
+
+                        $change = $final_payment_amount - $payment_amount;
+                        $set('change', abs($change));
+
                         $livewire->validateOnly($component->getStatePath());
                     }
                 ),
