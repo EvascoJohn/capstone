@@ -22,14 +22,13 @@
             {{ $explore_button }}
           </button>
           {{-- goes to the registration form --}}
-          <button class="register-button" onclick="window.location.href = '/customer';">
+          <button class="register-button" onclick="window.location.href = '/customer/register';">
             {{ $register_button }}
           </button>
         </div>
       </div>
     </div>
 </section>
-
 
 <section id="Content3" style="background-color: white;">
   <div class="heading">
