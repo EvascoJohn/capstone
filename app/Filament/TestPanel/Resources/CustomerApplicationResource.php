@@ -1721,7 +1721,7 @@ class CustomerApplicationResource extends Resource
                                         if($record!=null){
                                             if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                 $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'educational_attainment');
+                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EDUCATION->value, 'educational_attainment');
                                             }
                                         }
                                         return false;
@@ -1732,7 +1732,7 @@ class CustomerApplicationResource extends Resource
                                         if($record!=null){
                                             if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                 $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'educational_attainment');
+                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EDUCATION->value, 'educational_attainment');
                                             }
                                         }
                                         return false;
@@ -1761,7 +1761,7 @@ class CustomerApplicationResource extends Resource
                                         if($record!=null){
                                             if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                 $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'dependents');
+                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EDUCATION->value, 'dependents');
                                             }
                                         }
                                         return false;
@@ -1772,7 +1772,7 @@ class CustomerApplicationResource extends Resource
                                         if($record!=null){
                                             if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                 $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'dependents');
+                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EDUCATION->value, 'dependents');
                                             }
                                         }
                                         return false;
@@ -1814,7 +1814,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_personal_references');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'applicant_personal_references');
                                     }
                                 }
                                 return false;
@@ -1825,7 +1825,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_personal_references');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'applicant_personal_references');
                                     }
                                 }
                                 return false;
@@ -1869,7 +1869,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_credit_card');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'applicant_credit_card');
                                     }
                                 }
                                 return false;
@@ -1880,7 +1880,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_credit_card');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'applicant_credit_card');
                                     }
                                 }
                                 return false;
@@ -1922,7 +1922,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'creditor_credit_card');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'creditor_credit_card');
                                     }
                                 }
                                 return false;
@@ -1933,7 +1933,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'creditor_credit_card');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'creditor_credit_card');
                                     }
                                 }
                                 return false;
@@ -1968,7 +1968,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'creditor_information');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'creditor_information');
                                     }
                                 }
                                 return false;
@@ -1979,7 +1979,7 @@ class CustomerApplicationResource extends Resource
                                 if($record!=null){
                                     if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                         $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'creditor_information');
+                                        return $check_field->showFieldIfExist($record,Enums\ApplicationSections::REFERENCES->value, 'creditor_information');
                                     }
                                 }
                                 return false;
@@ -2007,7 +2007,7 @@ class CustomerApplicationResource extends Resource
                                                     if($record!=null){
                                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_present_employer');
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_present_employer');
                                                         }
                                                     }
                                                     return false;
@@ -2018,7 +2018,7 @@ class CustomerApplicationResource extends Resource
                                                     if($record!=null){
                                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_present_employer');
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_present_employer');
                                                         }
                                                     }
                                                     return false;
@@ -2033,7 +2033,7 @@ class CustomerApplicationResource extends Resource
                                                     if($record!=null){
                                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_position');
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_position');
                                                         }
                                                     }
                                                     return false;
@@ -2044,7 +2044,7 @@ class CustomerApplicationResource extends Resource
                                                     if($record!=null){
                                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_position');
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_position');
                                                         }
                                                     }
                                                     return false;
@@ -2059,7 +2059,7 @@ class CustomerApplicationResource extends Resource
                                                     if($record!=null){
                                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_how_long_employed');
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_how_long_employed');
                                                         }
                                                     }
                                                     return false;
@@ -2070,7 +2070,7 @@ class CustomerApplicationResource extends Resource
                                                     if($record!=null){
                                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_how_long_employed');
+                                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_how_long_employed');
                                                         }
                                                     }
                                                     return false;
@@ -2093,7 +2093,7 @@ class CustomerApplicationResource extends Resource
                                         if($record!=null){
                                             if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                 $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_business');
+                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_business');
                                             }
                                         }
                                         return false;
@@ -2104,7 +2104,7 @@ class CustomerApplicationResource extends Resource
                                         if($record!=null){
                                             if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                                 $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_business');
+                                                return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_business');
                                             }
                                         }
                                         return false;
@@ -2129,7 +2129,7 @@ class CustomerApplicationResource extends Resource
                                     if($record!=null){
                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_previous_employer');
+                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_previous_employer');
                                         }
                                     }
                                     return false;
@@ -2140,7 +2140,7 @@ class CustomerApplicationResource extends Resource
                                     if($record!=null){
                                         if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                             $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'applicant_previous_employer');
+                                            return $check_field->showFieldIfExist($record,Enums\ApplicationSections::EMPLOYMENT->value, 'applicant_previous_employer');
                                         }
                                     }
                                     return false;
@@ -2215,7 +2215,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'properties');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'properties');
                                 }
                             }
                             return false;
@@ -2226,7 +2226,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'properties');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'properties');
                                 }
                             }
                             return false;
@@ -2939,7 +2939,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'recalculate_monthly_income');
                                 }
                             }
                             return false;
@@ -2950,7 +2950,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'recalculate_monthly_income');
                                 }
                             }
                             return false;
@@ -2962,7 +2962,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'recalculate_monthly_income');
                                 }
                             }
                             return false;
@@ -2973,7 +2973,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'recalculate_monthly_income');
                                 }
                             }
                             return false;
@@ -2985,7 +2985,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'recalculate_monthly_income');
                                 }
                             }
                             return false;
@@ -2996,7 +2996,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'recalculate_monthly_income');
                                 }
                             }
                             return false;
@@ -3008,7 +3008,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'proof_of_income_images');
                                 }
                             }
                             return false;
@@ -3019,7 +3019,7 @@ class CustomerApplicationResource extends Resource
                             if($record!=null){
                                 if($record->application_status == Enums\ApplicationStatus::RESUBMISSION_STATUS){
                                     $check_field = new Models\ComponentHelpers\ResubmissionHelper();
-                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::APPLICANT->value, 'recalculate_monthly_income');
+                                    return $check_field->showFieldIfExist($record,Enums\ApplicationSections::MONTHLY_INCOME->value, 'proof_of_income_images');
                                 }
                             }
                             return false;
