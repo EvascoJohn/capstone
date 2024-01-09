@@ -53,7 +53,7 @@ class PaymentsRelationManager extends RelationManager
             //
             ])
             ->headerActions([
-                Tables\Actions\Action::make('Checkout')
+                Tables\Actions\Action::make('Make Payment')
                     ->disabled(fn (RelationManager $livewire) => $livewire->getOwnerRecord()->term_left == 0)
                     ->steps([
                             Step::make('Make Payment')
@@ -218,15 +218,16 @@ class PaymentsRelationManager extends RelationManager
                 ->default(
                     function (RelationManager $livewire): string {
                         $owner_record = $livewire->getOwnerRecord();
-                        if ($owner_record->payment_status == Enums\PaymentStatus::DOWN_PAYMENT->value) {
+                        if ($owner_record->payment_status->value == Enums\PaymentStatus::DOWN_PAYMENT->value) {
                             $set_due = Models\Payment::calculateDueDate(Carbon::now());
                             $owner_record->due_date = $set_due->toDateString();
                             return Enums\PaymentStatus::CURRENT->value;
-                        } else if ($owner_record->payment_status == "cash") {
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::CASH->value) {
                             return Enums\PaymentStatus::CURRENT->value;
-                        } else if ($owner_record->payment_status == "monthly") {
+                        } else if ($owner_record->payment_status->value == Enums\PaymentStatus::MONTHLY->value) {
                             $now = Carbon::now();
                             $due_date = Carbon::parse($owner_record->due_date);
+
                             // Compare the current time and due date
                             if ($now->lessThan($due_date)) {
                                 // Advance (current time is less than due date)
@@ -369,6 +370,7 @@ class PaymentsRelationManager extends RelationManager
                 ->minValue(fn (Forms\Get $get): float => $get('amount_to_be_paid') - $get('rebate')),
             Forms\Components\TextInput::make('change')
                 ->label('Change')
+                ->hidden(true)
                 ->readOnly()
                 ->live()
                 ->default(0)
